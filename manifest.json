@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Amplience Patches",
+  "version": "1.0",
+  "description": "Patches for Amplience Dynamic Content",
+  "permissions": ["storage"],
+  "host_permissions": ["https://app.amplience.net/content*"],
+  "content_scripts": [
+    {
+      "matches": ["https://app.amplience.net/content*"],
+      "css": ["styles.css"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/amplience-patches-16x16.png",
+    "32": "icons/amplience-patches-32x32.png",
+    "96": "icons/amplience-patches-96x96.png"
+  }
+}
