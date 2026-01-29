@@ -26,7 +26,7 @@ A Chrome extension that applies custom CSS patches to improve the layout and res
 
 The extension will now be active on `https://app.amplience.net/content/*`
 
-![Installing Custom Browser Extensions](screenshots/installing-custom-browser-extensions.gif)
+![Installing Custom Browser Extensions](screenshots/installing-custom-browser-extensions.gif)\
 _Here are steps 2-5 in action. (Also installing our two other browser extensions - [Amplience Hotkeys](https://github.com/mattisherwood/amplience-hotkeys) and [Favicon Swapper](https://github.com/mattisherwood/favicon-swapper))_
 
 _**TIP:** While you're in the extension manager; if you click **Details** on the extension you can select **'Allow in Icongito'** if you wish it to also be applied to incognito windows._
