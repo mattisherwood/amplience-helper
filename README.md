@@ -5,36 +5,41 @@ A Chrome extension that applies custom CSS patches to improve the layout and res
 ## Features
 
 - **Responsive header improvements**: Better wrapping and sizing for the main navigation bar
+
 - **Flexible layout**: Removes minimum width constraints for better viewport compatibility
+
 - **Enhanced table readability**: Improved column widths in content view lists
+
 - **Mobile-friendly**: Responsive design improvements for smaller screens
 
 ## Installation
 
-### From Source (Development)
+1. Download or clone this repository
 
-1. Clone or download this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable **Developer mode** (toggle in top-right corner)
+2. Open Chrome and go to `chrome://extensions/`
+
+3. Enable **Developer mode** (top right)
+
 4. Click **Load unpacked**
-5. Select the `amplience-patches` folder
-6. The extension will now be active
 
-### Reloading After Changes
+5. Select the `amplience-hotkeys` folder you downloaded in step 1
 
-If you make changes to the code:
+The extension will now be active on `https://app.amplience.net/content/*`
 
-1. Go to `chrome://extensions/`
-2. Find "Amplience Patches"
-3. Click the reload icon (🔄)
-4. Refresh any open Amplience tabs
+![Installing Custom Browser Extensions](screenshots/installing-custom-browser-extensions.gif)
+_Here are steps 2-5 in action. (Also installing our two other browser extensions - [Amplience Hotkeys](https://github.com/mattisherwood/amplience-hotkeys) and [Favicon Swapper](https://github.com/mattisherwood/favicon-swapper))_
+
+_**TIP:** While you're in the extension manager; if you click **Details** on the extension you can select **'Allow in Icongito'** if you wish it to also be applied to incognito windows._
+
+### Updating to newer versions
+
+If you wish to update the extension, merely re-run the above steps but upload the newer version of the folder. It will automatically replace the old one. Then refresh the tab and it'll be applied.
 
 ## Usage
 
-1. Install the extension following the steps above
-2. Navigate to https://app.amplience.net/content
-3. The patches will automatically apply
-4. Open DevTools Console to verify (you should see: "Amplience Patches: Extension loaded")
+1. Navigate to https://app.amplience.net/content
+
+2. The patches will automatically apply
 
 ## How It Works
 
