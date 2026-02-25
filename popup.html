@@ -9,59 +9,93 @@
         :root {
             color-scheme: light dark;
             --bg: #ffffff;
-            --text: #1f2937;
-            --hover: #2563eb;
+            --fg-rgb: 31, 41, 55;
+            --fg: rgb(var(--fg-rgb));
+            --spacing: 12px;
+            --hover: rgba(var(--fg-rgb), 0.05);
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg: #111827;
-                --text: #e5e7eb;
-                --hover: #a7c9ff;
+                --fg-rgb: 229, 231, 235;
+                --fg: rgb(var(--fg-rgb));
+                --hover: rgba(var(--fg-rgb), 0.1);
             }
         }
 
         body {
             margin: 0;
-            padding: 12px;
             width: 220px;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background: var(--bg);
-            color: var(--text);
+            color: var(--fg);
         }
 
-        .option {
-            cursor: pointer;
+        ul {
+            border-bottom: solid 1px var(--hover);
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        input {
+            margin: 0;
+        }
+
+        a,
+        label {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        a {
-            display: block;
-            padding-block: 12px;
+            gap: calc(var(--spacing) * 0.5);
+            padding: var(--spacing);
             color: inherit;
+            cursor: pointer;
             text-decoration: none;
         }
 
         a:hover,
-        .option:hover {
-            color: var(--hover);
+        label:hover {
+            background: var(--hover);
+        }
+
+        a:focus-visible {
+            outline-offset: -1px;
+        }
+
+        li a,
+        li label {
+            padding: calc(var(--spacing) * 0.5) var(--spacing);
+        }
+
+        li:first-of-type a,
+        li:first-of-type label {
+            padding-top: var(--spacing);
+        }
+
+        li:last-of-type a,
+        li:last-of-type label {
+            padding-bottom: var(--spacing);
         }
     </style>
 </head>
 
 <body>
-    <label class="option" for="stylesEnabled">
-        <input type="checkbox" id="stylesEnabled" />
-        Enable Styles Patch
-    </label>
+    <ul>
+        <li>
+            <label for="stylesEnabled">
+                <input type="checkbox" id="stylesEnabled" />
+                Enable Styles Patch
+            </label>
+        </li>
 
-    <label class="option" for="flowFilter">
-        <input type="checkbox" id="flowFilter" />
-        Enable Flows Filter
-    </label>
+        <li>
+            <label for="flowFilter">
+                <input type="checkbox" id="flowFilter" />
+                Enable Flows Filter
+            </label>
+        </li>
+    </ul>
 
     <a href="options.html" target="_blank" rel="noopener">View all options...</a>
 
