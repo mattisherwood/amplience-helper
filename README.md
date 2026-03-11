@@ -12,7 +12,7 @@ A Chrome extension that applies custom CSS patches to improve the layout and res
 
 - **Mobile-friendly**: Responsive design improvements for smaller screens
 
-- **Workflow Filter**: Adds a text input to filter workflows with
+- **Workflow Filter**: Adds a filter input for content flows with debounced matching and clear control
 
 ## Installation
 
@@ -24,7 +24,7 @@ A Chrome extension that applies custom CSS patches to improve the layout and res
 
 4. Click **Load unpacked**
 
-5. Select the `amplience-hotkeys` folder you downloaded in step 1
+5. Select the `amplience-patches` folder you downloaded in step 1
 
 The extension will now be active on `https://app.amplience.net/content/*` and `https://app.amplience.net/content-studio/*`
 
@@ -57,11 +57,12 @@ If you wish to update the extension, merely re-run the above steps but upload th
 
 The extension uses Chrome's Manifest V3 content scripts to:
 
-1. **Inject CSS** (`styles.css`) - Custom styles scoped to `[data-amplience-patches="enabled"]` for specificity
-2. **Run JavaScript** (`content.js`) - Reads settings from `chrome.storage.sync` and sets/removes a data attribute to activate styles
-3. **Provide an action popup** (`popup.html` + `popup.js`) - Allows toggling style patches from the extension icon
-4. **Provide a right-click action context menu** (`background.js`) - Adds a checkbox toggle on the extension action
-5. **Provide an options page** (`options.html` + `options.js`) - Allows toggling style patches on/off and stores preferences
+1. **Inject style patch CSS** (`modules/style-patches/style-patches.css`) - Custom styles scoped to `[data-amplience-patches="enabled"]` for specificity
+2. **Run style activation script** (`modules/style-patches/style-patches.js`) - Reads `stylesEnabled` from `chrome.storage.sync` and sets/removes the data attribute used by CSS patches
+3. **Run flow filter script** (`modules/content-flows-filter/content-flows-filter.js`) - Injects and manages the content-flows filter UI and filtering behavior
+4. **Provide an action popup** (`popup.html` + `popup.js`) - Allows toggling patches from the extension icon
+5. **Provide a right-click action context menu** (`background.js`) - Adds a checkbox toggle on the extension action
+6. **Provide an options page** (`options.html` + `options.js`) - Allows toggling patches on/off and stores preferences
 
 All patches only apply to pages matching `https://app.amplience.net/content*` and `https://app.amplience.net/content-studio/*`.
 
@@ -71,8 +72,13 @@ All patches only apply to pages matching `https://app.amplience.net/content*` an
 amplience-patches/
 ├── manifest.json          # Extension configuration
 ├── background.js          # Service worker for action context menu toggle
-├── content.js             # Content script that activates patches
-├── styles.css             # Custom CSS patches
+├── modules/
+│   ├── style-patches/ # Style patches for more responsive styles
+│   │   ├── style-patches.js
+│   │   └── style-patches.css
+│   └── content-flows-filter/ # Workforce Content Flows Filter
+│       ├── content-flows-filter.js
+│       └── content-flows-filter.css
 ├── popup.html             # Extension icon popup UI
 ├── popup.js               # Popup behavior and setting persistence
 ├── options.html           # Extension options UI
@@ -100,20 +106,20 @@ Open DevTools on https://app.amplience.net/content:
 
 - **Console tab**: Check for the extension's log message
 - **Elements tab**: Inspect `<html>` - should have `data-amplience-patches="enabled"`
-- **Sources tab**: Look under "Content scripts" to see if `styles.css` and `content.js` are injected
+- **Sources tab**: Look under "Content scripts" to see if `modules/style-patches/style-patches.js` and `modules/content-flows-filter/content-flows-filter.js` are injected
 
 ## Development
 
 ### Adding New Styles
 
-1. Open `styles.css`
+1. Open `modules/style-patches/style-patches.css`
 2. Add your styles inside the `[data-amplience-patches="enabled"]` selector
 3. Use `!important` if needed to override existing Amplience styles
 4. Reload the extension and refresh the Amplience page to test
 
-### Modifying the Content Script
+### Modifying Content Scripts
 
-The `content.js` file can be extended to:
+The content scripts can be extended to:
 
 - Add dynamic behavior
 - Inject additional elements
@@ -125,7 +131,7 @@ The `content.js` file can be extended to:
 This extension requires:
 
 - **storage**: For potential future settings/preferences
-- **host_permissions**: Access to `https://app.amplience.net/content*` only
+- **host_permissions**: Access to `https://app.amplience.net/content*` and `https://app.amplience.net/content-studio/*`
 
 ## License
 

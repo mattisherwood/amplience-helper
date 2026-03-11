@@ -1,0 +1,224 @@
+[data-amplience-patches="enabled"] {
+  /* ============= ACCOUNT MANAGEMENT APP ============= */
+  /* NB: Some elements must have at least three classes */
+  /* to match the specificity of the existing styles.   */
+  .App {
+    min-width: initial;
+
+    .masthead {
+      &.masthead {
+        height: auto;
+        padding-right: initial;
+      }
+
+      > div > .flex {
+        flex-wrap: wrap;
+
+        > .flex,
+        > .flex > .flex {
+          display: contents !important;
+        }
+      }
+
+      .masthead__title-wrap {
+        margin-right: auto;
+      }
+
+      .masthead__help-icon,
+      .masthead__logout-icon {
+        margin: initial;
+        padding: 8px;
+        width: initial;
+        height: initial;
+        min-width: initial;
+        min-height: initial;
+      }
+
+      .masthead__admin-badge {
+        padding-right: initial;
+      }
+
+      .badge {
+        margin: 8px;
+      }
+
+      .badge__text {
+        line-height: 1;
+      }
+    }
+
+    .organization-management__org-selector.organization-management__org-selector {
+      width: initial;
+    }
+
+    .organization-management__header.organization-management__header {
+      height: initial;
+      flex-wrap: wrap;
+      padding-right: initial;
+    }
+
+    .organization-management__context-bar.organization-management__context-bar {
+      display: contents;
+    }
+
+    .organization-management__tabs {
+      flex-grow: 1;
+    }
+
+    .tab-bar__tab.tab-bar__tab {
+      flex-grow: 1;
+      max-width: 201px;
+    }
+
+    .organization-management__search-and-invite.organization-management__search-and-invite {
+      padding: 10px 20px;
+    }
+
+    .list-row.list-row > td,
+    .table-row.table-row > th {
+      min-width: 0;
+    }
+  }
+
+  .organization-management__context-bar.organization-management__context-bar {
+    display: contents;
+  }
+
+  @media (max-width: 603px) {
+    .organization-management__tabs {
+      order: 1;
+    }
+  }
+
+  @media (max-width: 458px) {
+    .organization-management__org-selector.organization-management__org-selector {
+      width: 100%;
+      flex-grow: 1;
+    }
+
+    .organization-management__search-and-invite.organization-management__search-and-invite {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  /* ============= DYNAMIC CONTENT APP ============= */
+  app,
+  ui-view {
+    min-width: 0 !important;
+  }
+
+  /* HEADER STRUCTURE */
+
+  am-masthead .am-masthead-menu__menu-bar {
+    flex-wrap: wrap;
+  }
+
+  am-switcheroo {
+    width: auto;
+    padding-right: 20px;
+  }
+
+  .am-hub-selector__hub {
+    width: auto;
+    padding-right: 20px;
+  }
+
+  am-masthead .am-masthead-menu__menu-bar > *,
+  am-masthead,
+  am-masthead .layout-row {
+    height: auto;
+  }
+
+  am-timezone-selector {
+    margin-left: auto;
+  }
+
+  .am-timezone-selector {
+    margin-right: 20px;
+  }
+
+  .am-timezone-selector,
+  .am-timezone-selector .menu-bar,
+  .am-timezone-selector .menu-bar > .md-menu,
+  .am-timezone-selector .menu-bar > .md-menu a {
+    height: 100%;
+  }
+
+  @media (max-width: 1147px) {
+    .am-masthead-menu__menu-bar > .layout-row {
+      display: contents;
+    }
+
+    am-hub-selector {
+      height: auto;
+      width: 200px;
+    }
+
+    am-masthead-menu[name="mainMenu"] {
+      height: auto;
+      order: 1;
+      margin-inline: auto;
+    }
+  }
+
+  /* HEADER BUTTONS */
+
+  .am-masthead-menu__btn,
+  .am-masthead-menu__top-level {
+    position: relative;
+    border: 0;
+  }
+
+  .am-masthead-menu__btn,
+  .am-masthead-menu__top-level-link {
+    padding-block: 4px;
+  }
+
+  .am-masthead-menu__btn::before,
+  .am-masthead-menu__top-level::before {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    background: #00e4b3;
+    height: 0;
+    transition: height 0.15s ease-in;
+    z-index: 9999999999;
+  }
+
+  .am-masthead-menu__btn.is-active::before,
+  .am-masthead-menu__top-level.is-active::before {
+    height: 4px;
+  }
+
+  .am-masthead-menu__top-level-link,
+  .am-masthead-menu__top-level-caret {
+    margin-top: 0;
+  }
+
+  .am-masthead-menu__top-level-link {
+    height: auto;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+  }
+  .am-masthead-menu__btn:after,
+  .am-masthead-menu__top-level:after {
+    top: 0;
+    height: 100%;
+  }
+
+  .am-masthead-menu__top-level-caret {
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* TABLE */
+
+  .am-content-view-list__data--label,
+  .am-content-view-list__header--label {
+    min-width: 200px;
+  }
+}
