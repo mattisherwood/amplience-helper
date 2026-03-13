@@ -9,6 +9,10 @@
   let resolvedUsername = ""
   let initials = ""
   let usernameLookupInFlight = false
+  let initialsWaitAttempts = 0
+
+  const MAX_INITIALS_WAIT_ATTEMPTS = 20
+  const INITIALS_WAIT_RETRY_INTERVAL = 250
 
   function removeFlowsFilter() {
     const wrapper = document.querySelector("#flow-filter-wrapper")
@@ -81,6 +85,7 @@
             .split(" ")
             .map((n) => n[0])
             .join("")
+          initialsWaitAttempts = 0
           console.log("Resolved username:", username, "Initials:", initials)
         } else {
           console.log("Could not resolve username")
@@ -90,6 +95,18 @@
       } finally {
         usernameLookupInFlight = false
       }
+    }
+
+    if (!initials) {
+      if (initialsWaitAttempts < MAX_INITIALS_WAIT_ATTEMPTS) {
+        initialsWaitAttempts += 1
+        window.setTimeout(() => {
+          if (flowFilterEnabled) {
+            injectFlowsFilter()
+          }
+        }, INITIALS_WAIT_RETRY_INTERVAL)
+      }
+      return
     }
 
     const flowsPanel = document.querySelector(
