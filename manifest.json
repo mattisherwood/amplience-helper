@@ -1,28 +1,19 @@
 {
   "manifest_version": 3,
-  "name": "Amplience Patches",
-  "version": "1.5.1",
-  "description": "Patches for Amplience Dynamic Content",
-  "permissions": ["storage", "contextMenus"],
+  "name": "Amplience Helper",
+  "version": "2.0.0",
+  "description": "A suite of tools bundled in a browser extension to help everyday Amplience users create content at the speed of ideas.",
+  "permissions": ["storage"],
   "options_page": "options.html",
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Amplience Patches"
-  },
-  "background": {
-    "service_worker": "background.js"
+    "default_title": "Amplience Helper"
   },
   "host_permissions": [
     "https://app.amplience.net/content*",
     "https://app.amplience.net/content-studio/*"
   ],
   "content_scripts": [
-    {
-      "matches": ["https://app.amplience.net/*"],
-      "css": ["modules/style-patches/style-patches.css"],
-      "js": ["modules/style-patches/style-patches.js"],
-      "run_at": "document_idle"
-    },
     {
       "matches": ["https://app.amplience.net/content-studio/*"],
       "css": ["modules/flows-filter/flows-filter.css"],
@@ -31,11 +22,22 @@
         "modules/flows-filter/flows-filter.js"
       ],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://app.amplience.net/content*"],
+      "js": ["modules/hotkeys/hotkeys.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://app.amplience.net/*"],
+      "css": ["modules/style-patches/style-patches.css"],
+      "js": ["modules/style-patches/style-patches.js"],
+      "run_at": "document_idle"
     }
   ],
   "icons": {
-    "16": "icons/amplience-patches-16x16.png",
-    "32": "icons/amplience-patches-32x32.png",
-    "96": "icons/amplience-patches-96x96.png"
+    "16": "icons/amplience-16x16.png",
+    "32": "icons/amplience-32x32.png",
+    "96": "icons/amplience-96x96.png"
   }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Amplience Patches Options</title>
+    <title>Amplience Helper Options</title>
     <style>
         :root {
             color-scheme: light dark;
@@ -64,18 +64,7 @@
 </head>
 
 <body>
-    <h1>Amplience Patches</h1>
-
-    <div class="fieldset">
-        <label class="option" for="stylesEnabled">
-            <input type="checkbox" id="stylesEnabled" />
-            Enable Styles Patch
-        </label>
-
-        <p class="description">
-            Turns all CSS patches on or off for Amplience pages.
-        </p>
-    </div>
+    <h1>Amplience Helper</h1>
 
     <div class="fieldset">
         <label class="option" for="flowFilter">
@@ -84,7 +73,29 @@
         </label>
 
         <p class="description">
-            Adds a text input to filter workflows with.
+            Adds a text input to filter workflows with and controls to filter by tag or author
+        </p>
+    </div>
+
+    <div class="fieldset">
+        <label class="option" for="hotkeysEnabled">
+            <input type="checkbox" id="hotkeysEnabled" />
+            Enable Hotkeys
+        </label>
+
+        <p class="description">
+            Adds keyboard shortcuts to Amplience content pages (Press `?` in DC for a list of available shortcuts)
+        </p>
+    </div>
+
+    <div class="fieldset">
+        <label class="option" for="stylesEnabled">
+            <input type="checkbox" id="stylesEnabled" />
+            Enable Styles Patches
+        </label>
+
+        <p class="description">
+            Applies various style improvements to Amplience pages, including responsive and readability CSS enhancements
         </p>
     </div>
 

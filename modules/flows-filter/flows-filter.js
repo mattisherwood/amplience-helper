@@ -86,9 +86,8 @@
             .map((n) => n[0])
             .join("")
           initialsWaitAttempts = 0
-          console.log("Resolved username:", username, "Initials:", initials)
         } else {
-          console.log("Could not resolve username")
+          console.error("Could not resolve username")
         }
       } catch (error) {
         console.error("Error resolving username:", error)
@@ -202,9 +201,7 @@
 
     function decorateFlow(flow) {
       const { author, title, tags } = parseFlowData(flow)
-      console.log("Parsed flow data:", { author, title, tags })
       const isMine = author && author === initials
-      console.log(`Flow "${title}" is ${isMine ? "mine" : "not mine"}`)
 
       flow.dataset.flowAuthor = author
       flow.dataset.flowTags = tags.join("|")

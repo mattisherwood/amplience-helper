@@ -2,12 +2,14 @@
   "use strict"
 
   const DEFAULT_SETTINGS = {
-    stylesEnabled: true,
     flowFilter: true,
+    hotkeysEnabled: true,
+    stylesEnabled: true,
   }
 
-  const stylesCheckbox = document.getElementById("stylesEnabled")
   const contentFlowsCheckbox = document.getElementById("flowFilter")
+  const hotkeysCheckbox = document.getElementById("hotkeysEnabled")
+  const stylesCheckbox = document.getElementById("stylesEnabled")
   const statusEl = document.getElementById("status")
 
   function showStatus(message) {
@@ -22,16 +24,18 @@
 
   function loadSettings() {
     chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
-      stylesCheckbox.checked = settings.stylesEnabled
       contentFlowsCheckbox.checked = settings.flowFilter
+      hotkeysCheckbox.checked = settings.hotkeysEnabled
+      stylesCheckbox.checked = settings.stylesEnabled
     })
   }
 
   function saveSettings() {
     chrome.storage.sync.set(
       {
-        stylesEnabled: stylesCheckbox.checked,
         flowFilter: contentFlowsCheckbox.checked,
+        hotkeysEnabled: hotkeysCheckbox.checked,
+        stylesEnabled: stylesCheckbox.checked,
       },
       () => {
         showStatus("Saved")
@@ -44,17 +48,23 @@
       return
     }
 
-    if (changes.stylesEnabled) {
-      stylesCheckbox.checked = Boolean(changes.stylesEnabled.newValue)
-    }
-
     if (changes.flowFilter) {
       contentFlowsCheckbox.checked = Boolean(changes.flowFilter.newValue)
     }
+
+    if (changes.hotkeysEnabled) {
+      hotkeysCheckbox.checked = Boolean(changes.hotkeysEnabled.newValue)
+    }
+
+    if (changes.stylesEnabled) {
+      stylesCheckbox.checked = Boolean(changes.stylesEnabled.newValue)
+    }
   }
 
-  stylesCheckbox.addEventListener("change", saveSettings)
   contentFlowsCheckbox.addEventListener("change", saveSettings)
+  hotkeysCheckbox.addEventListener("change", saveSettings)
+  stylesCheckbox.addEventListener("change", saveSettings)
+
   chrome.storage.onChanged.addListener(handleStorageChange)
   document.addEventListener("DOMContentLoaded", loadSettings)
 })()
