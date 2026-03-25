@@ -25,10 +25,10 @@
     },
     {
       "matches": ["https://app.amplience.net/content-studio/*"],
-      "css": ["modules/content-flows-filter/content-flows-filter.css"],
+      "css": ["modules/flows-filter/flows-filter.css"],
       "js": [
-        "modules/content-flows-filter/utils.js",
-        "modules/content-flows-filter/content-flows-filter.js"
+        "modules/flows-filter/utils.js",
+        "modules/flows-filter/flows-filter.js"
       ],
       "run_at": "document_idle"
     }

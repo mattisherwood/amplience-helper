@@ -1,6 +1,7 @@
 # Amplience Patches
 
 A Chrome extension that applies extra patches to amplify the Amplience interface including:
+
 - CSS patch to improve the layout and responsiveness of the Amplience Dynamic Content interface
 - Flows Filters for easier management of Workforce Flows
 
@@ -61,7 +62,7 @@ The extension uses Chrome's Manifest V3 content scripts to:
 
 1. **Inject style patch CSS** (`modules/style-patches/style-patches.css`) - Custom styles scoped to `[data-amplience-patches="enabled"]` for specificity
 2. **Run style activation script** (`modules/style-patches/style-patches.js`) - Reads `stylesEnabled` from `chrome.storage.sync` and sets/removes the data attribute used by CSS patches
-3. **Run flow filter script** (`modules/content-flows-filter/content-flows-filter.js`) - Injects and manages the content-flows filter UI and filtering behavior
+3. **Run flow filter script** (`modules/flows-filter/flows-filter.js`) - Injects and manages the content-flows filter UI and filtering behavior
 4. **Provide an action popup** (`popup.html` + `popup.js`) - Allows toggling patches from the extension icon
 5. **Provide a right-click action context menu** (`background.js`) - Adds a checkbox toggle on the extension action
 6. **Provide an options page** (`options.html` + `options.js`) - Allows toggling patches on/off and stores preferences
@@ -78,9 +79,9 @@ amplience-patches/
 │   ├── style-patches/ # Style patches for more responsive styles
 │   │   ├── style-patches.js
 │   │   └── style-patches.css
-│   └── content-flows-filter/ # Workforce Content Flows Filter
-│       ├── content-flows-filter.js
-│       └── content-flows-filter.css
+│   └── flows-filter/ # Workforce Content Flows Filter
+│       ├── flows-filter.js
+│       └── flows-filter.css
 ├── popup.html             # Extension icon popup UI
 ├── popup.js               # Popup behavior and setting persistence
 ├── options.html           # Extension options UI
@@ -108,7 +109,7 @@ Open DevTools on https://app.amplience.net/content:
 
 - **Console tab**: Check for the extension's log message
 - **Elements tab**: Inspect `<html>` - should have `data-amplience-patches="enabled"`
-- **Sources tab**: Look under "Content scripts" to see if `modules/style-patches/style-patches.js` and `modules/content-flows-filter/content-flows-filter.js` are injected
+- **Sources tab**: Look under "Content scripts" to see if `modules/style-patches/style-patches.js` and `modules/flows-filter/flows-filter.js` are injected
 
 ## Development
 
