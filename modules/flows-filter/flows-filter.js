@@ -185,12 +185,13 @@
       if (!p) return
 
       const text = p.textContent.trim()
-      const authorMatch = text.match(/^\[([^\]]+)\]/)
+      const authorMatch = text.match(/\[([^\]]{1,3})\]/)
       const author = authorMatch ? authorMatch[1] : ""
       const tags = [...text.matchAll(/#(\w+)/g)].map((m) => m[1])
       const title = text
-        .replace(/^\[[^\]]+\]\s*/, "")
+        .replace(/\s*\[[^\]]{1,3}\]\s*/, " ")
         .replace(/#\w+/g, "")
+        .replace(/\s{2,}/g, " ")
         .trim()
 
       return { author, title, tags }
