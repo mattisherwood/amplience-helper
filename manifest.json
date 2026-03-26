@@ -1,17 +1,21 @@
 {
   "manifest_version": 3,
   "name": "Amplience Helper",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A suite of tools bundled in a browser extension to help everyday Amplience users create content at the speed of ideas.",
-  "permissions": ["storage"],
+  "permissions": ["storage", "alarms"],
   "options_page": "options.html",
   "action": {
     "default_popup": "popup.html",
     "default_title": "Amplience Helper"
   },
+  "background": {
+    "service_worker": "background-update.js"
+  },
   "host_permissions": [
     "https://app.amplience.net/content*",
-    "https://app.amplience.net/content-studio/*"
+    "https://app.amplience.net/content-studio/*",
+    "https://raw.githubusercontent.com/*"
   ],
   "content_scripts": [
     {

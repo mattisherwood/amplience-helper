@@ -1,5 +1,24 @@
 # Changelog
 
+## v2.1.0 - 2026-03-26
+
+### Summary
+
+Added automatic update checking system that monitors GitHub for new versions. Users now receive notifications when updates are available and can install them directly from the popup without manual downloads.
+
+### Module Highlights
+
+- Extension: Automatic version checking from GitHub with daily update checks and startup verification.
+- Extension: Toolbar badge notification (red "!") appears when an update is available.
+- Extension: "Update Available" menu item in popup allows one-click download and installation.
+
+### Migration Notes
+
+- Users do not need to take any action; update system activates automatically on extension load.
+- Extension will prompt to reload after downloading an update; this is normal and required to apply changes.
+
+---
+
 ## v2.0 - 2026-03-25
 
 ### Summary
