@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.1.1 - 2026-03-26
+
+### Summary
+
+Two targeted changes to the Flows Filter: author initials are now matched wherever they appear in a flow title, and the "My flows" toggle now remembers its state across page loads.
+
+### Module Highlights
+
+- Flows Filter: Author initials now detected anywhere in the flow title, not just at the start.
+- Flows Filter: "My flows" toggle state is now persisted and restored across page loads.
+
+---
+
 ## v2.1.0 - 2026-03-26
 
 ### Summary
