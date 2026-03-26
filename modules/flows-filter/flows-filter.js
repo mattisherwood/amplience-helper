@@ -3,9 +3,11 @@
 
   const DEFAULT_SETTINGS = {
     flowFilter: true,
+    myFlowsOnly: false,
   }
 
   let flowFilterEnabled = false
+  let myFlowsOnlyEnabled = false
   let resolvedUsername = ""
   let initials = ""
   let usernameLookupInFlight = false
@@ -150,7 +152,7 @@
     const mineFilterInput = document.createElement("input")
     mineFilterInput.type = "checkbox"
     mineFilterInput.className = "flow-filter-mine-input"
-    mineFilterInput.checked = false
+    mineFilterInput.checked = myFlowsOnlyEnabled
     mineFilterInput.setAttribute("aria-label", "Only show my flows")
 
     const mineFilterSlider = document.createElement("span")
@@ -380,6 +382,8 @@
     })
 
     mineFilterInput.addEventListener("change", () => {
+      myFlowsOnlyEnabled = mineFilterInput.checked
+      chrome.storage.sync.set({ myFlowsOnly: myFlowsOnlyEnabled })
       applyFilters()
     })
 
@@ -412,17 +416,30 @@
 
   chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
     flowFilterEnabled = Boolean(settings.flowFilter)
+    myFlowsOnlyEnabled = Boolean(settings.myFlowsOnly)
     applyFlowFilterSetting(flowFilterEnabled)
   })
 
   setupFlowsPanelObserver()
 
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area !== "sync" || !changes.flowFilter) {
+    if (area !== "sync") {
       return
     }
 
-    flowFilterEnabled = Boolean(changes.flowFilter.newValue)
-    applyFlowFilterSetting(flowFilterEnabled)
+    if (changes.flowFilter) {
+      flowFilterEnabled = Boolean(changes.flowFilter.newValue)
+      applyFlowFilterSetting(flowFilterEnabled)
+    }
+
+    if (changes.myFlowsOnly) {
+      myFlowsOnlyEnabled = Boolean(changes.myFlowsOnly.newValue)
+
+      const mineFilterInput = document.querySelector(".flow-filter-mine-input")
+      if (mineFilterInput) {
+        mineFilterInput.checked = myFlowsOnlyEnabled
+        mineFilterInput.dispatchEvent(new Event("change"))
+      }
+    }
   })
 })()
