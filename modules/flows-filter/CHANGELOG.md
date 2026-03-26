@@ -1,5 +1,14 @@
 # Flows Filter Changelog
 
+## 2026-03-26 (extension v2.1.1)
+
+### Changed
+
+- Author initials are now matched anywhere in the flow title (not just the start), and capped at 1–3 characters between brackets. Titles where the author tag appears mid-string or at the end are now included in the parsing.
+- "My flows" toggle state is now persisted to `chrome.storage.sync` and restored on page load, rather than resetting when the flows panel re-renders.
+
+---
+
 ## 2026-03-25 (extension v2.0)
 
 ### Changed
