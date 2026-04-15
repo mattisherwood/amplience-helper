@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Amplience Helper",
-  "version": "2.1.0",
-  "description": "A suite of tools bundled in a browser extension to help everyday Amplience users create content at the speed of ideas.",
+  "version": "2.1.1",
+  "description": "A suite of tools bundled in a browser extension to help every-day Amplience super-users create content at the speed of ideas.",
   "permissions": ["storage"],
   "options_page": "options.html",
   "action": {
