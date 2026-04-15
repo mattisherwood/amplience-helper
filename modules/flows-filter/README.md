@@ -19,6 +19,7 @@ The setting key is `flowFilter` in `chrome.storage.sync`.
 - Supports text filtering with debounce
 - Supports quick tag filtering controls
 - Supports a **My flows** mode based on initials parsed from naming convention
+- Moves flows with `(Archived)` in their title into a collapsible **View Archived** section at the bottom of the list
 
 ## Scope
 
