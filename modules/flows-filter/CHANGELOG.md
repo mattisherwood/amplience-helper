@@ -1,5 +1,14 @@
 # Flows Filter Changelog
 
+## 2026-04-15 (extension v2.1.2)
+
+### Added
+
+- Flows with `(Archived)` in their title are automatically moved to a collapsible **View Archived** section at the bottom of the list, collapsed by default.
+- Search, tag, and **My flows** filters apply within the archived section the same as regular flows.
+
+---
+
 ## 2026-03-26 (extension v2.1.1)
 
 ### Changed

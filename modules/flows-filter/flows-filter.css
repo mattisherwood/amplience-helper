@@ -194,3 +194,73 @@
   color: var(--mantine-color-white);
   border-radius: var(--button-radius, var(--mantine-radius-default));
 }
+
+#flow-archived-section {
+  display: none;
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+#flow-archived-section:has(.flow-card:not([data-visibility="hidden"])) {
+  display: block;
+}
+
+#flow-archived-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  color: #335668;
+  font-size: 0.8125rem;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+#flow-archived-toggle::before,
+#flow-archived-toggle::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #d9dfe3;
+}
+
+#flow-archived-toggle span::before,
+#flow-archived-toggle span::after {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin: -0.5em 0.5em 0;
+  vertical-align: middle;
+  border-style: solid;
+  border-width: 0 1px 1px 0;
+  transform: rotate(45deg);
+  transition:
+    margin 0.15s ease-in,
+    transform 0.15s ease-in;
+}
+
+#flow-archived-toggle:hover {
+  color: var(--mantine-color-text, #495057);
+}
+
+#flow-archived-toggle.is-expanded span::before,
+#flow-archived-toggle.is-expanded span::after {
+  transform: rotate(-135deg);
+  margin-top: 0;
+}
+
+#flow-archived-container {
+  margin-top: 0.5rem;
+}
+
+#flow-archived-container.hidden {
+  display: none;
+}

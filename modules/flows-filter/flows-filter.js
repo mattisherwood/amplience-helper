@@ -22,6 +22,23 @@
       wrapper.remove()
     }
 
+    const archivedSectionEl = document.querySelector("#flow-archived-section")
+    if (archivedSectionEl) {
+      const archivedContainerEl = archivedSectionEl.querySelector(
+        "#flow-archived-container",
+      )
+      const contentContainerEl = archivedSectionEl.parentElement
+      if (archivedContainerEl && contentContainerEl) {
+        while (archivedContainerEl.firstChild) {
+          contentContainerEl.insertBefore(
+            archivedContainerEl.firstChild,
+            archivedSectionEl,
+          )
+        }
+      }
+      archivedSectionEl.remove()
+    }
+
     const hiddenElements = document.querySelectorAll(
       '[data-visibility="hidden"]',
     )
@@ -180,6 +197,42 @@
       return
     }
 
+    let archivedSection = null
+    let archivedContainer = null
+
+    function setupArchivedSection() {
+      archivedSection = document.createElement("div")
+      archivedSection.id = "flow-archived-section"
+
+      const archivedToggleLabel = document.createElement("span")
+      archivedToggleLabel.textContent = "View Archived"
+
+      const archivedToggle = document.createElement("button")
+      archivedToggle.id = "flow-archived-toggle"
+      archivedToggle.type = "button"
+      archivedToggle.setAttribute("aria-expanded", "false")
+      archivedToggle.appendChild(archivedToggleLabel)
+
+      archivedContainer = document.createElement("div")
+      archivedContainer.id = "flow-archived-container"
+      archivedContainer.style.display = "none"
+
+      archivedToggle.addEventListener("click", () => {
+        const isExpanded = archivedContainer.style.display !== "none"
+        archivedContainer.style.display = isExpanded ? "none" : "grid"
+        archivedToggle.classList.toggle("is-expanded", !isExpanded)
+        archivedToggle.setAttribute("aria-expanded", String(!isExpanded))
+        archivedToggleLabel.textContent = isExpanded
+          ? "View Archived"
+          : "Hide Archived"
+      })
+
+      archivedSection.appendChild(archivedToggle)
+      archivedSection.appendChild(archivedContainer)
+    }
+
+    setupArchivedSection()
+
     const selectedTags = new Set()
 
     function parseFlowData(flowElement) {
@@ -187,29 +240,32 @@
       if (!p) return
 
       const text = p.textContent.trim()
+      const isArchived = /\(Archived\)/i.test(text)
       const authorMatch = text.match(/\[([^\]]{1,3})\]/)
       const author = authorMatch ? authorMatch[1] : ""
       const tags = [...text.matchAll(/#(\w+)/g)].map((m) => m[1])
       const title = text
         .replace(/\s*\[[^\]]{1,3}\]\s*/, " ")
         .replace(/#\w+/g, "")
+        .replace(/\s*\(Archived\)\s*/gi, " ")
         .replace(/\s{2,}/g, " ")
         .trim()
 
-      return { author, title, tags }
+      return { author, title, tags, isArchived }
     }
 
     const MAX_PARSE_ATTEMPTS = 20
     const PARSE_RETRY_INTERVAL = 250
 
     function decorateFlow(flow) {
-      const { author, title, tags } = parseFlowData(flow)
+      const { author, title, tags, isArchived } = parseFlowData(flow)
       const isMine = author && author === initials
 
       flow.dataset.flowAuthor = author
       flow.dataset.flowTags = tags.join("|")
       flow.dataset.flowTitle = title
       flow.dataset.isMine = isMine
+      flow.dataset.isArchived = isArchived
 
       flow.classList.add("flow-card")
       flow.dataset.flowParsed = "true"
@@ -254,9 +310,30 @@
       }
     }
 
+    function redistributeArchivedFlows() {
+      const toArchive = Array.from(contentContainer.children).filter(
+        (child) =>
+          child.id !== "flow-archived-section" &&
+          child.dataset.isArchived === "true",
+      )
+      toArchive.forEach((child) => archivedContainer.appendChild(child))
+
+      // Always re-append so the section stays at the end of the flow list
+      contentContainer.appendChild(archivedSection)
+      archivedSection.hidden = archivedContainer.children.length === 0
+
+      // Set grid layout to match the parent container (deferred until flows are in the DOM)
+      if (!archivedContainer.style.gridTemplateColumns) {
+        const cs = getComputedStyle(contentContainer)
+        archivedContainer.style.gridTemplateColumns = cs.gridTemplateColumns
+        archivedContainer.style.gap = cs.gap
+      }
+    }
+
     function parseAndDecorateFlows(attempt = 0) {
       const unparsed = Array.from(contentContainer.children).filter(
-        (child) => !child.dataset.flowParsed,
+        (child) =>
+          child.id !== "flow-archived-section" && !child.dataset.flowParsed,
       )
       const ready = unparsed.filter((flow) => flow.querySelector("p"))
 
@@ -271,6 +348,7 @@
       }
 
       ready.forEach(decorateFlow)
+      redistributeArchivedFlows()
       applyFilters()
     }
 
@@ -321,10 +399,13 @@
     function applyFilters() {
       const filterValue = searchInput.value.toLowerCase().trim()
       const onlyMine = mineFilterInput.checked
-      const children = Array.from(contentContainer.children)
+      const children = Array.from(contentContainer.children).filter(
+        (c) => c.id !== "flow-archived-section",
+      )
+      const archivedChildren = Array.from(archivedContainer.children)
       const availableTags = new Set()
 
-      for (const child of children) {
+      for (const child of [...children, ...archivedChildren]) {
         const text = child.textContent.toLowerCase()
         const matchesSearch = !filterValue || text.includes(filterValue)
         const isMine = child.dataset.isMine === "true"
@@ -339,7 +420,7 @@
 
       renderTagFilters(availableTags)
 
-      for (const child of children) {
+      for (const child of [...children, ...archivedChildren]) {
         const text = child.textContent.toLowerCase()
         const matchesSearch = !filterValue || text.includes(filterValue)
         const isMine = child.dataset.isMine === "true"
