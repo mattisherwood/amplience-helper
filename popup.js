@@ -43,7 +43,7 @@
       stylesEnabled: stylesCheckbox.checked,
       themingEnabled: themingCheckbox.checked,
       themingDark: themingDarkCheckbox.checked,
-      themingColor: themingColorInput.value,
+      themingColor: themingColorInput.value || DEFAULT_SETTINGS.themingColor,
     })
   }
 

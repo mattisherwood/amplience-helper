@@ -1,17 +1,22 @@
 [data-amplience-theming="enabled"] {
   --background-color: 255, 255, 255;
   --foreground-color: 0, 0, 0;
-  --subtle-shade: rgba(var(--foreground-color), 0.03);
   --line-color: rgba(var(--foreground-color), 0.1);
+  --subtle-shade: rgba(var(--theme-color), 0.1);
+  --shade: rgba(var(--theme-color), 0.2);
 
   &.dark {
     --background-color: 0, 0, 0;
     --foreground-color: 255, 255, 255;
-    --subtle-shade: rgba(var(--foreground-color), 0.2);
+    --subtle-shade: rgba(var(--theme-color), 0.3);
+    --shade: rgba(var(--theme-color), 0.4);
     --line-color: rgba(var(--foreground-color), 0.3);
-    .am-empty-state__image {
+
+    .am-empty-state__image,
+    .am-no-content-placeholder__img {
       filter: grayscale() invert();
     }
+
     a,
     .am-dashboard__tab.md-tab.md-active,
     md-tabs .md-tab.md-active,
@@ -76,7 +81,6 @@
   md-content,
   am-content-item-library am-repositories,
   am-content-folders,
-  am-repositories am-repositories-title h3,
   md-icon,
   .am-repository__repo-toggle-icon,
   .expanded.am-content-folders__tree-item__inner .folder-icon,
@@ -84,9 +88,29 @@
   .am-content-folders__tree-item__inner:hover,
   .am-content-folders__tree-item__inner:hover .am-content-folders__actions,
   .am-content-folders__tree-item__inner:hover.leaf-folder .folder-icon,
-  .am-inline-filters__button {
-    color: inherit;
+  .am-inline-filters__button,
+  .am-content-folders-inline-subfolders,
+  md-toolbar.md-default-theme:not(.md-menu-toolbar),
+  md-toolbar:not(.md-menu-toolbar),
+  am-content-view-list,
+  .am-table--scrollable,
+  am-table th,
+  .am-table--scrollable table tbody,
+  am-table tbody tr,
+  .am-toolbar--light,
+  am-select-all,
+  am-content-folders-inline-subfolders-card,
+  am-content-folders-inline-subfolders-card > div,
+  am-content-pagination-summary,
+  .am-sort-selector button,
+  am-no-content-placeholder,
+  .am-no-content-placeholder__title,
+  .am-no-content-placeholder__body,
+  .am-content-item-editor-toolbar,
+  .am-content-item-editor__tabs > md-tabs-wrapper,
+  am-visualization {
     background-color: transparent;
+    color: inherit;
   }
 
   /* Content */
@@ -97,22 +121,24 @@
   }
 
   .am-dashboard-header,
-  .am-dashboard__tabs > md-tabs-wrapper > md-tabs-canvas {
-    color: rgba(var(--foreground-color), 0.6);
-  }
-
-  .am-content-item-library-toolbar .am-toolbar {
-    background-color: transparent !important;
-    border-bottom-color: var(--line-color);
-  }
-
+  .am-dashboard__tabs > md-tabs-wrapper > md-tabs-canvas,
+  .am-inline-filters__button,
+  .am-content-folders-inline-subfolders__header h3,
+  am-repositories am-repositories-title h3,
   am-repositories-selector .md-button .am-repositories-selector-label,
   am-repositories-selector .md-button md-icon,
   .am-base-breadcrumbs__crumb,
+  .am-breadcrumbs__crumb,
   .am-content-item-library-breadcrumbs
     .am-base-breadcrumbs__crumb
     .am-base-breadcrumbs__link {
-    color: rgba(var(--foreground-color), 0.7);
+    color: rgba(var(--foreground-color), 0.6);
+  }
+
+  .am-content-item-library-toolbar .am-toolbar,
+  .am-content-item-editor-toolbar {
+    background-color: transparent !important;
+    border-bottom-color: var(--line-color);
   }
 
   .am-content-item-library-breadcrumbs
@@ -120,7 +146,7 @@
   .am-content-item-library-breadcrumbs__measure--last:after,
   .am-content-item-library-breadcrumbs__measure:before,
   .am-content-item-library-breadcrumbs .am-base-breadcrumbs__crumb:after {
-    color: var(--line-color);
+    color: rgba(var(--foreground-color), 0.4);
   }
 
   .am-repository {
@@ -129,7 +155,7 @@
   }
 
   .am-repository:hover {
-    background-color: var(--line-color);
+    background-color: var(--shade);
   }
 
   am-content-folders md-icon.folder-icon svg {
@@ -152,13 +178,56 @@
     opacity: 1;
   }
 
-  .am-inline-filters__button {
-    background-color: transparent;
-    color: inherit;
+  .am-vertical-divider {
+    background-color: var(--line-color);
   }
 
   .am-inline-filters__button:not([disabled]).md-focused,
-  .am-inline-filters__button:not([disabled]):hover {
+  .am-inline-filters__button:not([disabled]):hover,
+  am-repositories-selector .md-button:not([disabled]).md-focused,
+  am-repositories-selector .md-button:not([disabled]):hover {
     background-color: var(--subtle-shade);
+  }
+
+  am-content-item-library-collapsible-inline-folders am-collapsible-section,
+  am-content-item-library-collapsible-inline-folders
+    am-collapsible-section
+    am-collapsible-section-body
+    > ng-transclude
+    am-content-folders-inline-subfolders {
+    border-color: var(--line-color);
+  }
+
+  .am-content-item-library__results am-spinner,
+  am-spinner.am-spinner--table-overlay {
+    background: rgba(var(--background-color), 0.5);
+  }
+
+  am-table thead {
+    background: var(--subtle-shade);
+  }
+
+  am-table tbody tr {
+    border-color: var(--line-color);
+
+    &:hover {
+      background-color: var(--subtle-shade);
+    }
+  }
+
+  .am-table__table--multiselect .is-selected,
+  .am-table__table--selectable .is-selected {
+    background-color: var(--subtle-shade);
+  }
+
+  am-visualization-options-menu {
+    background-color: var(--subtle-shade);
+  }
+
+  am-visualization-options-menu .md-menu .md-button,
+  am-visualization-options-menu .md-menu md-checkbox,
+  am-visualization-options-menu md-menu .md-button,
+  am-visualization-options-menu md-menu md-checkbox {
+    color: inherit;
   }
 }
