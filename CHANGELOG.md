@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.2.0 - 2026-04-16
+
+### Summary
+
+Adds the Theming module, bringing a customisable colour theme and optional dark mode to the Amplience DC interface.
+
+### Module Highlights
+
+- Theming: New module. Applies a user-defined accent colour to the DC interface via a CSS variable. Includes an optional dark mode. Both the colour and dark toggle are accessible directly from the popup and options page.
+
+---
+
 ## v2.1.0 - 2026-04-01
 
 ### Summary

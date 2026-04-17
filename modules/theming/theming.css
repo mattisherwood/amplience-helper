@@ -1,0 +1,335 @@
+[data-amplience-theming="enabled"] {
+  --background-color: 255, 255, 255;
+  --foreground-color: 0, 0, 0;
+  --line-color: rgba(var(--foreground-color), 0.1);
+  --subtle-shade: rgba(var(--theme-color), 0.1);
+  --shade: rgba(var(--theme-color), 0.2);
+
+  &.dark {
+    --background-color: 0, 0, 0;
+    --foreground-color: 255, 255, 255;
+    --subtle-shade: rgba(var(--theme-color), 0.3);
+    --shade: rgba(var(--theme-color), 0.4);
+    --line-color: rgba(var(--foreground-color), 0.3);
+
+    .am-empty-state__image,
+    .am-no-content-placeholder__img {
+      filter: grayscale() invert();
+    }
+
+    a,
+    .am-dashboard__tab.md-tab.md-active,
+    md-tabs .md-tab.md-active,
+    .md-button--link,
+    .am-content-item-library-breadcrumbs
+      .am-base-breadcrumbs__crumb:last-child
+      .am-base-breadcrumbs__link,
+    .selected.am-content-folders__tree-item__inner .folder-icon,
+    .selected.am-content-folders__tree-item__inner .folder-label {
+      color: #0084ff;
+    }
+  }
+
+  ui-view {
+    background-color: rgb(var(--background-color));
+    color: rgb(var(--foreground-color));
+  }
+
+  .am-dashboard__tab-content {
+    background-color: rgba(var(--theme-color), 0.1);
+    color: inherit;
+  }
+
+  am-dashboard-widget {
+    background-color: rgba(var(--background-color), 0.7);
+    border: solid 1px;
+    border-color: rgb(var(--background-color))
+      rgba(var(--foreground-color), 0.4) rgba(var(--foreground-color), 0.4)
+      rgb(var(--background-color));
+  }
+
+  .am-dashboard-header h1,
+  .am-dashboard__tab.md-tab,
+  .am-dashboard-widget__title,
+  md-tabs .md-tab {
+    color: inherit;
+  }
+
+  .am-dashboard-widget__header {
+    border-bottom-color: var(--line-color);
+  }
+
+  .am-dashboard__banner::after {
+    content: "";
+    width: 270px;
+    height: 100%;
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: linear-gradient(
+      to right,
+      rgb(var(--background-color)),
+      transparent
+    );
+  }
+
+  /* So extensions in iframes will still always sit on top of white background */
+  am-extension-host,
+  am-content-editor-extension {
+    background: #fff;
+  }
+
+  am-content-dashboard,
+  md-content,
+  am-content-item-library am-repositories,
+  am-content-folders,
+  md-icon,
+  .am-repository__repo-toggle-icon,
+  .expanded.am-content-folders__tree-item__inner .folder-icon,
+  .am-content-folders__actions,
+  .am-content-folders__tree-item__inner:hover,
+  .am-content-folders__tree-item__inner:hover .am-content-folders__actions,
+  .am-content-folders__tree-item__inner:hover.leaf-folder .folder-icon,
+  .am-inline-filters__button,
+  .am-content-folders-inline-subfolders,
+  md-toolbar.md-default-theme:not(.md-menu-toolbar),
+  md-toolbar:not(.md-menu-toolbar),
+  am-content-view-list,
+  .am-table--scrollable,
+  am-table th,
+  .am-table--scrollable table tbody,
+  am-table tbody tr,
+  am-table tbody td.is-primary .md-button--link,
+  .am-toolbar--light,
+  am-select-all,
+  am-content-folders-inline-subfolders-card,
+  am-content-folders-inline-subfolders-card > div,
+  am-content-pagination-summary,
+  .am-sort-selector button,
+  am-no-content-placeholder,
+  .am-no-content-placeholder__title,
+  .am-no-content-placeholder__body,
+  .am-content-item-editor-toolbar,
+  .am-content-item-editor__tabs > md-tabs-wrapper,
+  am-visualization,
+  am-inline-filters-facet-option-label,
+  .am-inline-filters-facet-option md-checkbox .md-label,
+  am-inline-filters-facet-option md-checkbox .md-label,
+  .am-inline-filters-facet-option
+    md-checkbox:not([disabled]):hover
+    .am-inline-filters-facet-option__label,
+  am-inline-filters-facet-option
+    md-checkbox:not([disabled]):hover
+    .am-inline-filters-facet-option__label {
+    background-color: transparent;
+    color: inherit;
+  }
+
+  /* Content */
+
+  am-content-item-library {
+    background-color: rgb(var(--background-color));
+    color: inherit;
+  }
+
+  .am-dashboard-header,
+  .am-timezone-selector__local-time,
+  .am-dashboard__tabs > md-tabs-wrapper > md-tabs-canvas,
+  .am-inline-filters__button,
+  .am-content-folders-inline-subfolders__header h3,
+  am-repositories am-repositories-title h3,
+  am-repositories-selector .md-button .am-repositories-selector-label,
+  am-repositories-selector .md-button md-icon,
+  .am-base-breadcrumbs__crumb,
+  .am-breadcrumbs__crumb,
+  .am-content-item-library-breadcrumbs
+    .am-base-breadcrumbs__crumb
+    .am-base-breadcrumbs__link,
+  .am-inline-filters-applied__title,
+  .am-inline-filters-facet-group__title {
+    color: rgba(var(--foreground-color), 0.6);
+  }
+
+  .am-content-item-library-toolbar .am-toolbar,
+  .am-content-item-editor-toolbar {
+    background-color: transparent !important;
+    border-bottom-color: var(--line-color);
+  }
+
+  .am-content-item-library-breadcrumbs
+    .am-base-breadcrumbs__crumb:first-child:before,
+  .am-content-item-library-breadcrumbs__measure--last:after,
+  .am-content-item-library-breadcrumbs__measure:before,
+  .am-content-item-library-breadcrumbs .am-base-breadcrumbs__crumb:after {
+    color: rgba(var(--foreground-color), 0.4);
+  }
+
+  .am-repository {
+    background-color: var(--subtle-shade);
+    color: inherit;
+  }
+  .am-repository--selected {
+    color: rgb(var(--theme-color));
+  }
+
+  .am-repository:hover,
+  .am-repository--selected {
+    background-color: var(--shade);
+  }
+
+  am-content-folders md-icon.folder-icon svg {
+    fill: currentColor !important;
+  }
+
+  .am-content-folders__tree-item {
+    color: rgba(var(--foreground-color), 0.7);
+  }
+
+  .am-content-folders__tree-item__inner:hover {
+    color: rgb(var(--foreground-color));
+  }
+
+  .am-content-folders__actions {
+    opacity: 0;
+  }
+
+  .am-content-folders__tree-item__inner:hover .am-content-folders__actions {
+    opacity: 1;
+  }
+
+  .am-vertical-divider {
+    background-color: var(--line-color);
+  }
+
+  .am-inline-filters__button:not([disabled]).md-focused,
+  .am-inline-filters__button:not([disabled]):hover,
+  am-repositories-selector .md-button:not([disabled]).md-focused,
+  am-repositories-selector .md-button:not([disabled]):hover {
+    background-color: var(--subtle-shade);
+  }
+
+  am-content-item-library-collapsible-inline-folders am-collapsible-section,
+  am-content-item-library-collapsible-inline-folders
+    am-collapsible-section
+    am-collapsible-section-body
+    > ng-transclude
+    am-content-folders-inline-subfolders {
+    border-color: var(--line-color);
+  }
+
+  .am-content-item-library__results am-spinner,
+  am-spinner.am-spinner--table-overlay,
+  .am-inline-filters-overlay__wrapper am-spinner {
+    background-color: rgba(var(--background-color), 0.5);
+  }
+
+  am-table {
+    thead {
+      background: var(--subtle-shade);
+    }
+
+    tbody tr {
+      border-color: var(--line-color);
+
+      &:hover {
+        background-color: var(--subtle-shade);
+      }
+    }
+  }
+
+  .am-table__table--multiselect,
+  .am-table__table--selectable {
+    .is-selected {
+      background-color: var(--subtle-shade);
+    }
+  }
+
+  am-visualization-options-menu {
+    background-color: var(--subtle-shade);
+
+    .md-menu,
+    md-menu {
+      .md-button,
+      md-checkbox {
+        color: inherit;
+      }
+    }
+  }
+
+  am-visualization-render-area .am-visualization-render-area__vis-container {
+    background: transparent;
+  }
+
+  am-visualization-options-menu .md-menu:not(:first-child),
+  am-visualization-options-menu md-menu:not(:first-child) {
+    border-color: var(--line-color);
+  }
+
+  am-visualization-options-menu .md-menu .md-button:focus,
+  am-visualization-options-menu .md-menu .md-button:hover,
+  am-visualization-options-menu .md-menu md-checkbox:focus,
+  am-visualization-options-menu .md-menu md-checkbox:hover,
+  am-visualization-options-menu md-menu .md-button:focus,
+  am-visualization-options-menu md-menu .md-button:hover,
+  am-visualization-options-menu md-menu md-checkbox:focus,
+  am-visualization-options-menu md-menu md-checkbox:hover {
+    background-color: var(--subtle-shade) !important;
+  }
+
+  .am-content-item-editor-toolbar-status-indicators__divider {
+    background-color: var(--line-color);
+  }
+
+  am-grabber:before {
+    border-color: var(--line-color);
+  }
+
+  .am-inline-filters-overlay__wrapper {
+    background: rgb(var(--background-color));
+    color: rgb(var(--foreground-color));
+    box-shadow: 0 6px 6px var(--shade);
+  }
+
+  .am-inline-filters-facet-option-label {
+    opacity: 0.8;
+  }
+
+  .am-inline-filters-facet-option__count {
+    color: rgb(var(--theme-color));
+  }
+
+  .am-inline-filters-facet-option,
+  am-inline-filters-facet-option {
+    .md-checked:not([disabled]),
+    md-checkbox:not([disabled]):hover {
+      .am-inline-filters-facet-option-label {
+        opacity: 1;
+      }
+
+      .am-inline-filters-facet-option__count {
+        color: rgb(var(--theme-color));
+      }
+    }
+  }
+
+  .md-button.md-default-theme.md-primary.md-fab,
+  .md-button.md-primary.md-fab,
+  .md-button.md-default-theme.md-primary.md-raised,
+  .md-button.md-primary.md-raised,
+  .am-split-button .am-save-button-container > .md-button:not([disabled]),
+  .am-split-button .md-button:not([disabled]) {
+    background-color: rgb(var(--theme-color));
+  }
+
+  .am-split-button md-menu > button {
+    border-left-color: rgb(var(--background-color));
+  }
+
+  .md-button--on-grey.disabled,
+  .md-button--on-grey.disabled.amp-primary,
+  .md-button--on-grey.disabled.md-primary,
+  .md-button--on-grey[disabled],
+  .md-button--on-grey[disabled].amp-primary,
+  .md-button--on-grey[disabled].md-primary {
+    background: rgba(var(--theme-color), 0.4);
+  }
+}

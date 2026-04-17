@@ -215,10 +215,114 @@
     align-items: center;
   }
 
-  /* TABLE */
+  /* DASHBOARD */
+
+  .am-dashboard__tab-content > *,
+  .am-content-dashboard__grid {
+    min-width: 0;
+  }
+
+  .am-dashboard-widget__body md-tabs-canvas {
+    margin-top: 6px;
+  }
+
+  @media (max-width: 1040px) {
+    .am-content-dashboard__grid {
+      grid-template-columns: 1fr;
+    }
+
+    am-content-report {
+      grid-column: initial;
+    }
+  }
+
+  /* CONTENT */
+
+  .am-content-folders__tree-item__inner {
+    gap: 4px;
+  }
+
+  am-content-folders md-icon.folder-icon {
+    min-width: 0;
+
+    svg {
+      width: 200%;
+      height: 100%;
+      margin: 0 -50%;
+    }
+  }
+
+  .leaf-folder.am-content-folders__tree-item__inner .folder-icon svg,
+  .leaf-folder.expanded.am-content-folders__tree-item__inner .folder-icon svg {
+    fill: currentColor;
+    width: 100%;
+    margin: 1px 0 0;
+  }
+
+  .am-content-folders__tree-item {
+    margin-left: 6px;
+  }
+
+  .am-content-folders__tree-item__inner:hover.leaf-folder .folder-icon {
+    color: inherit;
+
+    svg {
+      fill: currentColor;
+    }
+  }
+
+  .am-content-folders__tree-item__archive.leaf-folder .folder-icon {
+    margin: 0;
+  }
 
   .am-content-view-list__data--label,
   .am-content-view-list__header--label {
     min-width: 200px;
+  }
+
+  .md-panel.am-inline-filters-overlay__wrapper._md-panel-animate-enter {
+    width: auto;
+    max-width: none;
+    right: 0;
+    margin-right: 20px;
+    padding-inline: 20px;
+  }
+
+  am-inline-filters-facet-group {
+    width: auto;
+    margin-left: 0;
+  }
+
+  .am-inline-filters-overlay {
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .am-inline-filters-facet-option,
+  am-inline-filters-facet-option {
+    margin-right: 0;
+  }
+
+  .am-inline-filters-overlay__group-wrapper:not(:first-child)
+    am-inline-filters-facet-group {
+    width: auto;
+    margin-left: 0;
+  }
+
+  .am-inline-filters-overlay__group-wrapper {
+    min-width: 110px;
+  }
+
+  am-visualization-options-menu .md-menu .md-button,
+  am-visualization-options-menu .md-menu md-checkbox,
+  am-visualization-options-menu md-menu .md-button,
+  am-visualization-options-menu md-menu md-checkbox {
+    margin-inline: -6px;
+    padding-inline: 6px;
+  }
+
+  md-checkbox .md-container {
+    left: auto;
   }
 }

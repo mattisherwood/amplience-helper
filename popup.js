@@ -5,17 +5,34 @@
     flowFilter: true,
     hotkeysEnabled: true,
     stylesEnabled: true,
+    themingEnabled: true,
+    themingDark: false,
+    themingColor: "60, 120, 200",
   }
 
   const contentFlowsCheckbox = document.getElementById("flowFilter")
   const hotkeysCheckbox = document.getElementById("hotkeysEnabled")
   const stylesCheckbox = document.getElementById("stylesEnabled")
+  const themingCheckbox = document.getElementById("themingEnabled")
+  const themingDarkCheckbox = document.getElementById("themingDark")
+  const themingColorInput = document.getElementById("themingColor")
+  const themingColorSwatch = document.getElementById("themingColorSwatch")
+  const themeControls = document.getElementById("themeControls")
+
+  function updateColorSwatch(color) {
+    themingColorSwatch.style.backgroundColor = `rgb(${color})`
+  }
 
   function loadSettings() {
     chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
       contentFlowsCheckbox.checked = settings.flowFilter
       hotkeysCheckbox.checked = settings.hotkeysEnabled
       stylesCheckbox.checked = settings.stylesEnabled
+      themingCheckbox.checked = settings.themingEnabled
+      themingDarkCheckbox.checked = settings.themingDark
+      themingColorInput.value = settings.themingColor
+      updateColorSwatch(settings.themingColor)
+      themeControls.hidden = !settings.themingEnabled
     })
   }
 
@@ -24,6 +41,9 @@
       flowFilter: contentFlowsCheckbox.checked,
       hotkeysEnabled: hotkeysCheckbox.checked,
       stylesEnabled: stylesCheckbox.checked,
+      themingEnabled: themingCheckbox.checked,
+      themingDark: themingDarkCheckbox.checked,
+      themingColor: themingColorInput.value || DEFAULT_SETTINGS.themingColor,
     })
   }
 
@@ -43,11 +63,35 @@
     if (changes.stylesEnabled) {
       stylesCheckbox.checked = Boolean(changes.stylesEnabled.newValue)
     }
+
+    if (changes.themingEnabled) {
+      themingCheckbox.checked = Boolean(changes.themingEnabled.newValue)
+      themeControls.hidden = !changes.themingEnabled.newValue
+    }
+
+    if (changes.themingDark) {
+      themingDarkCheckbox.checked = Boolean(changes.themingDark.newValue)
+    }
+
+    if (changes.themingColor) {
+      themingColorInput.value = changes.themingColor.newValue
+      updateColorSwatch(changes.themingColor.newValue)
+    }
   }
 
   contentFlowsCheckbox.addEventListener("change", saveSettings)
   hotkeysCheckbox.addEventListener("change", saveSettings)
   stylesCheckbox.addEventListener("change", saveSettings)
+  themingCheckbox.addEventListener("change", () => {
+    themeControls.hidden = !themingCheckbox.checked
+    saveSettings()
+  })
+  themingDarkCheckbox.addEventListener("change", saveSettings)
+  themingColorInput.addEventListener("change", saveSettings)
+  ColorPicker.init(themingColorInput, themingColorSwatch)
+  themingColorInput.addEventListener("input", () =>
+    updateColorSwatch(themingColorInput.value),
+  )
 
   chrome.storage.onChanged.addListener(handleStorageChange)
   document.addEventListener("DOMContentLoaded", loadSettings)
