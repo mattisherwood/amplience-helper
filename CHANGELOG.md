@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.3.0 - 2026-04-17
+
+### Summary
+
+Adds the Favicon & Title Updater module — a hardcoded, simplified version of the standalone [Favicon Swapper](https://github.com/mattisherwood/favicon-swapper) extension, now built directly into Amplience Helper.
+
+### Module Highlights
+
+- Favicon & Title Updater: New module. Swaps the browser tab favicon and prepends a context-aware title for each Amplience interface area (Dynamic Content, Content Hub, Workforce). Toggle via popup and options page.
+
+---
+
 ## v2.2.0 - 2026-04-16
 
 ### Summary
