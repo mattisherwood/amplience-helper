@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Amplience Helper",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "A suite of tools bundled in a browser extension to help every-day Amplience super-users create content at the speed of ideas.",
   "permissions": ["storage"],
   "options_page": "options.html",
@@ -14,6 +14,11 @@
     "https://app.amplience.net/content-studio/*"
   ],
   "content_scripts": [
+    {
+      "matches": ["https://app.amplience.net/*"],
+      "js": ["modules/favicon-swapper/favicon-swapper.js"],
+      "run_at": "document_idle"
+    },
     {
       "matches": ["https://app.amplience.net/content-studio/*"],
       "css": ["modules/flows-filter/flows-filter.css"],
@@ -46,5 +51,11 @@
     "32": "icons/amplience-32x32.png",
     "96": "icons/amplience-96x96.png",
     "128": "icons/amplience-128x128.png"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["modules/favicon-swapper/icons/*.ico"],
+      "matches": ["https://app.amplience.net/*"]
+    }
+  ]
 }

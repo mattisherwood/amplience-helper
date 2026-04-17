@@ -2,6 +2,7 @@
   "use strict"
 
   const DEFAULT_SETTINGS = {
+    faviconSwapperEnabled: true,
     flowFilter: true,
     hotkeysEnabled: true,
     stylesEnabled: true,
@@ -14,6 +15,7 @@
     isDark: false,
   }
 
+  const faviconSwapperCheckbox = document.getElementById("faviconSwapper")
   const contentFlowsCheckbox = document.getElementById("flowFilter")
   const hotkeysCheckbox = document.getElementById("hotkeysEnabled")
   const stylesCheckbox = document.getElementById("stylesEnabled")
@@ -131,6 +133,7 @@
 
   function loadSettings() {
     chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+      faviconSwapperCheckbox.checked = settings.faviconSwapperEnabled
       contentFlowsCheckbox.checked = settings.flowFilter
       hotkeysCheckbox.checked = settings.hotkeysEnabled
       stylesCheckbox.checked = settings.stylesEnabled
@@ -144,6 +147,7 @@
   function saveSettings() {
     chrome.storage.sync.set(
       {
+        faviconSwapperEnabled: faviconSwapperCheckbox.checked,
         flowFilter: contentFlowsCheckbox.checked,
         hotkeysEnabled: hotkeysCheckbox.checked,
         stylesEnabled: stylesCheckbox.checked,
@@ -158,6 +162,12 @@
   function handleStorageChange(changes, area) {
     if (area !== "sync") {
       return
+    }
+
+    if (changes.faviconSwapperEnabled) {
+      faviconSwapperCheckbox.checked = Boolean(
+        changes.faviconSwapperEnabled.newValue,
+      )
     }
 
     if (changes.flowFilter) {
@@ -183,6 +193,7 @@
     }
   }
 
+  faviconSwapperCheckbox.addEventListener("change", saveSettings)
   contentFlowsCheckbox.addEventListener("change", saveSettings)
   hotkeysCheckbox.addEventListener("change", saveSettings)
   stylesCheckbox.addEventListener("change", saveSettings)
