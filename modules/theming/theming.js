@@ -4,7 +4,7 @@
   const DEFAULT_SETTINGS = {
     themingEnabled: true,
     themingDark: false,
-    themingColor: "170, 190, 255",
+    themingColor: "3, 116, 221",
   }
 
   function applyThemingSetting(enabled) {
@@ -21,7 +21,7 @@
   }
 
   function applyColorSetting(color) {
-    document.documentElement.style.setProperty("--theme-color", color)
+    document.documentElement.style.setProperty("--theme-color-rgb", color)
   }
 
   chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {

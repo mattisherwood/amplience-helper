@@ -1,5 +1,16 @@
 # Theming Changelog
 
+## 2026-04-22 (extension v2.2.1)
+
+### Fixed
+
+- Styles applied across further pages: editing pages, scheduling etc.
+
+### Changed
+
+- Updated default colour to match existing default
+- Cleaning up of colour variables
+
 ## 2026-04-16 (extension v2.2)
 
 ### Added

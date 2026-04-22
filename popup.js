@@ -7,7 +7,7 @@
     stylesEnabled: true,
     themingEnabled: true,
     themingDark: false,
-    themingColor: "60, 120, 200",
+    themingColor: "3, 116, 221",
   }
 
   const contentFlowsCheckbox = document.getElementById("flowFilter")
