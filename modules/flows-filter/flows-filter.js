@@ -270,7 +270,8 @@
       flow.classList.add("flow-card")
       flow.dataset.flowParsed = "true"
 
-      const stage = flow.children[0].children[0].children[0]
+      const cardContent = flow.children[0].children[0].children
+      const stage = cardContent[cardContent.length - 1]
 
       // Add a little circle badge with the author name
       if (author) {
@@ -396,6 +397,51 @@
       }
     }
 
+    function highlightText(element, phrase) {
+      // Walk text nodes and wrap matches in a highlight span
+      const walker = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+      )
+      const nodes = []
+      let node
+      while ((node = walker.nextNode())) {
+        nodes.push(node)
+      }
+
+      for (const textNode of nodes) {
+        const parent = textNode.parentNode
+        if (!parent || parent.classList.contains("flow-search-highlight")) {
+          continue
+        }
+        const text = textNode.nodeValue
+        const lowerText = text.toLowerCase()
+        const idx = lowerText.indexOf(phrase)
+        if (idx === -1) continue
+
+        const before = document.createTextNode(text.slice(0, idx))
+        const mark = document.createElement("span")
+        mark.className = "flow-search-highlight"
+        mark.textContent = text.slice(idx, idx + phrase.length)
+        const after = document.createTextNode(text.slice(idx + phrase.length))
+
+        parent.insertBefore(before, textNode)
+        parent.insertBefore(mark, textNode)
+        parent.insertBefore(after, textNode)
+        parent.removeChild(textNode)
+      }
+    }
+
+    function removeHighlights(element) {
+      const marks = element.querySelectorAll(".flow-search-highlight")
+      for (const mark of marks) {
+        const parent = mark.parentNode
+        parent.replaceChild(document.createTextNode(mark.textContent), mark)
+        parent.normalize()
+      }
+    }
+
     function applyFilters() {
       const filterValue = searchInput.value.toLowerCase().trim()
       const onlyMine = mineFilterInput.checked
@@ -434,6 +480,11 @@
           child.removeAttribute("data-visibility")
         } else {
           child.setAttribute("data-visibility", "hidden")
+        }
+
+        removeHighlights(child)
+        if (filterValue && matchesSearch && matchesMine && matchesTags) {
+          highlightText(child, filterValue)
         }
       }
     }
