@@ -1,5 +1,17 @@
 # Favicon Swapper Changelog
 
+## 2026-04-24 (extension v2.3.1)
+
+### Added
+
+- Support-specific favicon added for Amplience support pages.
+
+### Changed
+
+- Added `https://support.amplience.com/*` to `content_scripts` and `web_accessible_resources` in `manifest.json` so the bundled `support.ico` can be loaded by pages on that origin.
+
+---
+
 ## 2026-04-17 (extension v2.3.0)
 
 ### Added

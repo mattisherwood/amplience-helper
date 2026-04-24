@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.3.1 - 2026-04-24
+
+### Summary
+
+Adds a support-specific favicon for Amplience Support pages.
+
+### Module Highlights
+
+- Favicon & Title Updater: Support favicon applied on `support.amplience.com` pages.
+
+---
+
 ## v2.3.0 - 2026-04-17
 
 ### Summary

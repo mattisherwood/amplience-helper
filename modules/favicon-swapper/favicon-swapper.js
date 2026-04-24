@@ -22,6 +22,11 @@
       faviconValue: "modules/favicon-swapper/icons/workforce.ico",
       titleSelector: "",
     },
+    {
+      subdirectory: "https://support.amplience.com/",
+      faviconValue: "modules/favicon-swapper/icons/support.ico",
+      titleSelector: "",
+    },
   ]
 
   let enabled = false
