@@ -1,5 +1,33 @@
 # Changelog
 
+## v2.2.3 - 2026-04-24
+
+### Summary
+
+Theming now supports per-hub configuration. Each hub keeps its own colour and dark-mode preference, and hub labels are shown in popup/options for easier management.
+
+### Module Highlights
+
+- Theming: Theme settings are now stored per hub, based on the hub segment in the DC URL.
+- Theming: Popup and options now render one theme row per hub with label, colour control, dark toggle, and remove action.
+- Theming: Friendly hub labels are auto-detected from the DC UI and used in controls, with the hub key available on hover.
+
+### Migration Notes
+
+- Existing single-theme values are replaced by the new per-hub theme structure. Visit each hub once to auto-create and manage its theme entry.
+
+## v2.2.0 - 2026-04-16
+
+### Summary
+
+Adds the Theming module, bringing a customisable colour theme and optional dark mode to the Amplience DC interface.
+
+### Module Highlights
+
+- Theming: New module. Applies a user-defined accent colour to the DC interface via a CSS variable. Includes an optional dark mode. Both the colour and dark toggle are accessible directly from the popup and options page.
+
+---
+
 ## v2.1.0 - 2026-04-01
 
 ### Summary

@@ -38,6 +38,10 @@
             font-size: 20px;
         }
 
+        h2 {
+            margin-top: 0;
+        }
+
         .fieldset {
             margin-bottom: 24px;
         }
@@ -46,6 +50,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
         }
 
         .description {
@@ -59,6 +64,92 @@
             min-height: 20px;
             font-size: 14px;
             color: var(--success);
+        }
+
+        #themeControls {
+            border: solid 1px var(--muted);
+            padding: 20px;
+            border-radius: 4px;
+        }
+
+        .color-swatch {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: solid 1px color-mix(in srgb, var(--text) 30%, transparent);
+            flex-shrink: 0;
+        }
+
+        .theme-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
+            border-bottom: solid 1px var(--muted);
+        }
+
+        .theme-control .hub-label {
+            min-width: 100px;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: help;
+        }
+
+        .theme-control:last-child {
+            border-bottom: none;
+        }
+
+        .theme-color-input {
+            flex: 1;
+            max-width: 120px;
+        }
+
+        .theme-delete-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            border: 1px solid var(--muted);
+            background: transparent;
+            color: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .theme-delete-btn:hover,
+        .theme-delete-btn:focus-visible {
+            background: color-mix(in srgb, var(--text) 8%, transparent);
+            outline: none;
+        }
+
+        .theme-icon-toggle {
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            border: 1px solid var(--muted);
+            background: transparent;
+            color: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .theme-icon-toggle:hover,
+        .theme-icon-toggle:focus-visible {
+            background: color-mix(in srgb, var(--text) 8%, transparent);
+            outline: none;
         }
     </style>
 </head>
@@ -99,8 +190,36 @@
         </p>
     </div>
 
+    <div class="fieldset">
+        <label class="option" for="themingEnabled">
+            <input type="checkbox" id="themingEnabled" />
+            Enable DC Theming
+        </label>
+
+        <p class="description">
+            Applies a new customisable theme to the DC interface, including a togglable dark mode
+        </p>
+    </div>
+
+    <div id="themeControls" hidden>
+        <h2>Theme Controls</h2>
+        <div id="themeRows"></div>
+
+        <!-- Template for a single theme row -->
+        <template id="themeRowTemplate">
+            <div class="theme-control" data-hubname="">
+                <span class="hub-label" title="hubname"></span>
+                <span class="color-swatch"></span>
+                <input type="text" class="theme-color-input" placeholder="60, 120, 200" />
+                <button type="button" class="theme-dark-toggle theme-icon-toggle" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☀</button>
+                <button type="button" class="theme-delete-btn" aria-label="Remove this theme" title="Remove theme">✕</button>
+            </div>
+        </template>
+    </div>
+
     <p id="status" class="status" aria-live="polite"></p>
 
+    <script src="color-picker.js"></script>
     <script src="options.js"></script>
 </body>
 

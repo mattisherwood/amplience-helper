@@ -1,5 +1,18 @@
 # Style Patches Changelog
 
+## 2026-04-24 (extension v2.2.2)
+
+- Made top-level homepage more responsive
+
+---
+
+## 2026-04-16 (extension v2.2)
+
+- Fixed content folder tree including icons
+- Made dashboards more responsive
+
+---
+
 ## 2026-03-25 (extension v2.0)
 
 ### Changed

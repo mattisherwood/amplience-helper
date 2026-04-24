@@ -77,6 +77,84 @@
         li:last-of-type label {
             padding-bottom: var(--spacing);
         }
+
+        .theme-control {
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing) * 0.5);
+            padding: calc(var(--spacing) * 0.5) var(--spacing);
+            border-bottom: solid 1px var(--hover);
+
+            label {
+                padding: 0;
+            }
+
+            input {
+                display: none;
+            }
+        }
+
+        .theme-control .hub-label {
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .theme-delete-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            border: 1px solid var(--hover);
+            background: transparent;
+            color: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1;
+            padding: 0;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
+        .theme-delete-btn:hover,
+        .theme-delete-btn:focus-visible {
+            background: var(--hover);
+            outline: none;
+        }
+
+        .theme-icon-toggle {
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            border: 1px solid var(--hover);
+            background: transparent;
+            color: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .theme-icon-toggle:hover,
+        .theme-icon-toggle:focus-visible {
+            background: var(--hover);
+            outline: none;
+        }
+
+        .color-swatch {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: solid 1px rgba(var(--fg-rgb), 0.3);
+            flex-shrink: 0;
+        }
     </style>
 </head>
 
@@ -99,13 +177,39 @@
         <li>
             <label for="stylesEnabled">
                 <input type="checkbox" id="stylesEnabled" />
-                Enable Styles Patch
+                Enable Styles Patches
+            </label>
+        </li>
+
+        <li>
+            <label for="themingEnabled">
+                <input type="checkbox" id="themingEnabled" />
+                Enable DC Theming
             </label>
         </li>
     </ul>
 
+    <div id="themeControls" hidden>
+        <!-- Theme rows will be rendered here -->
+        <div id="themeRows"></div>
+
+        <!-- Template for a single theme row -->
+        <template id="themeRowTemplate">
+            <div class="theme-control" data-hubname="">
+                <span class="hub-label" title="hubname"></span>
+                <label>
+                    <span class="color-swatch" title="Pick a colour"></span>
+                    <input type="text" class="theme-color-input" size="14" placeholder="60, 120, 200" />
+                </label>
+                <button type="button" class="theme-dark-toggle theme-icon-toggle" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☀</button>
+                <button type="button" class="theme-delete-btn" aria-label="Remove this theme" title="Remove theme">✕</button>
+            </div>
+        </template>
+    </div>
+
     <a href="options.html" target="_blank" rel="noopener">View all options...</a>
 
+    <script src="color-picker.js"></script>
     <script src="popup.js"></script>
 </body>
 
