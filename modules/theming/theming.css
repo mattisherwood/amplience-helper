@@ -230,6 +230,7 @@
   md-checkbox.md-indeterminate .md-icon,
   am-content-folders-inline-subfolders-card:hover > div {
     border-color: var(--theme-color);
+    background-color: var(--theme-color);
   }
 
   /* Fill overrides */

@@ -6,37 +6,22 @@
     hotkeysEnabled: true,
     stylesEnabled: true,
     themingEnabled: true,
-    themingDark: false,
-    themingColor: "3, 116, 221",
+    themingHubs: {},
+  }
+
+  const DEFAULT_HUB_THEME = {
+    color: "3, 116, 221",
+    isDark: false,
   }
 
   const contentFlowsCheckbox = document.getElementById("flowFilter")
   const hotkeysCheckbox = document.getElementById("hotkeysEnabled")
   const stylesCheckbox = document.getElementById("stylesEnabled")
   const themingCheckbox = document.getElementById("themingEnabled")
-  const themingDarkToggle = document.getElementById("themingDark")
-  const themingColorInput = document.getElementById("themingColor")
-  const themingColorSwatch = document.getElementById("themingColorSwatch")
   const themeControls = document.getElementById("themeControls")
+  const themeRowsContainer = document.getElementById("themeRows")
+  const themeRowTemplate = document.getElementById("themeRowTemplate")
   const statusEl = document.getElementById("status")
-  let themingDarkValue = DEFAULT_SETTINGS.themingDark
-
-  function renderDarkToggle(enabled) {
-    themingDarkValue = Boolean(enabled)
-    themingDarkToggle.textContent = themingDarkValue ? "☽" : "☀"
-    themingDarkToggle.setAttribute("aria-pressed", String(themingDarkValue))
-    themingDarkToggle.setAttribute(
-      "aria-label",
-      themingDarkValue ? "Disable dark mode" : "Enable dark mode",
-    )
-    themingDarkToggle.title = themingDarkValue
-      ? "Disable dark mode"
-      : "Enable dark mode"
-  }
-
-  function updateColorSwatch(color) {
-    themingColorSwatch.style.backgroundColor = `rgb(${color})`
-  }
 
   function showStatus(message) {
     statusEl.textContent = message
@@ -48,16 +33,111 @@
     }, 1500)
   }
 
+  function renderDarkToggle(button, enabled) {
+    enabled = Boolean(enabled)
+    button.textContent = enabled ? "☽" : "☀"
+    button.setAttribute("aria-pressed", String(enabled))
+    button.setAttribute(
+      "aria-label",
+      enabled ? "Disable dark mode" : "Enable dark mode",
+    )
+    button.title = enabled ? "Disable dark mode" : "Enable dark mode"
+  }
+
+  function updateColorSwatch(swatch, color) {
+    swatch.style.backgroundColor = `rgb(${color})`
+  }
+
+  function renderThemeRow(hubName, theme) {
+    const row = themeRowTemplate.content.cloneNode(true)
+    const rowDiv = row.querySelector(".theme-control")
+    const hubLabel = row.querySelector(".hub-label")
+    const colorInput = row.querySelector(".theme-color-input")
+    const colorSwatch = row.querySelector(".color-swatch")
+    const darkToggle = row.querySelector(".theme-dark-toggle")
+    const deleteBtn = row.querySelector(".theme-delete-btn")
+
+    rowDiv.setAttribute("data-hubname", hubName)
+    hubLabel.textContent = theme.label || hubName
+    hubLabel.title = hubName
+    colorInput.value = theme.color
+    updateColorSwatch(colorSwatch, theme.color)
+    renderDarkToggle(darkToggle, theme.isDark)
+
+    // Event listeners for this row
+    colorInput.addEventListener("change", () => {
+      updateTheme(hubName, {
+        color: colorInput.value || DEFAULT_HUB_THEME.color,
+      })
+    })
+
+    colorInput.addEventListener("input", () => {
+      updateColorSwatch(colorSwatch, colorInput.value)
+    })
+
+    darkToggle.addEventListener("click", () => {
+      const newIsDark = darkToggle.getAttribute("aria-pressed") !== "true"
+      renderDarkToggle(darkToggle, newIsDark)
+      updateTheme(hubName, { isDark: newIsDark })
+    })
+
+    deleteBtn.addEventListener("click", () => {
+      deleteTheme(hubName)
+    })
+
+    ColorPicker.init(colorInput, colorSwatch)
+
+    return row
+  }
+
+  function renderAllThemes() {
+    themeRowsContainer.innerHTML = ""
+    const hubNames = Object.keys(hubs || {})
+    if (hubNames.length === 0) {
+      themeRowsContainer.innerHTML =
+        '<p style="padding: 20px; color: var(--muted); font-size: 14px; text-align: center;">No themes configured yet. They will appear when you visit different hubs.</p>'
+      return
+    }
+    hubNames.forEach((hubName) => {
+      const row = renderThemeRow(hubName, hubs[hubName])
+      themeRowsContainer.appendChild(row)
+    })
+  }
+
+  function updateTheme(hubName, updates) {
+    chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+      const hubs = settings.themingHubs || {}
+      if (!hubs[hubName]) {
+        hubs[hubName] = { ...DEFAULT_HUB_THEME }
+      }
+      hubs[hubName] = { ...hubs[hubName], ...updates }
+      chrome.storage.sync.set({ themingHubs: hubs }, () => {
+        showStatus("Saved")
+      })
+    })
+  }
+
+  function deleteTheme(hubName) {
+    chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+      const hubs = settings.themingHubs || {}
+      delete hubs[hubName]
+      chrome.storage.sync.set({ themingHubs: hubs }, () => {
+        showStatus("Removed")
+      })
+    })
+  }
+
+  let hubs = {}
+
   function loadSettings() {
     chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
       contentFlowsCheckbox.checked = settings.flowFilter
       hotkeysCheckbox.checked = settings.hotkeysEnabled
       stylesCheckbox.checked = settings.stylesEnabled
       themingCheckbox.checked = settings.themingEnabled
-      renderDarkToggle(settings.themingDark)
-      themingColorInput.value = settings.themingColor
-      updateColorSwatch(settings.themingColor)
       themeControls.hidden = !settings.themingEnabled
+      hubs = settings.themingHubs || {}
+      renderAllThemes()
     })
   }
 
@@ -68,8 +148,6 @@
         hotkeysEnabled: hotkeysCheckbox.checked,
         stylesEnabled: stylesCheckbox.checked,
         themingEnabled: themingCheckbox.checked,
-        themingDark: themingDarkValue,
-        themingColor: themingColorInput.value,
       },
       () => {
         showStatus("Saved")
@@ -99,13 +177,9 @@
       themeControls.hidden = !changes.themingEnabled.newValue
     }
 
-    if (changes.themingDark) {
-      renderDarkToggle(Boolean(changes.themingDark.newValue))
-    }
-
-    if (changes.themingColor) {
-      themingColorInput.value = changes.themingColor.newValue
-      updateColorSwatch(changes.themingColor.newValue)
+    if (changes.themingHubs) {
+      hubs = changes.themingHubs.newValue || {}
+      renderAllThemes()
     }
   }
 
@@ -116,12 +190,6 @@
     themeControls.hidden = !themingCheckbox.checked
     saveSettings()
   })
-  themingDarkToggle.addEventListener("click", () => {
-    renderDarkToggle(!themingDarkValue)
-    saveSettings()
-  })
-  themingColorInput.addEventListener("change", saveSettings)
-  ColorPicker.init(themingColorInput, themingColorSwatch)
 
   chrome.storage.onChanged.addListener(handleStorageChange)
   document.addEventListener("DOMContentLoaded", loadSettings)

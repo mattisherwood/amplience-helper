@@ -1,5 +1,27 @@
 # Theming Changelog
 
+## 2026-04-24 (extension v2.2.3)
+
+### Added
+
+- Per-hub theme storage keyed by hub name, including `label`, `color`, and `isDark` values for each hub.
+- Automatic creation of a default theme entry when visiting a hub that does not already have one.
+- Friendly hub label detection from the DC hub selector, cached alongside each hub theme.
+- Multi-row theme controls in popup and options with one row per hub and a remove button.
+
+### Changed
+
+- The theming runtime now applies theme values based on the current URL hub and reapplies on in-app URL changes.
+- Theming controls moved from single global values to per-hub controls in both popup and options.
+
+### Fixed
+
+- Correct theme context is now maintained when switching between hubs in the same browser session.
+
+### Notes
+
+- Legacy single-theme keys (`themingColor`, `themingDark`) are no longer used.
+
 ## 2026-04-22 (extension v2.2.1)
 
 ### Fixed
