@@ -106,7 +106,9 @@
   .am-content-properties__title,
   .calendar-pager,
   .am-calendar__launcher md-icon,
-  .am-toolbar__title {
+  .am-toolbar__title,
+  .am-editable-list__items thead tr,
+  .am-editable-list__items tr {
     background-color: transparent;
     color: inherit;
   }
@@ -226,7 +228,8 @@
   .am-repositories-selector__menu-option--create-repo
     .am-repositories-selector__add-repo-icon,
   .am-hub-selector__menu-option--is-selected:hover am-truncate,
-  .am-hub-selector__menu-option--is-selected am-truncate {
+  .am-hub-selector__menu-option--is-selected am-truncate,
+  .am-pagination__link.is-selected {
     color: var(--theme-color);
   }
 
@@ -242,7 +245,13 @@
 
   .am-filter-control-filters__empty-group,
   am-filter-chip.am-filter-chip--dark,
-  .am-filter-control__filter-btn {
+  .am-filter-control__filter-btn,
+  .am-editable-list__items tfoot,
+  .am-editable-list__items thead,
+  .am-editable-list__table-actions,
+  .am-editable-list__items tbody tr:hover,
+  am-preview-settings .preview-settings__content-box,
+  .am-hint-box {
     background-color: var(--subtle-shade);
   }
 
@@ -261,8 +270,16 @@
   /* Border overrides */
 
   md-radio-button.md-default-theme.md-checked .md-off,
+  md-checkbox.md-checked .md-icon,
   md-radio-button.md-checked .md-off,
-  am-content-folders-inline-subfolders-card:hover > div {
+  md-checkbox.md-indeterminate .md-icon,
+  am-content-folders-inline-subfolders-card:hover > div,
+  md-input-container.md-default-theme:not(.-md-input-invalid).md-input-focused
+    .md-input,
+  md-input-container:not(.md-input-invalid).md-input-focused .md-input,
+  md-input-container.md-default-theme:not(.-md-input-invalid).md-input-resized
+    .md-input,
+  md-input-container:not(.md-input-invalid).md-input-resized .md-input {
     border-color: var(--theme-color);
   }
 
@@ -291,7 +308,8 @@
   .am-inline-filters__button--active md-icon svg,
   .am-inline-filters__button--has-filters md-icon svg,
   .am-button-toggle--active md-icon svg,
-  .am-button-toggle:hover md-icon svg {
+  .am-button-toggle:hover md-icon svg,
+  .am-editable-list__add-item md-icon {
     fill: var(--theme-color);
   }
 
@@ -379,6 +397,21 @@
     color: inherit;
   }
 
+  md-input-container.md-default-theme .md-placeholder,
+  md-input-container .md-placeholder,
+  md-input-container.md-default-theme label,
+  md-input-container label,
+  [disabled] md-input-container.md-default-theme .md-input,
+  [disabled] md-input-container .md-input,
+  md-input-container.md-default-theme .md-input[disabled],
+  md-input-container .md-input[disabled],
+  md-radio-button.md-default-theme[disabled],
+  md-radio-button[disabled],
+  md-radio-group.md-default-theme[disabled],
+  md-radio-group[disabled] {
+    color: rgba(var(--foreground-color-rgb), 0.4);
+  }
+
   .am-dashboard-header,
   .am-dashboard__tabs > md-tabs-wrapper > md-tabs-canvas,
   .am-inline-filters__button,
@@ -398,7 +431,14 @@
   .am-content-delivery__section h3,
   .am-content-delivery__section-divider,
   .am-version-history-card__details,
-  .am-version-history-card__selected-icon {
+  .am-version-history-card__selected-icon,
+  .am-editable-list__items th,
+  md-input-container.md-default-theme .md-input,
+  md-input-container .md-input,
+  .am-token-helper__name-column p,
+  md-input-container.md-default-theme:not(.md-input-invalid).md-input-has-value
+    label,
+  md-input-container:not(.md-input-invalid).md-input-has-value label {
     color: rgba(var(--foreground-color-rgb), 0.6);
   }
 
@@ -448,7 +488,7 @@
 
   .am-repository--selected,
   .am-repository--selected .am-repository__repo-toggle-icon {
-    color: var(--theme-color);
+    color: var(--foreground-color);
   }
 
   .am-repository:hover,
@@ -500,6 +540,10 @@
   am-spinner.am-spinner--table-overlay,
   .am-inline-filters-overlay__wrapper am-spinner {
     background-color: rgba(var(--background-color-rgb), 0.5);
+  }
+
+  .am-content-item-library__results am-content-view-grid {
+    background-color: var(--subtle-shade);
   }
 
   am-table {
@@ -752,6 +796,11 @@
   .md-button--on-grey[disabled].md-primary {
     background: rgba(var(--theme-color-rgb), 0.4);
     color: rgba(255, 255, 255, 0.5);
+  }
+
+  .am-editable-list__items tbody tr,
+  .am-editable-list__items tbody tr:first-child {
+    border-color: var(--line-color);
   }
 
   /* Doesn't currently apply (in iframe) */
