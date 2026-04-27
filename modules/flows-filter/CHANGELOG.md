@@ -1,5 +1,15 @@
 # Flows Filter Changelog
 
+# 2026-04-28 (extension v2.3.2)
+
+### Added
+
+- Detect tags in the description as well as the title (and de-duplicate)
+
+### Changed
+
+- Support for hyphenated tags
+
 # 2026-04-22 (extension v2.2.4)
 
 ### Added

@@ -236,29 +236,44 @@
     const selectedTags = new Set()
 
     function parseFlowData(flowElement) {
-      const p = flowElement.querySelector("p")
-      if (!p) return
+      const paragraphs = flowElement.querySelectorAll("p")
+      const titleParagraph = paragraphs[0]
+      const descriptionParagraph = paragraphs[1]
+      if (!titleParagraph) return
 
-      const text = p.textContent.trim()
+      const text = titleParagraph.textContent.trim()
+      const descriptionText = descriptionParagraph
+        ? descriptionParagraph.textContent.trim()
+        : ""
       const isArchived = /\(Archived\)/i.test(text)
       const authorMatch = text.match(/\[([^\]]{1,3})\]/)
       const author = authorMatch ? authorMatch[1] : ""
-      const tags = [...text.matchAll(/#(\w+)/g)].map((m) => m[1])
+      const tags = [
+        ...text.matchAll(/#([\w-]+)/g),
+        ...descriptionText.matchAll(/#([\w-]+)/g),
+      ]
+        .map((m) => m[1])
+        .filter((tag, index, allTags) => allTags.indexOf(tag) === index)
       const title = text
         .replace(/\s*\[[^\]]{1,3}\]\s*/, " ")
-        .replace(/#\w+/g, "")
+        .replace(/#[\w-]+/g, "")
         .replace(/\s*\(Archived\)\s*/gi, " ")
         .replace(/\s{2,}/g, " ")
         .trim()
+      const description = descriptionText
+        .replace(/#[\w-]+/g, "")
+        .replace(/\s{2,}/g, " ")
+        .trim()
 
-      return { author, title, tags, isArchived }
+      return { author, title, description, tags, isArchived }
     }
 
     const MAX_PARSE_ATTEMPTS = 20
     const PARSE_RETRY_INTERVAL = 250
 
     function decorateFlow(flow) {
-      const { author, title, tags, isArchived } = parseFlowData(flow)
+      const { author, title, description, tags, isArchived } =
+        parseFlowData(flow)
       const isMine = author && author === initials
 
       flow.dataset.flowAuthor = author
@@ -308,6 +323,11 @@
       const p = flow.querySelector("p")
       if (p && title) {
         p.textContent = title
+      }
+
+      const descriptionP = flow.querySelectorAll("p")[1]
+      if (descriptionP) {
+        descriptionP.textContent = description
       }
     }
 
