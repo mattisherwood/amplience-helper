@@ -1,9 +1,59 @@
 [data-amplience-style-patches="enabled"] {
+  /* ============= TOP LEVEL HOMEPAGE ============== */
+  /* NB: these must have double or triple classes to */
+  /* match the specificity of the existing styles.   */
+
+  .landing-page.landing-page.landing-page {
+    position: sticky;
+    top: 0;
+    height: auto;
+    min-height: 0;
+    padding-bottom: 26px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(3px);
+    z-index: 9;
+    flex-shrink: 0;
+  }
+
+  .landing-page__wrap.landing-page__wrap.landing-page__wrap {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .apps.apps {
+    min-width: initial;
+  }
+
+  .apps__body.apps__body {
+    height: auto;
+    padding-block: 80px;
+  }
+
+  .primary-app__wrap.primary-app__wrap {
+    padding-top: 0;
+  }
+
+  .apps__studios_body.apps__studios_body {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .apps__footer.apps__footer {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    width: min(100%, 1000px);
+    justify-items: center;
+  }
+
+  .apps__footer-wrap.apps__footer-wrap {
+    padding-bottom: 40px;
+  }
+
   /* ============= ACCOUNT MANAGEMENT APP ============= */
   /* NB: Some elements must have at least three classes */
   /* to match the specificity of the existing styles.   */
   .App {
     min-width: initial;
+    overflow-y: auto;
 
     .masthead {
       &.masthead {
@@ -215,10 +265,152 @@
     align-items: center;
   }
 
-  /* TABLE */
+  /* DASHBOARD */
+
+  .am-dashboard__tab-content > *,
+  .am-content-dashboard__grid {
+    min-width: 0;
+  }
+
+  md-pagination-wrapper,
+  md-tabs-canvas {
+    height: auto;
+    position: initial;
+  }
+
+  .am-content-item-editor__tabs > md-tabs-wrapper {
+    padding: 0;
+  }
+
+  md-tabs .md-tab {
+    padding-block: 16px;
+  }
+
+  .am-dashboard__tabs
+    > md-tabs-wrapper
+    > md-tabs-canvas
+    > md-pagination-wrapper
+    > md-ink-bar {
+    margin-bottom: 4px;
+  }
+
+  am-dashboard-widget {
+    md-tabs {
+      margin-inline: -15px;
+    }
+
+    md-tabs-content-wrapper {
+      padding-inline: 15px;
+    }
+  }
+
+  .am-recent-content-items__items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  am-recent-content-items-row {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 1040px) {
+    .am-content-dashboard__grid {
+      grid-template-columns: 1fr;
+    }
+
+    am-content-report {
+      grid-column: initial;
+    }
+  }
+
+  /* CONTENT */
+
+  .am-content-folders__tree-item__inner {
+    gap: 4px;
+  }
+
+  am-content-folders md-icon.folder-icon {
+    min-width: 0;
+
+    svg {
+      width: 200%;
+      height: 100%;
+      margin: 0 -50%;
+    }
+  }
+
+  .leaf-folder.am-content-folders__tree-item__inner .folder-icon svg,
+  .leaf-folder.expanded.am-content-folders__tree-item__inner .folder-icon svg {
+    fill: currentColor;
+    width: 100%;
+    margin: 1px 0 0;
+  }
+
+  .am-content-folders__tree-item {
+    margin-left: 6px;
+  }
+
+  .am-content-folders__tree-item__inner:hover.leaf-folder .folder-icon {
+    color: inherit;
+
+    svg {
+      fill: currentColor;
+    }
+  }
+
+  .am-content-folders__tree-item__archive.leaf-folder .folder-icon {
+    margin: 0;
+  }
 
   .am-content-view-list__data--label,
   .am-content-view-list__header--label {
     min-width: 200px;
+  }
+
+  .md-panel.am-inline-filters-overlay__wrapper._md-panel-animate-enter {
+    width: auto;
+    max-width: none;
+    right: 0;
+    margin-right: 20px;
+    padding-inline: 20px;
+  }
+
+  am-inline-filters-facet-group {
+    width: auto;
+    margin-left: 0;
+  }
+
+  .am-inline-filters-overlay {
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .am-inline-filters-facet-option,
+  am-inline-filters-facet-option {
+    margin-right: 0;
+  }
+
+  .am-inline-filters-overlay__group-wrapper:not(:first-child)
+    am-inline-filters-facet-group {
+    width: auto;
+    margin-left: 0;
+  }
+
+  .am-inline-filters-overlay__group-wrapper {
+    min-width: 110px;
+  }
+
+  am-visualization-options-menu .md-menu .md-button,
+  am-visualization-options-menu .md-menu md-checkbox,
+  am-visualization-options-menu md-menu .md-button,
+  am-visualization-options-menu md-menu md-checkbox {
+    margin-inline: -6px;
+    padding-inline: 6px;
+  }
+
+  md-checkbox .md-container {
+    left: auto;
   }
 }

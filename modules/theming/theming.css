@@ -1,0 +1,771 @@
+[data-amplience-theming="enabled"] {
+  /* Greyscale */
+  --background-color-rgb: 255, 255, 255;
+  --background-color: rgb(var(--background-color-rgb));
+  --foreground-color-rgb: 0, 0, 0;
+  --foreground-color: rgb(var(--foreground-color-rgb));
+  --line-color: rgba(var(--foreground-color-rgb), 0.1);
+  /* Color */
+  --theme-color: rgb(var(--theme-color-rgb));
+  --subtle-shade: rgba(var(--theme-color-rgb), 0.05);
+  --shade: rgba(var(--theme-color-rgb), 0.2);
+
+  &.dark {
+    /* Greyscale */
+    --background-color-rgb: 0, 0, 0;
+    --foreground-color-rgb: 255, 255, 255;
+    --line-color: rgba(var(--foreground-color-rgb), 0.3);
+    /* Color */
+    --subtle-shade: rgba(var(--theme-color-rgb), 0.3);
+    --shade: rgba(var(--theme-color-rgb), 0.4);
+
+    .am-empty-state__image,
+    .am-no-content-placeholder__img,
+    .am-content-usages-empty-state__content md-icon {
+      filter: grayscale() invert();
+    }
+  }
+
+  /* Hub Switcher */
+
+  .am-hub-selector__list > md-menu > .md-button,
+  .am-hub-selector__menu-option am-truncate {
+    padding-left: 0;
+  }
+
+  .am-hub-selector__list > md-menu > .md-button ng-transclude::before,
+  .am-hub-selector__menu-option md-icon {
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+    margin-inline: 1rem 1rem;
+    padding: 0;
+    border: solid 2px var(--hub-row-color, rgb(3, 116, 221));
+    border-radius: 50%;
+    box-sizing: content-box;
+    color: #fff;
+    opacity: 1;
+    vertical-align: middle;
+  }
+
+  .am-hub-selector__list > md-menu > .md-button ng-transclude::before,
+  .am-hub-selector__menu-option--is-selected md-icon {
+    background: var(--theme-color);
+  }
+
+  .am-hub-selector__menu-option:hover md-icon {
+    color: #fff;
+  }
+
+  /* Resets */
+
+  am-content-dashboard,
+  md-content,
+  am-content-item-library am-repositories,
+  am-content-folders,
+  md-icon,
+  .am-repository__repo-toggle-icon,
+  .expanded.am-content-folders__tree-item__inner .folder-icon,
+  .am-content-folders__actions,
+  .am-content-folders__tree-item__inner:hover,
+  .am-content-folders__tree-item__inner:hover .am-content-folders__actions,
+  .am-content-folders__tree-item__inner:hover.leaf-folder .folder-icon,
+  .am-inline-filters__button,
+  .am-content-folders-inline-subfolders,
+  md-toolbar.md-default-theme:not(.md-menu-toolbar),
+  md-toolbar:not(.md-menu-toolbar),
+  am-content-view-list,
+  .am-table--scrollable,
+  am-table th,
+  .am-table--scrollable table tbody,
+  am-table tbody tr,
+  am-table tbody td.is-primary .md-button--link,
+  .am-toolbar--light,
+  am-select-all,
+  am-content-folders-inline-subfolders-card,
+  am-content-folders-inline-subfolders-card > div,
+  am-content-pagination-summary,
+  .am-sort-selector button,
+  am-no-content-placeholder,
+  .am-no-content-placeholder__title,
+  .am-no-content-placeholder__body,
+  .am-content-item-editor-toolbar,
+  .am-content-item-editor__tabs > md-tabs-wrapper,
+  am-inline-filters-facet-option-label,
+  .am-inline-filters-facet-option md-checkbox .md-label,
+  am-inline-filters-facet-option md-checkbox .md-label,
+  .am-inline-filters-facet-option
+    md-checkbox:not([disabled]):hover
+    .am-inline-filters-facet-option__label,
+  am-inline-filters-facet-option
+    md-checkbox:not([disabled]):hover
+    .am-inline-filters-facet-option__label,
+  .am-version-history__header .am-toolbar h3,
+  .am-content-usages-panel__title,
+  .am-content-properties__title,
+  .calendar-pager,
+  .am-calendar__launcher md-icon,
+  .am-toolbar__title {
+    background-color: transparent;
+    color: inherit;
+  }
+
+  .am-dashboard-header h1,
+  .am-dashboard__tab.md-tab,
+  .am-dashboard-widget__title,
+  md-tabs .md-tab,
+  .am-repositories-selector__menu-option md-icon,
+  .am-repositories-selector__menu-option--selected am-truncate,
+  .am-repositories-selector__menu-option--selected:hover am-truncate,
+  .am-repositories-selector__menu-option--selected:hover md-icon,
+  .am-repositories-selector__menu-option--selected am-truncate {
+    color: inherit;
+  }
+
+  ui-view,
+  am-visualization-options-menu,
+  .am-version-history__header .am-toolbar,
+  .am-content-usages-panel__header,
+  .am-toolbar {
+    background-color: var(--background-color);
+    color: var(--foreground-color);
+  }
+
+  /* Color overrides */
+
+  a,
+  .md-button--link,
+  .am-recent-edition-row__content--link a,
+  .am-announcements-post__title a,
+  .am-facet-option .md-checked .am-facet-option__label,
+  am-facet-option .md-checked .am-facet-option__count,
+  am-facet-option .md-checked .am-facet-option__label,
+  am-content-pagination md-icon.am-content-pagination__icon {
+    color: rgba(var(--theme-color-rgb), 0.8);
+  }
+
+  a:hover,
+  .md-button--link:hover,
+  .md-button--link:not([disabled]):hover,
+  .am-recent-edition-row__content--link a:hover,
+  .am-announcements-post__title a:hover,
+  md-tabs .md-tab:hover,
+  .am-dashboard__tab.md-tab.md-active,
+  md-tabs .md-tab.md-active,
+  .am-table-checkbox__selected-icon,
+  .am-content-item-library-breadcrumbs
+    .am-base-breadcrumbs__crumb:last-child
+    .am-base-breadcrumbs__link,
+  .selected.am-content-folders__tree-item__inner .folder-icon,
+  .selected.am-content-folders__tree-item__inner .folder-label,
+  .am-repositories__add md-icon,
+  .am-content-folders-inline-subfolders__add-folder md-icon,
+  .am-repositories__add:hover:not(.disabled),
+  .am-repositories__add:hover:not(.disabled) md-icon,
+  .am-facet-option .md-checked .am-facet-option__count,
+  .am-facet-option
+    md-checkbox:not([disabled]):hover.md-checked
+    .am-facet-option__count,
+  .am-facet-option
+    md-checkbox:not([disabled]):hover.md-checked
+    .am-facet-option__label,
+  am-facet-option
+    md-checkbox:not([disabled]):hover.md-checked
+    .am-facet-option__count,
+  am-facet-option
+    md-checkbox:not([disabled]):hover.md-checked
+    .am-facet-option__label,
+  .am-content-pagination__link:hover:not([disabled])
+    .am-content-pagination__icon,
+  .am-sort-selector__menu-content md-icon,
+  md-checkbox.md-checked .md-icon,
+  md-checkbox.md-indeterminate .md-icon,
+  am-content-folders-inline-subfolders-card:hover > div,
+  .am-context-menu__trigger-button:hover md-icon,
+  .am-filter-chip__remove-btn.md-icon-button:hover md-icon,
+  md-select-menu.md-default-theme md-content md-option[selected],
+  md-select-menu md-content md-option[selected],
+  am-repositories-selector .md-button .am-repositories-selector-label--selected,
+  am-repositories-selector
+    .md-button:not([disabled]):hover
+    .am-repositories-selector-label,
+  am-repositories-selector .md-button:not([disabled]):hover md-icon,
+  .am-inline-filters-facet-option
+    .md-checked:not([disabled])
+    .am-inline-filters-facet-option__count,
+  .am-inline-filters-facet-option
+    .md-checked:not([disabled])
+    .am-inline-filters-facet-option__label,
+  am-inline-filters-facet-option
+    .md-checked:not([disabled])
+    .am-inline-filters-facet-option__count,
+  am-inline-filters-facet-option
+    .md-checked:not([disabled])
+    .am-inline-filters-facet-option__label,
+  .am-inline-filters-facet-option
+    md-checkbox:not([disabled]):hover.md-checked
+    .am-inline-filters-facet-option__count,
+  .am-inline-filters-facet-option
+    md-checkbox:not([disabled]):hover.md-checked
+    .am-inline-filters-facet-option__label,
+  am-inline-filters-facet-option
+    md-checkbox:not([disabled]):hover.md-checked
+    .am-inline-filters-facet-option__count,
+  am-inline-filters-facet-option
+    md-checkbox:not([disabled]):hover.md-checked
+    .am-inline-filters-facet-option__label,
+  .am-breadcrumbs__crumb:hover,
+  .am-visualization-select-menu__menu-option--is-selected am-truncate,
+  .am-visualization-select-menu__menu-content .md-button:hover am-truncate,
+  .am-repositories-selector__menu-option--selected,
+  .am-repositories-selector__menu-option--selected am-repository-locale-info,
+  .am-repositories-selector__menu-option--selected
+    am-repository-locale-info
+    md-icon,
+  .am-repositories-selector__menu-option--create-repo
+    .am-repositories-selector__add-repo-icon,
+  .am-hub-selector__menu-option--is-selected:hover am-truncate,
+  .am-hub-selector__menu-option--is-selected am-truncate {
+    color: var(--theme-color);
+  }
+
+  .am-sort-selector__selected {
+    color: var(--theme-color) !important;
+  }
+
+  .am-timezone-selector__local-time {
+    color: #b2c0c6;
+  }
+
+  /* Background overrides */
+
+  .am-filter-control-filters__empty-group,
+  am-filter-chip.am-filter-chip--dark,
+  .am-filter-control__filter-btn {
+    background-color: var(--subtle-shade);
+  }
+
+  .am-toolbar-button:not([disabled]):hover {
+    background-color: var(--shade);
+  }
+
+  md-radio-button.md-default-theme .md-on,
+  md-radio-button .md-on,
+  md-checkbox.md-checked .md-icon,
+  md-checkbox.md-indeterminate .md-icon,
+  md-checkbox.md-checked .md-icon {
+    background-color: var(--theme-color);
+  }
+
+  /* Border overrides */
+
+  md-radio-button.md-default-theme.md-checked .md-off,
+  md-radio-button.md-checked .md-off,
+  am-content-folders-inline-subfolders-card:hover > div {
+    border-color: var(--theme-color);
+  }
+
+  /* Fill overrides */
+
+  am-content-folders-inline-subfolders-card > div md-icon {
+    fill: rgba(var(--theme-color-rgb), 0.5);
+  }
+
+  am-content-folders-inline-subfolders-card:hover > div md-icon,
+  am-content-view-toggle
+    am-button-toggle-group
+    .am-button-toggle-group__toggle-button.md-icon-button.active
+    md-icon
+    svg
+    *,
+  am-content-view-toggle
+    am-button-toggle-group
+    .am-button-toggle-group__toggle-button.md-icon-button:not([disabled]):hover
+    md-icon
+    svg
+    *,
+  .am-filter-control__filter-btn--active md-icon,
+  .am-toolbar-button:not([disabled]):hover md-icon,
+  md-toolbar:not(.md-menu-toolbar) .am-column-selector__button:hover md-icon,
+  .am-inline-filters__button--active md-icon svg,
+  .am-inline-filters__button--has-filters md-icon svg,
+  .am-button-toggle--active md-icon svg,
+  .am-button-toggle:hover md-icon svg {
+    fill: var(--theme-color);
+  }
+
+  /* Outline Overrides */
+
+  .am-grid__item--is-selected .am-grid__item__card-wrapper {
+    outline-color: var(--theme-color);
+  }
+
+  /* Other styles */
+
+  /* Search box */
+  am-search-box md-autocomplete md-autocomplete-wrap {
+    background: none;
+    border-color: var(--line-color);
+  }
+
+  am-search-box .md-input-focused md-autocomplete-wrap {
+    border-color: var(--theme-color);
+  }
+
+  am-search-box md-autocomplete input[type="search"] {
+    color: inherit;
+
+    &::placeholder {
+      color: var(--line-color);
+    }
+  }
+
+  .md-select-menu-container.md-active md-select-menu {
+    background: var(--background-color-rgb);
+  }
+
+  .am-dashboard__tabs > md-tabs-content-wrapper {
+    border-color: var(--line-color);
+  }
+
+  .am-dashboard__tab-content {
+    background-color: rgba(var(--theme-color-rgb), 0.1);
+    color: inherit;
+  }
+
+  am-dashboard-widget {
+    background-color: rgba(var(--background-color-rgb), 0.7);
+    border: solid 1px;
+    border-color: var(--background-color) rgba(var(--foreground-color-rgb), 0.4)
+      rgba(var(--foreground-color-rgb), 0.4) var(--background-color);
+  }
+
+  .am-dashboard-widget__header,
+  am-visualization-options-menu,
+  .am-version-history__header .am-toolbar,
+  .am-content-usages-panel__header,
+  .am-toolbar {
+    border-bottom: solid 1px var(--line-color);
+  }
+
+  .am-dashboard__banner::after {
+    content: "";
+    width: 270px;
+    height: 100%;
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: linear-gradient(to right, var(--background-color), transparent);
+  }
+
+  md-tabs .md-tab.md-active {
+    background: var(--background-color);
+  }
+
+  md-tabs md-ink-bar {
+    background-color: var(--theme-color);
+  }
+
+  /* So extensions in iframes will still always sit on top of white background */
+  am-extension-host,
+  am-content-editor-extension {
+    background: #fff;
+  }
+
+  /* Content */
+
+  am-content-item-library {
+    background-color: var(--background-color);
+    color: inherit;
+  }
+
+  .am-dashboard-header,
+  .am-dashboard__tabs > md-tabs-wrapper > md-tabs-canvas,
+  .am-inline-filters__button,
+  .am-content-folders-inline-subfolders__header h3,
+  am-repositories am-repositories-title h3,
+  am-repositories-selector .md-button .am-repositories-selector-label,
+  am-repositories-selector .md-button md-icon,
+  .am-base-breadcrumbs__crumb,
+  .am-breadcrumbs__crumb,
+  .am-content-item-library-breadcrumbs
+    .am-base-breadcrumbs__crumb
+    .am-base-breadcrumbs__link,
+  .am-inline-filters-applied__title,
+  .am-inline-filters-facet-group__title,
+  .am-properties__details-list-title,
+  .am-content-delivery__section h2,
+  .am-content-delivery__section h3,
+  .am-content-delivery__section-divider,
+  .am-version-history-card__details,
+  .am-version-history-card__selected-icon {
+    color: rgba(var(--foreground-color-rgb), 0.6);
+  }
+
+  am-content-folders-inline-subfolders-card > div {
+    border-color: var(--line-color);
+  }
+
+  .am-content-item-library-toolbar .am-toolbar,
+  .am-content-item-editor-toolbar {
+    background-color: transparent !important;
+    border-bottom-color: var(--line-color);
+  }
+
+  .am-rounded-icon-button.md-button {
+    background: var(--background-color);
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-color: var(--line-color);
+      transition: opacity 0.3s;
+    }
+
+    &:hover {
+      background-color: var(--theme-color) !important;
+
+      &::before {
+        opacity: 0;
+      }
+    }
+  }
+
+  .am-content-item-library-breadcrumbs
+    .am-base-breadcrumbs__crumb:first-child:before,
+  .am-content-item-library-breadcrumbs__measure--last:after,
+  .am-content-item-library-breadcrumbs__measure:before,
+  .am-content-item-library-breadcrumbs .am-base-breadcrumbs__crumb:after {
+    color: rgba(var(--foreground-color-rgb), 0.4);
+  }
+
+  .am-repository {
+    background-color: var(--subtle-shade);
+    color: inherit;
+  }
+
+  .am-repository--selected,
+  .am-repository--selected .am-repository__repo-toggle-icon {
+    color: var(--theme-color);
+  }
+
+  .am-repository:hover,
+  .am-repository--selected {
+    background-color: var(--shade);
+  }
+
+  am-content-folders md-icon.folder-icon svg {
+    fill: currentColor !important;
+  }
+
+  .am-content-folders__tree-item {
+    color: rgba(var(--foreground-color-rgb), 0.7);
+  }
+
+  .am-content-folders__tree-item__inner:hover {
+    color: var(--foreground-color);
+  }
+
+  .am-content-folders__actions {
+    opacity: 0;
+  }
+
+  .am-content-folders__tree-item__inner:hover .am-content-folders__actions {
+    opacity: 1;
+  }
+
+  .am-vertical-divider {
+    background-color: var(--line-color);
+  }
+
+  .am-inline-filters__button:not([disabled]).md-focused,
+  .am-inline-filters__button:not([disabled]):hover,
+  am-repositories-selector .md-button:not([disabled]).md-focused,
+  am-repositories-selector .md-button:not([disabled]):hover {
+    background-color: var(--subtle-shade);
+  }
+
+  am-content-item-library-collapsible-inline-folders am-collapsible-section,
+  am-content-item-library-collapsible-inline-folders
+    am-collapsible-section
+    am-collapsible-section-body
+    > ng-transclude
+    am-content-folders-inline-subfolders {
+    border-color: var(--line-color);
+  }
+
+  .am-content-item-library__results am-spinner,
+  am-spinner.am-spinner--table-overlay,
+  .am-inline-filters-overlay__wrapper am-spinner {
+    background-color: rgba(var(--background-color-rgb), 0.5);
+  }
+
+  am-table {
+    thead {
+      background: var(--subtle-shade);
+    }
+
+    tbody tr {
+      border-color: var(--line-color);
+
+      &:hover {
+        background-color: var(--subtle-shade);
+      }
+    }
+  }
+
+  .am-table__table--multiselect,
+  .am-table__table--selectable {
+    .is-selected {
+      background-color: var(--subtle-shade);
+    }
+  }
+
+  am-visualization-options-menu,
+  .am-content-item-editor__tabs > md-tabs-wrapper {
+    /* background-color: var(--subtle-shade); */
+
+    .md-menu,
+    md-menu {
+      .md-button,
+      md-checkbox {
+        color: inherit;
+      }
+    }
+  }
+
+  am-visualization,
+  .am-version-history__wrapper,
+  am-content-usages-panel,
+  am-content-properties {
+    background-color: var(--subtle-shade);
+  }
+
+  am-visualization-render-area .am-visualization-render-area__vis-container {
+    background: transparent;
+  }
+
+  am-visualization-options-menu .md-menu:not(:first-child),
+  am-visualization-options-menu md-menu:not(:first-child) {
+    border-color: var(--line-color);
+  }
+
+  am-visualization-options-menu .md-menu .md-button:focus,
+  am-visualization-options-menu .md-menu .md-button:hover,
+  am-visualization-options-menu .md-menu md-checkbox:focus,
+  am-visualization-options-menu .md-menu md-checkbox:hover,
+  am-visualization-options-menu md-menu .md-button:focus,
+  am-visualization-options-menu md-menu .md-button:hover,
+  am-visualization-options-menu md-menu md-checkbox:focus,
+  am-visualization-options-menu md-menu md-checkbox:hover {
+    background-color: var(--subtle-shade) !important;
+  }
+
+  .am-content-item-editor-toolbar-status-indicators__divider {
+    background-color: var(--line-color);
+  }
+
+  am-grabber:before {
+    border-color: var(--line-color);
+  }
+
+  .am-inline-filters-overlay__wrapper {
+    background: var(--background-color);
+    color: var(--foreground-color);
+    box-shadow: 0 6px 6px var(--shade);
+  }
+
+  .am-inline-filters-facet-option-label {
+    opacity: 0.8;
+  }
+
+  .am-inline-filters-facet-option__count {
+    color: var(--theme-color);
+  }
+
+  .am-inline-filters-facet-option,
+  am-inline-filters-facet-option {
+    .md-checked:not([disabled]),
+    md-checkbox:not([disabled]):hover {
+      .am-inline-filters-facet-option-label {
+        opacity: 1;
+      }
+
+      .am-inline-filters-facet-option__count {
+        color: var(--theme-color);
+      }
+    }
+  }
+
+  am-version-history-card,
+  .am-content-properties__content,
+  am-content-usages {
+    background: var(--background-color);
+    color: var(--foreground-color);
+    border-color: var(--background-color);
+  }
+
+  am-version-history-card:hover .am-version-history-card__selected-icon {
+    color: var(--foreground-color);
+  }
+
+  am-content-properties md-tabs-wrapper {
+    border-bottom: solid 1px var(--line-color);
+    box-shadow: none;
+  }
+
+  /* Scheduling */
+
+  .am-calendar__header__day {
+    color: rgba(var(--foreground-color-rgb), 0.6);
+  }
+
+  .am-events-panel__title .md-button--link,
+  .am-events-panel__title a {
+    color: inherit;
+  }
+
+  am-events-panel {
+    background: transparent;
+  }
+
+  .am-events-panel__info {
+    background-color: var(--subtle-shade);
+    border-top-color: var(--line-color);
+  }
+
+  .am-calendar__grid__week__day {
+    background-color: transparent;
+  }
+
+  .am-calendar__grid__week__day.elapsed {
+    background-color: var(--subtle-shade);
+  }
+
+  .am-calendar__grid__week__day__label.selected {
+    background-color: var(--theme-color);
+  }
+
+  .am-calendar__grid__week {
+    border-top-color: var(--line-color);
+  }
+
+  .am-calendar__grid__week__day__label {
+    color: inherit;
+  }
+
+  .am-calendar__grid__week__day:hover:not(.selected)
+    .am-calendar__grid__week__day__label {
+    background: var(--shade);
+  }
+
+  .am-calendar__grid__week__day__label.today {
+    border-top-color: var(--foreground-color);
+  }
+
+  am-title-summary {
+    border-bottom-color: var(--line-color);
+  }
+
+  .block-countdown {
+    background-color: var(--line-color);
+  }
+
+  .block-countdown__bar {
+    background-color: var(--theme-color);
+  }
+
+  .am-edition-status-totals__indicator--expired .am-status-indicator {
+    background-color: var(--line-color);
+    border-color: var(--line-color);
+    color: var(--background-color);
+  }
+
+  am-table th {
+    color: rgba(var(--foreground-color-rgb), 0.6);
+  }
+
+  am-table th.is-sortable.is-active,
+  am-table th.is-sortable:hover {
+    color: var(--foreground-color);
+  }
+
+  am-table th.is-sortable.sort-asc:after,
+  am-table th.is-sortable.sort-desc:after {
+    border-top-color: rgba(var(--foreground-color), 0.6);
+  }
+
+  am-table th.is-sortable.is-active.sort-asc:after,
+  am-table th.is-sortable.is-active.sort-desc:after,
+  am-table th.is-sortable:hover.sort-asc:after,
+  am-table th.is-sortable:hover.sort-desc:after {
+    border-top-color: var(--foreground-color);
+  }
+  /* Buttons */
+
+  .md-button.md-default-theme.md-primary.md-fab,
+  .md-button.md-primary.md-fab,
+  .md-button.md-default-theme.md-primary.md-raised,
+  .md-button.md-primary.md-raised,
+  .am-split-button .am-save-button-container > .md-button:not([disabled]),
+  .am-split-button .md-button:not([disabled]),
+  .md-button.amp-primary,
+  .md-button.md-primary {
+    background-color: var(--theme-color);
+    color: #fff;
+  }
+
+  .md-secondary {
+    background-color: var(--background-color);
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+  }
+
+  .am-content-switcher__indicator {
+    border-color: var(--theme-color);
+  }
+
+  am-content-switcher button.is-selected {
+    color: var(--theme-color);
+  }
+
+  .faux-hover.md-secondary:not([disabled]),
+  .md-button.amp-primary.faux-hover:not([disabled]),
+  .md-button.amp-primary:hover:not([disabled]),
+  .md-button.md-primary.faux-hover:not([disabled]),
+  .md-button.md-primary:hover:not([disabled]),
+  .md-secondary:hover:not([disabled]) {
+    background-color: rgba(var(--theme-color-rgb), 0.8) !important;
+  }
+
+  .am-split-button md-menu > button {
+    border-left-color: var(--background-color);
+  }
+
+  .md-button--on-grey.disabled,
+  .md-button--on-grey.disabled.amp-primary,
+  .md-button--on-grey.disabled.md-primary,
+  .md-button--on-grey[disabled],
+  .md-button--on-grey[disabled].amp-primary,
+  .md-button--on-grey[disabled].md-primary {
+    background: rgba(var(--theme-color-rgb), 0.4);
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Doesn't currently apply (in iframe) */
+  /*.mantine-Button-root[data-variant="secondary"] {
+    border-color: currentColor;
+    color: var(--theme-color);
+
+    &:hover {
+      border-color: currentColor;
+      box-shadow: 0 0 1px 2px rgba(var(--theme-color-rgb), 0.3);
+    }
+  }*/
+
+  .am-content-folders-inline-subfolders__add-folder md-icon:hover {
+    color: rgba(var(--theme-color-rgb), 0.8);
+  }
+}
