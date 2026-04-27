@@ -195,6 +195,12 @@
   border-radius: var(--button-radius, var(--mantine-radius-default));
 }
 
+.flow-search-highlight {
+  background-color: #ffe066;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
 #flow-archived-section {
   display: none;
   grid-column: 1 / -1;

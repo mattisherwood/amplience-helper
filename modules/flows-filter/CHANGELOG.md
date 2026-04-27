@@ -1,5 +1,11 @@
 # Flows Filter Changelog
 
+# 2026-04-22 (extension v2.2.4)
+
+### Added
+
+- Real-time search term highlighter
+
 ## 2026-04-15 (extension v2.1.2)
 
 ### Added
