@@ -68,6 +68,7 @@
    * If the hub doesn't exist, create it with default values.
    */
   function applyCurrentHubTheme() {
+    if (!chrome.runtime?.id) return
     chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
       const hubName = getHubNameFromUrl()
 
@@ -124,6 +125,10 @@
   // Listen for URL changes (for single-page app navigation)
   let previousUrl = window.location.href
   const urlCheckInterval = setInterval(() => {
+    if (!chrome.runtime?.id) {
+      clearInterval(urlCheckInterval)
+      return
+    }
     if (window.location.href !== previousUrl) {
       previousUrl = window.location.href
       applyCurrentHubTheme()

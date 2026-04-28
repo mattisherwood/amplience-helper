@@ -48,6 +48,7 @@
 
   function applyRules() {
     if (!enabled) return
+    if (!chrome.runtime?.id) return
 
     if (activeInterval) {
       clearInterval(activeInterval)
@@ -98,6 +99,7 @@
   }
 
   function scheduleApplyRules() {
+    if (!chrome.runtime?.id) return
     if (applyRulesTimeout) {
       clearTimeout(applyRulesTimeout)
     }
