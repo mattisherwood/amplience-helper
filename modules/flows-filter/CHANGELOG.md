@@ -1,5 +1,13 @@
 # Flows Filter Changelog
 
+# 2026-06-05 (extension v2.3.4)
+
+### Fixed
+
+- Add better padding to the flow filter
+
+---
+
 # 2026-04-28 (extension v2.3.2)
 
 ### Added
@@ -10,11 +18,15 @@
 
 - Support for hyphenated tags
 
+---
+
 # 2026-04-22 (extension v2.2.4)
 
 ### Added
 
 - Real-time search term highlighter
+
+---
 
 ## 2026-04-15 (extension v2.1.2)
 
