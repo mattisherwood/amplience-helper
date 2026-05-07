@@ -1,6 +1,6 @@
 # Flows Filter Changelog
 
-# 2026-06-05 (extension v2.3.4)
+# 2026-05-06 (extension v2.3.4)
 
 ### Fixed
 

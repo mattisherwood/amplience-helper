@@ -1,5 +1,84 @@
 # Changelog
 
+## v2.3.7 - 2026-05-07
+
+### Summary
+
+Hotkeys filter handling now plays nicely with mouse-driven filter panels, and deselection is more reliable across edge cases.
+
+### Module Highlights
+
+- Hotkeys: Hotkey-driven filtering now works whether the filter panel was opened via keyboard shortcut or by clicking it open.
+- Hotkeys: More reliable deselection rules.
+
+---
+
+## v2.3.6 - 2026-05-07
+
+### Summary
+
+Hotkeys gains visual cues that make content-type filtering by keyboard easier to discover and follow.
+
+### Module Highlights
+
+- Hotkeys: Tooltip shown when the content-type filter is listening for input.
+- Hotkeys: Real-time highlighting of matching options as you type.
+
+---
+
+## v2.3.5 - 2026-05-07
+
+### Summary
+
+Style Patches gains broader coverage, with each area's overrides now scoped to a documented minimum supported width.
+
+### Module Highlights
+
+- Style Patches: Improved patch coverage across more areas of the Amplience UI.
+- Style Patches: Each style file declares the minimum width it helps support down to, so behaviour at smaller viewports is clearer.
+
+---
+
+## v2.3.4 - 2026-05-06
+
+### Summary
+
+Small spacing fix for the Flows Filter input.
+
+### Module Highlights
+
+- Flows Filter: Better block padding around the filter UI.
+
+---
+
+## v2.3.3 - 2026-04-28
+
+### Summary
+
+Robustness fixes for the Favicon & Title Updater, mainly around SPA navigation and developer-time extension reloads. No user-visible behaviour change in normal use.
+
+### Module Highlights
+
+- Favicon & Title Updater: Guards against duplicate `MutationObserver` and `popstate` listeners if the module is started while already enabled.
+- Favicon & Title Updater: `currentUrl` now syncs to the current URL on start, avoiding a spurious rule application on first navigation.
+- Favicon & Title Updater: `pushState`/`replaceState` patches early-return when disabled, removing per-navigation overhead.
+- Favicon & Title Updater: Chrome API calls in intervals and observers guard against invalidated extension contexts (e.g. after reloading the extension during development).
+
+---
+
+## v2.3.2 - 2026-04-28
+
+### Summary
+
+Flows Filter now picks up tags from descriptions as well as titles, and supports hyphenated tags.
+
+### Module Highlights
+
+- Flows Filter: Tags detected in the flow description as well as the title, with duplicates removed.
+- Flows Filter: Hyphenated tags now supported.
+
+---
+
 ## v2.3.1 - 2026-04-24
 
 ### Summary
