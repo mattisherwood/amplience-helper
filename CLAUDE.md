@@ -45,7 +45,7 @@ amplience-helper/
 └── README.md              # User & contributor docs
 ```
 
-Each module folder is self-contained and ships its own `README.md` (and usually a CHANGELOG section).
+Each module folder is self-contained and ships its own `README.md` and `CHANGELOG.md`.
 
 ## Conventions — read before changing code
 
