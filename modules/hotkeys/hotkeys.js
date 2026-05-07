@@ -368,21 +368,14 @@ const applyListingHotkeys = (event) => {
     const isDialogOpen = document.querySelector(".md-dialog-container") !== null
     if (isDialogOpen) return
 
-    // Deselect all items
-    const selectAllCheckbox = document.querySelector(
-      "am-select-all md-checkbox",
-    )
-    if (selectAllCheckbox) {
-      if (selectAllCheckbox.classList.contains("md-indeterminate")) {
-        selectAllCheckbox.click()
-        event.preventDefault()
-      }
-      if (selectAllCheckbox.classList.contains("md-checked")) {
-        selectAllCheckbox.click()
-        event.preventDefault()
-        return
-      }
-    }
+    // If any rows are selected, deselect them
+    if (clickButton(".am-select-all__deselect", event)) return
+
+    // If some a search query or some filters are currently active, clear them by clicking the "Clear" buttons
+    clickButton(".am-inline-filters-applied__clear-filters", event)
+    clickButton(".am-search-box__clear-btn", event)
+
+    return
   }
 
   // =================== A ===================
