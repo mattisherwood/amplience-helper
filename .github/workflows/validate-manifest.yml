@@ -29,7 +29,10 @@ jobs:
           node-version: '20'
 
       - name: Install ajv-cli
-        run: npm install -g ajv-cli ajv-formats
+        # Pinned to major versions: protects against breaking changes upstream
+        # while still picking up bug fixes within the major. Bump majors
+        # deliberately when ajv-cli or ajv-formats releases a new one.
+        run: npm install -g ajv-cli@^5 ajv-formats@^3
 
       - name: Fetch Chrome manifest schema
         # ajv-cli only loads schemas from the local filesystem, so cache the

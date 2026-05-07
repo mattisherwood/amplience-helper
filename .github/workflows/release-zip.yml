@@ -30,6 +30,26 @@ jobs:
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
 
+      - name: Verify manifest.json matches CHANGELOG.md
+        # Reuses the same script that gates PRs, so we don't ship a release
+        # zip whose manifest version disagrees with the most recent changelog
+        # entry.
+        run: bash scripts/check-version.sh
+
+      - name: Verify pushed tag matches manifest.json
+        # Catches the other half of the version footgun: someone tagging
+        # v9.9.9 while manifest.json still says 2.3.7. Without this we'd
+        # happily build amplience-helper-v9.9.9.zip with a 2.3.7 manifest.
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          MANIFEST_VERSION="$(jq -r .version manifest.json)"
+          if [ "$TAG_VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "ERROR: tag version (v$TAG_VERSION) does not match manifest.json (v$MANIFEST_VERSION)"
+            echo "       either re-tag the release, or bump manifest.json to match the tag."
+            exit 1
+          fi
+          echo "OK: tag v$TAG_VERSION matches manifest.json"
+
       - name: Create extension zip
         run: |
           ZIP_NAME="amplience-helper-${{ steps.version.outputs.version }}.zip"

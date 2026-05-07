@@ -35,19 +35,25 @@ if [ ! -f "$CHANGELOG_FILE" ]; then
 fi
 
 # Manifest version (no "v" prefix).
+# `|| true` keeps the pipeline from tripping `set -euo pipefail` when grep
+# finds no match — we want to fall through to the explicit "could not extract"
+# error below, not exit silently with status 1.
 if command -v jq >/dev/null 2>&1; then
   MANIFEST_VERSION=$(jq -r '.version' "$MANIFEST_FILE")
 else
   # Fallback parser if jq is unavailable.
   MANIFEST_VERSION=$(grep -oE '"version"[[:space:]]*:[[:space:]]*"[^"]+"' "$MANIFEST_FILE" \
     | head -1 \
-    | sed -E 's/.*"version"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')
+    | sed -E 's/.*"version"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/' \
+    || true)
 fi
 
 # Top-most "## vX.Y[.Z][...]" header in the changelog, with the "v" stripped.
+# `|| true` for the same reason as above.
 CHANGELOG_VERSION=$(grep -oE '^## v[0-9]+(\.[0-9]+)+' "$CHANGELOG_FILE" \
   | head -1 \
-  | sed -E 's/^## v//')
+  | sed -E 's/^## v//' \
+  || true)
 
 if [ -z "${MANIFEST_VERSION:-}" ] || [ "$MANIFEST_VERSION" = "null" ]; then
   echo "ERROR: could not extract version from manifest.json"
