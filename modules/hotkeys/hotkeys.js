@@ -4,6 +4,10 @@ const DEFAULT_SETTINGS = {
   hotkeysEnabled: true,
 }
 
+const CONTENT_TYPE_LABEL_SELECTOR =
+  "am-inline-filters-facet-option-label ng-transclude"
+const CONTENT_TYPE_HIGHLIGHT_CLASS = "content-type-filter-highlight"
+
 // Track whether we're in filter typing mode
 let isFilterTypingMode = false
 let hotkeysEnabled = false
@@ -461,6 +465,17 @@ const applyListingHotkeys = (event) => {
     // e.g. 'P' would filter by 'product carousel' and 'page' content types if those options are available
     // e.g. 'Pa' would filter by 'page' content types but not 'product carousel'
     if (contentTypeFilterOptions.length > 0) {
+      // Prepend a <span>Start typing to filter by content type</span> tooltip to am-inline-filters-facet-group[facet="$ctrl.store.facetsMap.schema"]
+      const contentTypeFacetGroup = document.querySelector(
+        'am-inline-filters-facet-group[facet="$ctrl.store.facetsMap.schema"]',
+      )
+      if (contentTypeFacetGroup) {
+        const tooltip = document.createElement("span")
+        tooltip.id = "content-type-filter-tooltip"
+        tooltip.textContent = "Start typing to filter by content type"
+        tooltip.className = "content-type-filter-tooltip"
+        contentTypeFacetGroup.prepend(tooltip)
+      }
       const filterKeyListener = (event) => {
         if (isCtrlOrCmd(event) || event.key === "F") return
 
@@ -469,15 +484,20 @@ const applyListingHotkeys = (event) => {
           clearTimeout(filterResetTimer)
 
           filterString += event.key.toLowerCase()
+          resetContentTypeOptionHighlights(contentTypeFilterOptions)
 
           // Check for options that match the filter string and click the first one
           for (const option of contentTypeFilterOptions) {
             const optionLabel = option.querySelector(
-              "am-inline-filters-facet-option-label ng-transclude",
+              CONTENT_TYPE_LABEL_SELECTOR,
             )
+            if (!optionLabel) continue
+
             const optionText = optionLabel.textContent.toLowerCase()
             const checkbox = option.querySelector("md-checkbox")
+
             if (optionText.startsWith(filterString)) {
+              highlightContentTypePrefix(optionLabel, filterString)
               if (checkbox && !checkbox.classList.contains("md-checked"))
                 checkbox.click()
             } else if (checkbox && checkbox.classList.contains("md-checked")) {
@@ -488,11 +508,13 @@ const applyListingHotkeys = (event) => {
           // Set a timer to reset the filter string if no key is pressed within 1 second
           filterResetTimer = setTimeout(() => {
             filterString = ""
+            resetContentTypeOptionHighlights(contentTypeFilterOptions)
           }, 1000)
         } else {
           // If user types a non A-Z key, reset the filter string
           clearTimeout(filterResetTimer)
           filterString = ""
+          resetContentTypeOptionHighlights(contentTypeFilterOptions)
         }
       }
 
@@ -501,12 +523,14 @@ const applyListingHotkeys = (event) => {
       // Remove this listener on the closing of the filter panel
       const removeFilterKeyListener = () => {
         clearTimeout(filterResetTimer)
+        resetContentTypeOptionHighlights(contentTypeFilterOptions)
         document.removeEventListener("keydown", filterKeyListener)
         document.removeEventListener(
           "keydown",
           removeFilterkeyCancellationListener,
         )
         document.removeEventListener("click", handleClickOutside)
+        document.getElementById("content-type-filter-tooltip")?.remove()
       }
       const removeFilterkeyCancellationListener = (event) => {
         if (["Enter", "Escape"].includes(event.key)) {
@@ -798,6 +822,60 @@ const isTypingInInput = () => {
   return isInput || isContentEditable
 }
 
+const clearContentTypePrefixHighlights = (rootElement) => {
+  if (!rootElement) return
+
+  const highlights = rootElement.querySelectorAll(
+    `.${CONTENT_TYPE_HIGHLIGHT_CLASS}`,
+  )
+
+  highlights.forEach((highlight) => {
+    const parent = highlight.parentNode
+    if (!parent) return
+
+    parent.replaceChild(
+      document.createTextNode(highlight.textContent || ""),
+      highlight,
+    )
+    parent.normalize()
+  })
+}
+
+const highlightContentTypePrefix = (labelElement, filterString) => {
+  if (!labelElement) return
+
+  clearContentTypePrefixHighlights(labelElement)
+
+  if (!filterString) {
+    return
+  }
+
+  const labelText = labelElement.textContent || ""
+  if (!labelText.toLowerCase().startsWith(filterString.toLowerCase())) {
+    return
+  }
+
+  const prefix = labelText.slice(0, filterString.length)
+  const suffix = labelText.slice(filterString.length)
+  const highlight = document.createElement("span")
+
+  highlight.className = CONTENT_TYPE_HIGHLIGHT_CLASS
+  highlight.textContent = prefix
+
+  labelElement.textContent = ""
+  labelElement.appendChild(highlight)
+  labelElement.appendChild(document.createTextNode(suffix))
+}
+
+const resetContentTypeOptionHighlights = (options) => {
+  for (const option of options) {
+    const optionLabel = option.querySelector(CONTENT_TYPE_LABEL_SELECTOR)
+    if (!optionLabel) continue
+
+    clearContentTypePrefixHighlights(optionLabel)
+  }
+}
+
 const addTooltipToButton = (selector, tooltipText) => {
   const button = document.querySelector(selector)
   if (button) {
@@ -848,109 +926,7 @@ const isCtrlOrCmd = (event) => event.ctrlKey || event.metaKey
 const createHelpOverlay = () => {
   const overlay = document.createElement("div")
   overlay.id = "hotkey-help-overlay"
-  overlay.innerHTML = `<style>
-    #hotkey-help-overlay {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        max-width: 80%;
-        max-height: calc(100vh - 80px);
-        padding: 20px 40px;
-        background-color: rgba(0, 0, 0, 0.8);
-        border-radius: 10px;
-        color: #fff;
-        font-size: 16px;
-        text-align: center;
-        z-index: 10000;
-        transform: translate(-50%, -50%);
-        overflow: auto;
-
-        .cols {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: max-content;
-            max-width: 100%;
-
-            div {
-                border: solid 1px;
-                border-radius: 10px;
-                overflow: hidden;
-            }
-        }
-
-        h3 {
-            margin: 0;
-            padding: 10px;
-            background-color: #fff;
-            color: #000;
-        }
-
-        h4 {
-            text-align: right;
-            border-bottom: solid 1px;
-            color: #fff;
-            padding-block: 5px;
-            margin: 10px 20px 0;
-        }
-
-        dl {
-            display: grid;
-            position: relative;
-            grid-template-columns: auto auto;
-            margin: 5px 20px 20px;
-        }
-
-        dt,
-        dd {
-            padding: 5px 0;
-        }
-
-        dt {
-            text-align: left;
-            font-weight: bold;
-
-            &:not(:first-child)::before {
-                content: "";
-                display: block;
-                position: absolute;
-                border-bottom: solid 1px #666;
-                width: 100%;
-                left: 0;
-                margin-top: -5px;
-            }
-        }
-
-        dd {
-            text-align: right;
-        }
-
-        .caveat {
-          color: #ccc;
-          display: block;
-          text-align: right;
-          margin: -1em 20px 0;
-          box-sizing: border-box;
-          font-size: 0.8em;
-          line-height: 1;
-        }
-
-        .closeHelpText {
-          color: #ccc;
-        }
-    }
-
-    @media (min-width: 700px) {
-        #hotkey-help-overlay .cols {
-            flex-direction: row;
-
-            div {
-                width: calc(33% - (40px / 3));
-            }
-        }
-    }
-</style>
-<h2>Amplience Hotkeys</h2>
+  overlay.innerHTML = `<h2>Amplience Hotkeys</h2>
 <div class="cols">
     <div>
         <h3>Global</h3>

@@ -1,6 +1,21 @@
 # Hotkeys Changelog
 
+## 2026-04-07 (extension v2.3.6)
+
+### Added
+
+- Tooltip when content-type filter is listening
+- Real-time highlighting when content-type filter is listening
+
+### Changed
+
+- Extracted CSS into a separate file for good practice & ease of management
+
+---
+
 > Prior to integration into `amplience-helper`, Hotkeys was maintained as a standalone extension (`amplience-hotkeys`). Version numbers below reflect that lineage.
+
+---
 
 ## 2026-03-25 (extension v2.0)
 
