@@ -1,0 +1,52 @@
+name: Check markdown links
+
+# Walks every tracked markdown file and checks that the links resolve.
+# Catches dead links in README.md, CHANGELOG.md, and module READMEs before
+# they reach a user.
+#
+# Tuning: see .github/markdown-link-check.json for ignore patterns,
+# allow-listed status codes (e.g. 403/999 for sites that block bot
+# scrapers), and retry behaviour.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - '**/*.md'
+      - '.github/workflows/check-links.yml'
+      - '.github/markdown-link-check.json'
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install markdown-link-check
+        # Pinned to major version (same convention as ajv-cli and web-ext).
+        run: npm install -g markdown-link-check@^3
+
+      - name: Check links in tracked markdown files
+        # `git ls-files '*.md'` deliberately misses untracked dirs like
+        # .claude/, and any node_modules that creeps in.
+        # The loop accumulates failures so all files are checked even if
+        # an early one fails — gives a complete picture of broken links
+        # in one CI run.
+        run: |
+          fail=0
+          while IFS= read -r file; do
+            echo "::group::$file"
+            markdown-link-check \
+              --config .github/markdown-link-check.json \
+              --quiet \
+              "$file" || fail=1
+            echo "::endgroup::"
+          done < <(git ls-files '*.md')
+          exit $fail
