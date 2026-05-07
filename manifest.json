@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Amplience Helper",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "description": "A suite of tools bundled in a browser extension to help every-day Amplience super-users create content at the speed of ideas.",
   "permissions": ["storage"],
   "options_page": "options.html",
@@ -33,6 +33,7 @@
     },
     {
       "matches": ["https://app.amplience.net/content*"],
+      "css": ["modules/hotkeys/hotkeys.css"],
       "js": ["modules/hotkeys/hotkeys.js"],
       "run_at": "document_idle"
     },
