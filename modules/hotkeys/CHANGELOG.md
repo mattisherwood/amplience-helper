@@ -1,6 +1,6 @@
 # Hotkeys Changelog
 
-## 2026-04-07 (extension v2.3.7)
+## 2026-05-07 (extension v2.3.7)
 
 ### Changed
 
@@ -9,7 +9,7 @@
 
 ---
 
-## 2026-04-07 (extension v2.3.6)
+## 2026-05-07 (extension v2.3.6)
 
 ### Added
 
