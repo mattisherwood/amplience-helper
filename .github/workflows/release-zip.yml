@@ -1,0 +1,82 @@
+name: Release zip
+
+# Triggered when a tag matching v* is pushed (e.g. v2.3.7).
+# Zips the extension and attaches it as a GitHub Release asset, ready to upload
+# manually to the Chrome Web Store.
+#
+# To release:
+#   1. Update CHANGELOG.md and bump manifest.json (CI enforces consistency).
+#   2. git tag v2.3.8 && git push origin v2.3.8
+#   3. CI produces amplience-helper-v2.3.8.zip on the GitHub Release page.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    # softprops/action-gh-release needs write access to create the release.
+    # Scoped at job level so the rest of the repo stays at the default
+    # read-only token permissions.
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine version
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify manifest.json matches CHANGELOG.md
+        # Reuses the same script that gates PRs, so we don't ship a release
+        # zip whose manifest version disagrees with the most recent changelog
+        # entry.
+        run: bash scripts/check-version.sh
+
+      - name: Verify pushed tag matches manifest.json
+        # Catches the other half of the version footgun: someone tagging
+        # v9.9.9 while manifest.json still says 2.3.7. Without this we'd
+        # happily build amplience-helper-v9.9.9.zip with a 2.3.7 manifest.
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          MANIFEST_VERSION="$(jq -r .version manifest.json)"
+          if [ "$TAG_VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "ERROR: tag version (v$TAG_VERSION) does not match manifest.json (v$MANIFEST_VERSION)"
+            echo "       either re-tag the release, or bump manifest.json to match the tag."
+            exit 1
+          fi
+          echo "OK: tag v$TAG_VERSION matches manifest.json"
+
+      - name: Create extension zip
+        run: |
+          ZIP_NAME="amplience-helper-${{ steps.version.outputs.version }}.zip"
+          # Exclude version control, CI, IDE, internal docs, and dev scripts —
+          # ship only what the extension needs at runtime.
+          # Mirrors the long-running manual zip command: exclude version control,
+          # CI/IDE config, dev artefacts, and all markdown (Web Store doesn't
+          # surface README/CHANGELOG; users see the store listing instead).
+          zip -r "$ZIP_NAME" . \
+            -x '.git/*' \
+            -x '.github/*' \
+            -x '.vscode/*' \
+            -x '.claude/*' \
+            -x '.gitignore' \
+            -x '.DS_Store' \
+            -x '*/.DS_Store' \
+            -x 'node_modules/*' \
+            -x 'scripts/*' \
+            -x 'screenshots/*' \
+            -x '*.md'
+          echo "Built $ZIP_NAME ($(du -h "$ZIP_NAME" | cut -f1))"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: amplience-helper-*.zip
+          # Auto-generate a release body from commit messages if no notes exist.
+          # Replace with body_path: release-notes.md once the changelog-extraction
+          # step from the CI/CD assessment lands.
+          generate_release_notes: true
