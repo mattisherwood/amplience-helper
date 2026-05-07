@@ -1,0 +1,20 @@
+name: Validate version consistency
+
+# Blocks PRs and releases if manifest.json and CHANGELOG.md drift apart.
+# The actual logic lives in scripts/check-version.sh so it can also be run
+# locally (e.g. before tagging a release).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run version consistency check
+        run: bash scripts/check-version.sh

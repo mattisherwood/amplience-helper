@@ -1,0 +1,45 @@
+name: Validate manifest.json
+
+# Validates manifest.json against SchemaStore's Chrome extension manifest schema
+# using ajv-cli. Catches typos, missing fields, and structural issues before merge.
+#
+# --strict=false is set because the upstream schema mixes JSON Schema drafts and
+# uses keywords ajv treats as unknown in strict mode.
+# ajv-formats is loaded so format keywords (uri, email, etc.) are validated
+# rather than ignored.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - 'manifest.json'
+      - '.github/workflows/validate-manifest.yml'
+
+jobs:
+  validate-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install ajv-cli
+        run: npm install -g ajv-cli ajv-formats
+
+      - name: Fetch Chrome manifest schema
+        # ajv-cli only loads schemas from the local filesystem, so cache the
+        # upstream SchemaStore copy first.
+        run: curl -fsSL -o /tmp/chrome-manifest.schema.json https://json.schemastore.org/chrome-manifest.json
+
+      - name: Validate manifest.json against Chrome schema
+        run: |
+          ajv validate \
+            --strict=false \
+            -c ajv-formats \
+            -s /tmp/chrome-manifest.schema.json \
+            -d manifest.json
