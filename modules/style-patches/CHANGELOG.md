@@ -1,5 +1,15 @@
 # Style Patches Changelog
 
+## 2026-05-07 (extension v2.3.5)
+
+### Changed
+
+- Separated style patches for different areas into separate files
+- Improved patch coverage
+- Specified minimum-width which each file helps support down to
+
+---
+
 ## 2026-04-24 (extension v2.2.2)
 
 - Made top-level homepage more responsive

@@ -1,0 +1,102 @@
+/* ================ ACCOUNT MANAGEMENT APP ================ */
+/* This makes the account management headers responsive and */
+/* mobile-friendly on any size down to 459px.               */
+
+/* NB: We must include .App.App in the classes to */
+/* match the specificity of the existing styles.  */
+[data-amplience-style-patches="enabled"] {
+  .App.App {
+    min-width: initial;
+    overflow-y: auto;
+
+    .masthead {
+      height: auto;
+      padding-right: initial;
+
+      > div > .flex {
+        flex-wrap: wrap;
+
+        > .flex,
+        > .flex > .flex {
+          display: contents !important;
+        }
+      }
+
+      .masthead__title-wrap {
+        margin-right: auto;
+      }
+
+      .masthead__admin-badge {
+        padding-right: initial;
+      }
+
+      .badge {
+        margin: 8px;
+      }
+
+      .badge__text {
+        line-height: 1;
+      }
+
+      .masthead__help-icon,
+      .masthead__logout-icon {
+        margin: initial;
+        padding: 8px;
+        width: initial;
+        height: initial;
+        min-width: initial;
+        min-height: initial;
+      }
+    }
+
+    .organization-management__org-selector {
+      width: initial;
+
+      @media (max-width: 458px) {
+        width: 100%;
+        flex-grow: 1;
+      }
+    }
+
+    .organization-management__header {
+      height: initial;
+      flex-wrap: wrap;
+      padding-right: initial;
+    }
+
+    .organization-management__context-bar {
+      display: contents;
+    }
+
+    .organization-management__tabs {
+      flex-grow: 1;
+
+      @media (max-width: 603px) {
+        order: 1;
+      }
+    }
+
+    .tab-bar__tab {
+      flex-grow: 1;
+      max-width: 201px;
+    }
+
+    .organization-management__search-and-invite {
+      padding: 10px 20px;
+
+      @media (max-width: 458px) {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    .list-row > td,
+    .table-row > th {
+      min-width: 0;
+    }
+  }
+
+  .organization-management__context-bar {
+    display: contents;
+  }
+}
