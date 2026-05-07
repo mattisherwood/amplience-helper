@@ -1,5 +1,14 @@
 # Hotkeys Changelog
 
+## 2026-04-07 (extension v2.3.7)
+
+### Changed
+
+- Apply more reliable deselection rules
+- Allow hotkey-filtering when filters clicked open as well as when they were 'hotkeyed' open
+
+---
+
 ## 2026-04-07 (extension v2.3.6)
 
 ### Added
