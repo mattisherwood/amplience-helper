@@ -7,6 +7,11 @@ const DEFAULT_SETTINGS = {
 const CONTENT_TYPE_LABEL_SELECTOR =
   "am-inline-filters-facet-option-label ng-transclude"
 const CONTENT_TYPE_HIGHLIGHT_CLASS = "content-type-filter-highlight"
+const CONTENT_TYPE_FILTER_OPTIONS_SELECTOR =
+  ".am-inline-filters-overlay__group-wrapper:first-of-type am-inline-filters-facet-option"
+const FILTER_PANEL_SELECTOR = ".am-inline-filters-overlay"
+const FILTER_PANEL_WRAPPER_SELECTOR = ".am-inline-filters-overlay__wrapper"
+const FILTER_BUTTON_SELECTOR = ".am-inline-filters__button"
 
 // Track whether we're in filter typing mode
 let isFilterTypingMode = false
@@ -17,6 +22,28 @@ let initIntervalId = null
 let debounceTimer = null
 let pageObserver = null
 let removeHelpOverlay = null
+let removeContentTypeFilterTypingListeners = null
+
+const handleFilterButtonClick = (event) => {
+  if (!(event.target instanceof Element)) {
+    return
+  }
+
+  if (!event.target.closest(FILTER_BUTTON_SELECTOR)) {
+    return
+  }
+
+  setTimeout(() => {
+    if (document.querySelector(FILTER_PANEL_WRAPPER_SELECTOR)) {
+      scheduleContentTypeFilterTypingStart()
+      return
+    }
+
+    if (removeContentTypeFilterTypingListeners) {
+      removeContentTypeFilterTypingListeners()
+    }
+  }, 0)
+}
 
 // Initialize tooltips when buttons are available
 // Use a retry mechanism for initial page load (Angular takes time to render)
@@ -86,6 +113,7 @@ function startHotkeys() {
 
   isInitialized = true
   document.addEventListener("keydown", handleKeydown)
+  document.addEventListener("click", handleFilterButtonClick)
   startInitializationLoop()
 }
 
@@ -98,6 +126,12 @@ function stopHotkeys() {
 
   isInitialized = false
   document.removeEventListener("keydown", handleKeydown)
+  document.removeEventListener("click", handleFilterButtonClick)
+
+  if (removeContentTypeFilterTypingListeners) {
+    removeContentTypeFilterTypingListeners()
+    removeContentTypeFilterTypingListeners = null
+  }
 
   if (initIntervalId) {
     clearInterval(initIntervalId)
@@ -446,101 +480,7 @@ const applyListingHotkeys = (event) => {
   if (!isCtrlOrCmd(event) && ["f", "F"].includes(event.key)) {
     // Open/Close filters panel
     clickButton(".am-inline-filters__button", event)
-
-    const contentTypeFilterOptions = document.querySelectorAll(
-      ".am-inline-filters-overlay__group-wrapper:first-of-type am-inline-filters-facet-option",
-    )
-    let filterString = ""
-    let filterResetTimer = null
-
-    // Once the filters are open, listen for 5 seconds to see if any further keys are pressed
-    // If the user types one or more A-Z keys (other than F) within then it checks for filter options starting with that string and clicks on them to quickly filter by that content type
-    // e.g. 'P' would filter by 'product carousel' and 'page' content types if those options are available
-    // e.g. 'Pa' would filter by 'page' content types but not 'product carousel'
-    if (contentTypeFilterOptions.length > 0) {
-      // Prepend a <span>Start typing to filter by content type</span> tooltip to am-inline-filters-facet-group[facet="$ctrl.store.facetsMap.schema"]
-      const contentTypeFacetGroup = document.querySelector(
-        'am-inline-filters-facet-group[facet="$ctrl.store.facetsMap.schema"]',
-      )
-      if (contentTypeFacetGroup) {
-        const tooltip = document.createElement("span")
-        tooltip.id = "content-type-filter-tooltip"
-        tooltip.textContent = "Start typing to filter by content type"
-        tooltip.className = "content-type-filter-tooltip"
-        contentTypeFacetGroup.prepend(tooltip)
-      }
-      const filterKeyListener = (event) => {
-        if (isCtrlOrCmd(event) || event.key === "F") return
-
-        if (/^[a-zA-Z]$/.test(event.key)) {
-          // Clear any existing reset timer
-          clearTimeout(filterResetTimer)
-
-          filterString += event.key.toLowerCase()
-          resetContentTypeOptionHighlights(contentTypeFilterOptions)
-
-          // Check for options that match the filter string and click the first one
-          for (const option of contentTypeFilterOptions) {
-            const optionLabel = option.querySelector(
-              CONTENT_TYPE_LABEL_SELECTOR,
-            )
-            if (!optionLabel) continue
-
-            const optionText = optionLabel.textContent.toLowerCase()
-            const checkbox = option.querySelector("md-checkbox")
-
-            if (optionText.startsWith(filterString)) {
-              highlightContentTypePrefix(optionLabel, filterString)
-              if (checkbox && !checkbox.classList.contains("md-checked"))
-                checkbox.click()
-            } else if (checkbox && checkbox.classList.contains("md-checked")) {
-              checkbox.click()
-            }
-          }
-
-          // Set a timer to reset the filter string if no key is pressed within 1 second
-          filterResetTimer = setTimeout(() => {
-            filterString = ""
-            resetContentTypeOptionHighlights(contentTypeFilterOptions)
-          }, 1000)
-        } else {
-          // If user types a non A-Z key, reset the filter string
-          clearTimeout(filterResetTimer)
-          filterString = ""
-          resetContentTypeOptionHighlights(contentTypeFilterOptions)
-        }
-      }
-
-      document.addEventListener("keydown", filterKeyListener)
-
-      // Remove this listener on the closing of the filter panel
-      const removeFilterKeyListener = () => {
-        clearTimeout(filterResetTimer)
-        resetContentTypeOptionHighlights(contentTypeFilterOptions)
-        document.removeEventListener("keydown", filterKeyListener)
-        document.removeEventListener(
-          "keydown",
-          removeFilterkeyCancellationListener,
-        )
-        document.removeEventListener("click", handleClickOutside)
-        document.getElementById("content-type-filter-tooltip")?.remove()
-      }
-      const removeFilterkeyCancellationListener = (event) => {
-        if (["Enter", "Escape"].includes(event.key)) {
-          removeFilterKeyListener()
-        }
-      }
-      const handleClickOutside = (event) => {
-        // Only remove listeners if clicking outside the filter panel
-        const filterPanel = document.querySelector(".am-inline-filters-overlay")
-        if (filterPanel && !filterPanel.contains(event.target)) {
-          removeFilterKeyListener()
-        }
-      }
-      // Filter panel can be closed by the Enter or escape keys (handled above) or by clicking outside the panel, so listen for clicks on the document to catch that and remove the filter key listener
-      document.addEventListener("click", handleClickOutside)
-      document.addEventListener("keydown", removeFilterkeyCancellationListener)
-    }
+    scheduleContentTypeFilterTypingStart()
 
     return
   }
@@ -813,6 +753,136 @@ const isTypingInInput = () => {
   const isContentEditable = activeElement.isContentEditable
 
   return isInput || isContentEditable
+}
+
+const scheduleContentTypeFilterTypingStart = (attemptsRemaining = 10) => {
+  if (!hotkeysEnabled) {
+    return
+  }
+
+  if (startContentTypeFilterTyping()) {
+    return
+  }
+
+  if (attemptsRemaining <= 0) {
+    return
+  }
+
+  setTimeout(() => {
+    scheduleContentTypeFilterTypingStart(attemptsRemaining - 1)
+  }, 100)
+}
+
+const startContentTypeFilterTyping = () => {
+  if (isFilterTypingMode) {
+    return true
+  }
+
+  if (!document.querySelector(FILTER_PANEL_WRAPPER_SELECTOR)) {
+    return false
+  }
+
+  const contentTypeFilterOptions = document.querySelectorAll(
+    CONTENT_TYPE_FILTER_OPTIONS_SELECTOR,
+  )
+  if (contentTypeFilterOptions.length === 0) {
+    return false
+  }
+
+  let filterString = ""
+  let filterResetTimer = null
+  isFilterTypingMode = true
+
+  const contentTypeFacetGroup = document.querySelector(
+    'am-inline-filters-facet-group[facet="$ctrl.store.facetsMap.schema"]',
+  )
+  if (contentTypeFacetGroup) {
+    const tooltip = document.createElement("span")
+    tooltip.id = "content-type-filter-tooltip"
+    tooltip.textContent = "Start typing to filter by content type"
+    tooltip.className = "content-type-filter-tooltip"
+    contentTypeFacetGroup.prepend(tooltip)
+  }
+
+  const filterKeyListener = (event) => {
+    if (isCtrlOrCmd(event) || event.key === "F") return
+
+    if (/^[a-zA-Z]$/.test(event.key)) {
+      // Clear any existing reset timer
+      clearTimeout(filterResetTimer)
+
+      filterString += event.key.toLowerCase()
+      resetContentTypeOptionHighlights(contentTypeFilterOptions)
+
+      // Check for options that match the filter string and click the first one
+      for (const option of contentTypeFilterOptions) {
+        const optionLabel = option.querySelector(CONTENT_TYPE_LABEL_SELECTOR)
+        if (!optionLabel) continue
+
+        const optionText = optionLabel.textContent.toLowerCase()
+        const checkbox = option.querySelector("md-checkbox")
+
+        if (optionText.startsWith(filterString)) {
+          highlightContentTypePrefix(optionLabel, filterString)
+          if (checkbox && !checkbox.classList.contains("md-checked"))
+            checkbox.click()
+        } else if (checkbox && checkbox.classList.contains("md-checked")) {
+          checkbox.click()
+        }
+      }
+
+      // Set a timer to reset the filter string if no key is pressed within 1 second
+      filterResetTimer = setTimeout(() => {
+        filterString = ""
+        resetContentTypeOptionHighlights(contentTypeFilterOptions)
+      }, 1000)
+    } else {
+      // If user types a non A-Z key, reset the filter string
+      clearTimeout(filterResetTimer)
+      filterString = ""
+      resetContentTypeOptionHighlights(contentTypeFilterOptions)
+    }
+  }
+
+  const removeFilterKeyListener = () => {
+    if (!isFilterTypingMode) {
+      return
+    }
+
+    isFilterTypingMode = false
+    clearTimeout(filterResetTimer)
+    resetContentTypeOptionHighlights(contentTypeFilterOptions)
+    document.removeEventListener("keydown", filterKeyListener)
+    document.removeEventListener("keydown", removeFilterkeyCancellationListener)
+    document.removeEventListener("click", handleClickOutside)
+    document.getElementById("content-type-filter-tooltip")?.remove()
+
+    if (removeContentTypeFilterTypingListeners === removeFilterKeyListener) {
+      removeContentTypeFilterTypingListeners = null
+    }
+  }
+
+  const removeFilterkeyCancellationListener = (event) => {
+    if (["Enter", "Escape"].includes(event.key)) {
+      removeFilterKeyListener()
+    }
+  }
+
+  const handleClickOutside = (event) => {
+    // Only remove listeners if clicking outside the filter panel
+    const filterPanel = document.querySelector(FILTER_PANEL_SELECTOR)
+    if (filterPanel && !filterPanel.contains(event.target)) {
+      removeFilterKeyListener()
+    }
+  }
+
+  // Filter panel can be closed by the Enter or escape keys (handled above) or by clicking outside the panel, so listen for clicks on the document to catch that and remove the filter key listener
+  document.addEventListener("keydown", filterKeyListener)
+  document.addEventListener("click", handleClickOutside)
+  document.addEventListener("keydown", removeFilterkeyCancellationListener)
+  removeContentTypeFilterTypingListeners = removeFilterKeyListener
+
+  return true
 }
 
 const clearContentTypePrefixHighlights = (rootElement) => {
