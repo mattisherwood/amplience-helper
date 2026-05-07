@@ -1,5 +1,8 @@
 # MacOS system files
 .DS_Store
 
+# Claude notes
+CLAUDE.local.md
+
 # IDE Preference
 .vscode/
