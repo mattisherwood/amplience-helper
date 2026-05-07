@@ -1,0 +1,48 @@
+name: Lint extension with web-ext
+
+# Mozilla's web-ext lint catches a different class of issue from ajv schema
+# validation: unused permissions, missing icons, broken
+# web_accessible_resources paths, deprecated manifest fields. It's MV3-aware
+# and works fine on Chrome extensions even though the tool is Firefox-branded.
+#
+# Default behaviour: warnings don't fail the build, errors do.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  web-ext-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install web-ext
+        # Pinned to major version (same convention as ajv-cli in
+        # validate-manifest.yml). Bump deliberately.
+        run: npm install -g web-ext@^8
+
+      - name: Run web-ext lint
+        # --ignore-files mirrors the release-zip exclusion list so the linter
+        # only inspects what would actually ship.
+        run: |
+          web-ext lint \
+            --source-dir . \
+            --ignore-files \
+              ".git/**" \
+              ".github/**" \
+              ".vscode/**" \
+              ".claude/**" \
+              "node_modules/**" \
+              "scripts/**" \
+              "screenshots/**" \
+              "**/*.md" \
+              ".gitignore" \
+              ".DS_Store"
