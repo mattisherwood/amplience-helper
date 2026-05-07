@@ -80,7 +80,7 @@ Each module folder is self-contained and ships its own `README.md` and `CHANGELO
 
 ## Adding a new module
 
-1. Create `modules/<name>/` with `<name>.js`, `<name>.css` (if needed), `README.md`, and a CHANGELOG section in the README.
+1. Create `modules/<name>/` with `<name>.js`, `<name>.css` (if needed), `README.md`, and `CHANGELOG.md`.
 2. Pick a `chrome.storage.sync` key (e.g. `<name>Enabled`). Default to `false` until you're confident.
 3. Wire content scripts into `manifest.json` with the narrowest `matches` pattern that works.
 4. Add a toggle row to `popup.html` + `popup.js` and `options.html` + `options.js`. Wording must match.
