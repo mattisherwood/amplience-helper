@@ -241,6 +241,14 @@
     color: #b2c0c6;
   }
 
+  .am-switcheroo__secondary {
+    color: #597684;
+
+    &:hover {
+      color: #002c42;
+    }
+  }
+
   /* Background overrides */
 
   .am-filter-control-filters__empty-group,

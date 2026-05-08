@@ -1,0 +1,123 @@
+[data-amplience-style-patches="enabled"] {
+  .switcheroo {
+    width: auto;
+    padding-right: 16px;
+  }
+
+  /* FIX SWITCHEROO DROPDOWN TO BE CONSISTENT ACROSS APPS */
+
+  .md-open-menu-container.switcheroo__menu,
+  .switcheroo__menu-content.switcheroo__menu-content {
+    width: 100%;
+    max-width: 320px;
+    min-width: initial;
+  }
+
+  /* Primary & secondary lists */
+
+  .switcheroo__menu .switcheroo__primary-applist,
+  .switcheroo__menu .switcheroo__secondary-applist {
+    padding: 0;
+
+    a {
+      display: block;
+      padding: 18px 20px;
+      border-bottom: solid 1px #eee;
+    }
+  }
+
+  .switcheroo__menu .switcheroo__primary-app,
+  .switcheroo__menu .switcheroo__secondary-app {
+    height: auto;
+    gap: 10px;
+  }
+
+  /* Primary list */
+
+  .switcheroo__menu .switcheroo__primary-applist {
+    .switcheroo__primary-app {
+      margin: 0;
+      padding: 0;
+
+      .switcheroo__primary-app-arrow {
+        width: auto;
+        height: auto;
+        margin-left: auto;
+        padding: 3px;
+        left: auto;
+        transition: all 0.3s;
+        opacity: 0;
+        order: 1;
+
+        svg {
+          width: 14px !important;
+          height: 14px !important;
+          display: block;
+        }
+      }
+
+      .switcheroo__primary-app-text {
+        width: auto;
+        margin-left: 0;
+        font-size: 16px;
+      }
+
+      .switcheroo__primary-app-icon {
+        opacity: 1;
+        order: -1;
+        width: 30px !important;
+        height: 30px !important;
+      }
+    }
+
+    .switcheroo__primary-app--dc .switcheroo__primary-app-text-content {
+      color: #216083 !important;
+      opacity: 0.8;
+    }
+
+    .switcheroo__primary-app--wf {
+      color: #9747ff;
+    }
+
+    a:hover {
+      .switcheroo__primary-app--dc .switcheroo__primary-app-text-content {
+        opacity: 1;
+      }
+
+      .switcheroo__primary-app--wf {
+        color: #5c61ff;
+      }
+
+      .switcheroo__primary-app-arrow.switcheroo__primary-app-arrow {
+        transform: translateX(5px);
+        left: auto;
+        transition: transform 0.3s;
+        opacity: 1;
+      }
+    }
+  }
+
+  /* Secondary list */
+
+  .switcheroo__secondary-applist a {
+    cursor: pointer;
+
+    &:hover .switcheroo__secondary-app-icon {
+      opacity: 1;
+    }
+  }
+
+  .switcheroo__menu .switcheroo__secondary-app-left-icon {
+    margin-left: 0;
+  }
+
+  .switcheroo__menu
+    .switcheroo__secondary-app
+    .switcheroo__secondary-app-text-container {
+    padding-left: 0;
+  }
+
+  .switcheroo__secondary-app-icon {
+    margin-left: auto;
+  }
+}

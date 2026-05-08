@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Amplience Helper",
-  "version": "2.3.7",
+  "version": "2.3.8",
   "description": "A suite of tools bundled in a browser extension to help every-day Amplience super-users create content at the speed of ideas.",
   "browser_specific_settings": {
     "gecko": {
@@ -47,9 +47,16 @@
       "css": [
         "modules/style-patches/style-patches.home.css",
         "modules/style-patches/style-patches.account.css",
-        "modules/style-patches/style-patches.dc.css"
+        "modules/style-patches/style-patches.dc.css",
+        "modules/style-patches/style-patches.dam.css"
       ],
       "js": ["modules/style-patches/style-patches.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://app.amplience.net/*"],
+      "css": ["modules/enhanced-naming/enhanced-naming.css"],
+      "js": ["modules/enhanced-naming/enhanced-naming.js"],
       "run_at": "document_idle"
     },
     {

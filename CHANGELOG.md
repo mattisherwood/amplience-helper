@@ -1,5 +1,25 @@
 # Changelog
 
+## v2.3.8 - 2026-05-09
+
+### Summary
+
+Introduces the new Enhanced Naming module for clearer app labels, expands Style Patches coverage across home/DC/DAM switcher layouts, and adds a small theming polish for switcher secondary links.
+
+### Module Highlights
+
+- Enhanced Naming: New module. Optionally relabels key app names in the Amplience home and switcher UI to clearer terms (for example, Content, Digital Assets, and Content Management labels).
+- Style Patches: Adds DAM-specific switcher layout improvements and consistent app-list spacing/styling across switcher menus.
+- Style Patches: Improves homepage card spacing/layout and DC masthead/switcher responsiveness at narrower widths.
+- Style Patches: Adds a missing Workforce entry into the switcher app list while style patches are enabled, and removes it again when disabled.
+- Theming: Improves secondary switcher item colours in themed mode.
+
+### Notes
+
+- Enhanced Naming defaults to on but can be enabled from both popup and options.
+
+---
+
 ## v2.3.7 - 2026-05-07
 
 ### Summary

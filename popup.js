@@ -6,6 +6,7 @@
     flowFilter: true,
     hotkeysEnabled: true,
     stylesEnabled: true,
+    enhancedNamingEnabled: true,
     themingEnabled: true,
     themingHubs: {},
   }
@@ -19,6 +20,9 @@
   const contentFlowsCheckbox = document.getElementById("flowFilter")
   const hotkeysCheckbox = document.getElementById("hotkeysEnabled")
   const stylesCheckbox = document.getElementById("stylesEnabled")
+  const enhancedNamingCheckbox = document.getElementById(
+    "enhancedNamingEnabled",
+  )
   const themingCheckbox = document.getElementById("themingEnabled")
   const themeControls = document.getElementById("themeControls")
   const themeRowsContainer = document.getElementById("themeRows")
@@ -122,6 +126,7 @@
       contentFlowsCheckbox.checked = settings.flowFilter
       hotkeysCheckbox.checked = settings.hotkeysEnabled
       stylesCheckbox.checked = settings.stylesEnabled
+      enhancedNamingCheckbox.checked = settings.enhancedNamingEnabled
       themingCheckbox.checked = settings.themingEnabled
       themeControls.hidden = !settings.themingEnabled
       hubs = settings.themingHubs || {}
@@ -135,6 +140,7 @@
       flowFilter: contentFlowsCheckbox.checked,
       hotkeysEnabled: hotkeysCheckbox.checked,
       stylesEnabled: stylesCheckbox.checked,
+      enhancedNamingEnabled: enhancedNamingCheckbox.checked,
       themingEnabled: themingCheckbox.checked,
     })
   }
@@ -162,6 +168,12 @@
       stylesCheckbox.checked = Boolean(changes.stylesEnabled.newValue)
     }
 
+    if (changes.enhancedNamingEnabled) {
+      enhancedNamingCheckbox.checked = Boolean(
+        changes.enhancedNamingEnabled.newValue,
+      )
+    }
+
     if (changes.themingEnabled) {
       themingCheckbox.checked = Boolean(changes.themingEnabled.newValue)
       themeControls.hidden = !changes.themingEnabled.newValue
@@ -177,6 +189,7 @@
   contentFlowsCheckbox.addEventListener("change", saveSettings)
   hotkeysCheckbox.addEventListener("change", saveSettings)
   stylesCheckbox.addEventListener("change", saveSettings)
+  enhancedNamingCheckbox.addEventListener("change", saveSettings)
   themingCheckbox.addEventListener("change", () => {
     themeControls.hidden = !themingCheckbox.checked
     saveSettings()

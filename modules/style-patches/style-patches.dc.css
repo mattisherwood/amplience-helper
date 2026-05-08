@@ -10,13 +10,77 @@
 
   /* HEADER STRUCTURE */
 
-  am-masthead .am-masthead-menu__menu-bar {
-    flex-wrap: wrap;
+  am-masthead {
+    padding-right: 0;
+
+    .am-masthead-menu__menu-bar {
+      flex-wrap: wrap;
+    }
   }
 
   am-switcheroo {
     width: auto;
     padding-right: 20px;
+  }
+
+  #menu_container_0,
+  .am-switcheroo__content {
+    width: 100%;
+    max-width: 320px;
+    min-width: initial;
+  }
+
+  .am-switcheroo__primary,
+  .am-switcheroo__secondary {
+    padding: 18px 20px;
+    border-bottom: solid 1px #eee;
+  }
+
+  .am-switcheroo__primary-links {
+    padding: 0;
+    gap: 0;
+  }
+
+  .am-switcheroo__primary-arrow {
+    order: 1;
+    margin-left: auto;
+    opacity: 0;
+    width: 14px;
+    height: 14px;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  a .am-switcheroo__primary-icon {
+    opacity: 1;
+    order: -1;
+    margin-inline: 0;
+    width: 30px;
+    height: 30px;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  a:hover .am-switcheroo__primary-arrow {
+    opacity: 1;
+  }
+
+  #content-hub-link {
+    color: #f8855d;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #ee6277;
+    }
+  }
+
+  [am-id="workforce-link"] {
+    color: #9747ff;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #5c61ff;
+    }
   }
 
   .am-hub-selector__hub {
@@ -45,7 +109,11 @@
     height: 100%;
   }
 
-  @media (max-width: 1147px) {
+  md-menu-bar .md-menu {
+    margin-inline: 0;
+  }
+
+  @media (max-width: 1166px) {
     .am-masthead-menu__menu-bar > .layout-row {
       display: contents;
     }
@@ -59,6 +127,7 @@
       height: auto;
       order: 1;
       margin-inline: auto;
+      width: 100%;
     }
   }
 
@@ -109,7 +178,7 @@
   }
 
   .am-masthead-menu__top-level-caret {
-    height: 44px;
+    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;

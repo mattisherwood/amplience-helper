@@ -1,5 +1,11 @@
 # Theming Changelog
 
+## 2026-05-09 (extension v2.3.8)
+
+### Changed
+
+- Updated themed styling for secondary app links in the switcher menu to improve contrast and hover clarity.
+
 ## 2026-04-27 (extension v2.2.4)
 
 ### Fixed

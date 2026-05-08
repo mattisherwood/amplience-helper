@@ -71,16 +71,44 @@
 
   .apps__body {
     height: auto;
-    padding-block: 80px;
+    align-items: stretch;
+    gap: 60px 80px;
+    padding: 80px 40px;
   }
 
   .primary-app__wrap {
     padding-top: 0;
+    gap: 8px;
+  }
+
+  .primary-app {
+    height: auto;
+    width: auto;
+    margin: 0;
+
+    .primary-app__title,
+    .primary-app__description {
+      height: auto;
+      line-height: 1.5;
+    }
+
+    .primary-app__title {
+      margin-top: 16px;
+    }
+
+    .primary-app__description {
+      margin-block: auto;
+    }
+
+    .button {
+      margin: 16px 0 0;
+    }
   }
 
   .apps__studios_body {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 60px 80px;
   }
 
   /* Footer */
