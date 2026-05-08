@@ -50,6 +50,29 @@ jobs:
           fi
           echo "OK: tag v$TAG_VERSION matches manifest.json"
 
+      - name: Extract release notes from CHANGELOG
+        # Pull the section for this version out of CHANGELOG.md and write it
+        # to release-notes.md so it can be used as the GitHub Release body.
+        # `*.md` is in the zip exclusion list below, so this scratch file
+        # never ends up in the shipped extension.
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          # sed range: from the version's header line to the next "## v" line,
+          # then drop the trailing matched header (sed '$d') and any "---"
+          # separator lines so the release body is clean markdown.
+          sed -n "/^## $VERSION/,/^## v/p" CHANGELOG.md \
+            | sed '$d' \
+            | sed '/^---$/d' \
+            > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "ERROR: could not extract release notes for $VERSION from CHANGELOG.md"
+            echo "       expected a section header like '## $VERSION - YYYY-MM-DD' near the top."
+            exit 1
+          fi
+          echo "::group::release-notes.md"
+          cat release-notes.md
+          echo "::endgroup::"
+
       - name: Create extension zip
         run: |
           ZIP_NAME="amplience-helper-${{ steps.version.outputs.version }}.zip"
@@ -58,6 +81,8 @@ jobs:
           # Mirrors the long-running manual zip command: exclude version control,
           # CI/IDE config, dev artefacts, and all markdown (Web Store doesn't
           # surface README/CHANGELOG; users see the store listing instead).
+          # The '*.md' rule also excludes the release-notes.md scratch file
+          # produced by the previous step.
           zip -r "$ZIP_NAME" . \
             -x '.git/*' \
             -x '.github/*' \
@@ -76,7 +101,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: amplience-helper-*.zip
-          # Auto-generate a release body from commit messages if no notes exist.
-          # Replace with body_path: release-notes.md once the changelog-extraction
-          # step from the CI/CD assessment lands.
+          # Use the section extracted from CHANGELOG.md as the release body so
+          # the Releases page mirrors the changelog exactly. Falls back to
+          # auto-generated commit-message notes if release-notes.md is somehow
+          # empty (the extract step would have failed first, but belt-and-braces).
+          body_path: release-notes.md
           generate_release_notes: true

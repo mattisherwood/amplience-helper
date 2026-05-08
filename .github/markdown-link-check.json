@@ -1,0 +1,27 @@
+{
+  "_comment": "Configuration for tcort/markdown-link-check used by the check-links workflow. Tweak ignorePatterns and aliveStatusCodes if a real link is being incorrectly flagged.",
+  "ignorePatterns": [
+    {"pattern": "^https?://localhost"},
+    {"pattern": "^https?://127\\."}
+  ],
+  "replacementPatterns": [
+    {
+      "_comment": "Rewrite root-relative links like /CHANGELOG.md to their GitHub URL so the checker can verify them. Without this, markdown-link-check tries to HTTP-fetch '/CHANGELOG.md' literally and gets a 400.",
+      "pattern": "^/(?!/)",
+      "replacement": "https://github.com/mattisherwood/amplience-helper/blob/main/"
+    }
+  ],
+  "aliveStatusCodes": [200, 206, 301, 302, 403, 999],
+  "timeout": "20s",
+  "retryOn429": true,
+  "retryCount": 3,
+  "fallbackRetryDelay": "30s",
+  "httpHeaders": [
+    {
+      "urls": ["https://chromewebstore.google.com/", "https://github.com/"],
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (compatible; markdown-link-check/CI)"
+      }
+    }
+  ]
+}
