@@ -41,7 +41,8 @@
     gap: 0;
   }
 
-  .am-switcheroo__primary-arrow {
+  .am-switcheroo__primary-arrow,
+  .am-switcheroo__primary-arrow--disabled {
     order: 1;
     margin-left: auto;
     opacity: 0;
