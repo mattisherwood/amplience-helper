@@ -84,6 +84,12 @@
     }
   }
 
+  .am-switcheroo__primary--disabled {
+    opacity: 0.5;
+    background: #f8f9ff;
+    filter: grayscale(1);
+  }
+
   .am-hub-selector__hub {
     width: auto;
     padding-right: 20px;
