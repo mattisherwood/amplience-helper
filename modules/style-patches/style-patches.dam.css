@@ -1,7 +1,29 @@
 [data-amplience-style-patches="enabled"] {
   .switcheroo {
+    position: relative;
     width: auto;
     padding-right: 16px;
+
+    .switcheroo__button::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    .switcheroo__button .icon-container {
+      width: 18px;
+      height: 18px;
+    }
+
+    .content-hub p::after {
+      content: "";
+      display: inline-block;
+      margin: 2px 0 0 6px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid;
+      vertical-align: middle;
+    }
   }
 
   /* FIX SWITCHEROO DROPDOWN TO BE CONSISTENT ACROSS APPS */
@@ -30,6 +52,11 @@
   .switcheroo__menu .switcheroo__secondary-app {
     height: auto;
     gap: 10px;
+  }
+
+  .switcheroo__primary-app-text-content {
+    display: inline-block;
+    vertical-align: middle;
   }
 
   /* Primary list */
@@ -99,6 +126,10 @@
 
   /* Secondary list */
 
+  .switcheroo__menu .switcheroo__secondary-applist {
+    background-color: #f8f9fe;
+  }
+
   .switcheroo__secondary-applist a {
     cursor: pointer;
 
@@ -117,7 +148,16 @@
     padding-left: 0;
   }
 
+  .switcheroo__menu .switcheroo__secondary-app .switcheroo__secondary-app-text {
+    color: rgb(89, 118, 132);
+  }
+
   .switcheroo__secondary-app-icon {
     margin-left: auto;
+  }
+
+  .top-nav .top-nav-contents {
+    margin-top: 0;
+    border-left: 1px solid rgba(89, 118, 132, 0.5);
   }
 }

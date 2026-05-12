@@ -7,14 +7,15 @@
 
   const WORKFORCE_LINK_SELECTOR =
     '[data-amplience-enhanced-naming-workforce-link="true"]'
-  const SWITCHEROO_APP_LIST_SELECTOR = ".switcheroo__primary-applist"
+  const SWITCHEROO_APP_LIST_SELECTOR =
+    ".switcheroo__primary-applist, .switcheroo-menu__primary-actions"
 
   let switcherooObserver = null
 
   function createWorkforceLink() {
     const template = document.createElement("template")
     template.innerHTML = `
-      <span aria-label="Workforce will be accessible once your organization admin finalizes your account setup" md-labeled-by-tooltip="md-tooltip-16" data-amplience-enhanced-naming-workforce-link="true">
+      <span class="switcheroo-item switcheroo-item--primary" aria-label="Workforce will be accessible once your organization admin finalizes your account setup" md-labeled-by-tooltip="md-tooltip-16" data-amplience-enhanced-naming-workforce-link="true">
         <a href="https://app.amplience.net/content/" ng-click="disabled ? $event.preventDefault() : null" ng-attr-tabindex="{{ disabled ? -1 : 0 }}" tabindex="0">
           <div class="switcheroo__primary-app switcheroo__primary-app--wf" ng-class="{'switcheroo__primary-app--disabled': disabled, 'switcheroo__primary-app--wf': !disabled}" style="">
             <div class="switcheroo__primary-app-arrow icon-container" amp-icon="ic-arrow-right-grey">

@@ -74,7 +74,7 @@
   .am-switcheroo__title {
     font-size: 0;
 
-    &::after {
+    &::before {
       content: "Content Management";
       font-size: 14px;
       vertical-align: middle;
@@ -100,7 +100,7 @@
   .switcheroo .content-hub p {
     font-size: 0;
 
-    &::after {
+    &::before {
       content: "Digital Asset Management";
       font-size: 14px;
       vertical-align: middle;
@@ -116,6 +116,33 @@
       font-size: 16px;
       transition: opacity 0.3s;
       vertical-align: middle;
+    }
+  }
+
+  /* ACCOUNT MANAGEMENT APP */
+
+  .switcheroo-item--primary
+    a[href="/content"]
+    .switcheroo-item__parent-wrapper
+    > span {
+    font-size: 0;
+
+    &::after {
+      content: "Content Management";
+      font-size: 16px;
+      vertical-align: middle;
+    }
+  }
+
+  .switcheroo-item--primary
+    a[href="/media"]
+    .switcheroo-item__parent-wrapper
+    > span {
+    font-size: 0;
+
+    &::after {
+      content: "Digital Asset Management";
+      font-size: 16px;
     }
   }
 }
