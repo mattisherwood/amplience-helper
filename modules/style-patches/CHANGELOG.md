@@ -1,5 +1,23 @@
 # Style Patches Changelog
 
+## 2026-05-09 (extension v2.3.8)
+
+### Added
+
+- Added DAM-specific switcher menu patches (`style-patches.dam.css`) for consistent sizing, spacing, icon alignment, and hover behaviour.
+- Added a Workforce link insertion in the switcher app list while Style Patches is enabled.
+
+### Changed
+
+- Expanded DC switcher and masthead responsiveness, including improved menu sizing and wrap behaviour at narrower widths.
+- Refined top-level homepage app-card layout spacing and typography flow for better readability.
+
+### Notes
+
+- The inserted Workforce link is removed when Style Patches is disabled.
+
+---
+
 ## 2026-05-07 (extension v2.3.5)
 
 ### Changed
