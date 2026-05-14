@@ -1,5 +1,19 @@
 # Style Patches Changelog
 
+## 2026-05-14 (extension v2.3.9)
+
+### Fixed
+
+- Fixed z-index issue in Workforce/Dynamic Content app header to prevent overlap with other UI elements.
+- Fixed an issue with Monaco Editor in the core Workforce Flows UI.
+
+### Notes
+
+- The z-index fix is implemented in the new `style-patches.wf.css` file, scoped to the `data-amplience-style-patches="enabled"` attribute.
+- The Monaco Editor fix is implemented in the `style-patches.js` file.
+
+---
+
 ## 2026-05-09 (extension v2.3.8)
 
 ### Added

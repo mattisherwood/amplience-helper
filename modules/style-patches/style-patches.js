@@ -9,8 +9,43 @@
     '[data-amplience-enhanced-naming-workforce-link="true"]'
   const SWITCHEROO_APP_LIST_SELECTOR =
     ".switcheroo__primary-applist, .switcheroo-menu__primary-actions"
+  const MONACO_EDITOR_SELECTOR = ".monaco-editor"
 
   let switcherooObserver = null
+  let monacoScrollFixEnabled = false
+
+  function handleMonacoWheel(event) {
+    if (!event.target.closest(MONACO_EDITOR_SELECTOR)) {
+      return
+    }
+
+    window.scrollBy(0, event.deltaY)
+  }
+
+  function startMonacoScrollFix() {
+    if (monacoScrollFixEnabled) {
+      return
+    }
+
+    document.addEventListener("wheel", handleMonacoWheel, {
+      capture: true,
+      passive: true,
+    })
+
+    monacoScrollFixEnabled = true
+  }
+
+  function stopMonacoScrollFix() {
+    if (!monacoScrollFixEnabled) {
+      return
+    }
+
+    document.removeEventListener("wheel", handleMonacoWheel, {
+      capture: true,
+    })
+
+    monacoScrollFixEnabled = false
+  }
 
   function createWorkforceLink() {
     const template = document.createElement("template")
@@ -105,10 +140,12 @@
 
       insertWorkforceLink()
       startSwitcherooObserver()
+      startMonacoScrollFix()
       return
     }
 
     document.documentElement.removeAttribute("data-amplience-style-patches")
+    stopMonacoScrollFix()
     stopSwitcherooObserver()
     removeWorkforceLink()
   }
