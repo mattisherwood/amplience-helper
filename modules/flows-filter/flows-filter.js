@@ -4,10 +4,12 @@
   const DEFAULT_SETTINGS = {
     flowFilter: true,
     myFlowsOnly: false,
+    tableViewEnabled: false,
   }
 
   let flowFilterEnabled = false
   let myFlowsOnlyEnabled = false
+  let tableViewEnabled = false
   let resolvedUsername = ""
   let initials = ""
   let usernameLookupInFlight = false
@@ -184,6 +186,48 @@
     searchWrapper.appendChild(searchInput)
     searchWrapper.appendChild(clearButton)
 
+    const viewToggleContainer = document.createElement("div")
+    viewToggleContainer.className = "flow-filter-view-toggle"
+
+    const gridViewButton = document.createElement("button")
+    gridViewButton.className = "flow-filter-view-button is-active"
+    gridViewButton.type = "button"
+    gridViewButton.setAttribute("title", "Grid")
+    gridViewButton.setAttribute("aria-label", "Grid view")
+
+    const gridIcon = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg",
+    )
+    gridIcon.setAttribute("viewBox", "0 0 24 24")
+    gridIcon.setAttribute("width", "16")
+    gridIcon.setAttribute("height", "16")
+    gridIcon.setAttribute("fill", "currentColor")
+    gridIcon.innerHTML =
+      '<rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/>'
+    gridViewButton.appendChild(gridIcon)
+
+    const listViewButton = document.createElement("button")
+    listViewButton.className = "flow-filter-view-button"
+    listViewButton.type = "button"
+    listViewButton.setAttribute("title", "List")
+    listViewButton.setAttribute("aria-label", "List view")
+
+    const listIcon = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg",
+    )
+    listIcon.setAttribute("viewBox", "0 0 24 24")
+    listIcon.setAttribute("width", "16")
+    listIcon.setAttribute("height", "16")
+    listIcon.setAttribute("fill", "currentColor")
+    listIcon.innerHTML =
+      '<line x1="3" y1="5" x2="21" y2="5" stroke="currentColor" stroke-width="2"/><line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2"/><line x1="3" y1="19" x2="21" y2="19" stroke="currentColor" stroke-width="2"/>'
+    listViewButton.appendChild(listIcon)
+
+    viewToggleContainer.appendChild(gridViewButton)
+    viewToggleContainer.appendChild(listViewButton)
+
     const tagFilters = document.createElement("div")
     tagFilters.className = "flow-filter-tag-filters"
 
@@ -191,11 +235,36 @@
     wrapper.appendChild(mineFilterWrapper)
     wrapper.appendChild(tagFilters)
     flowsPanel.insertAdjacentElement("afterbegin", wrapper)
+    flowsPanel.insertAdjacentElement("afterbegin", viewToggleContainer)
 
     const contentContainer = wrapper.nextElementSibling
     if (!contentContainer) {
       return
     }
+
+    gridViewButton.addEventListener("click", () => {
+      contentContainer.classList.remove("table-view")
+      gridViewButton.classList.add("is-active")
+      listViewButton.classList.remove("is-active")
+      tableViewEnabled = false
+      chrome.storage.sync.set({ tableViewEnabled: false })
+    })
+
+    listViewButton.addEventListener("click", () => {
+      contentContainer.classList.add("table-view")
+      listViewButton.classList.add("is-active")
+      gridViewButton.classList.remove("is-active")
+      tableViewEnabled = true
+      chrome.storage.sync.set({ tableViewEnabled: true })
+    })
+
+    if (tableViewEnabled) {
+      contentContainer.classList.add("table-view")
+      gridViewButton.classList.remove("is-active")
+      listViewButton.classList.add("is-active")
+    }
+
+    console.log(contentContainer)
 
     let archivedSection = null
     let archivedContainer = null
@@ -342,13 +411,6 @@
       // Always re-append so the section stays at the end of the flow list
       contentContainer.appendChild(archivedSection)
       archivedSection.hidden = archivedContainer.children.length === 0
-
-      // Set grid layout to match the parent container (deferred until flows are in the DOM)
-      if (!archivedContainer.style.gridTemplateColumns) {
-        const cs = getComputedStyle(contentContainer)
-        archivedContainer.style.gridTemplateColumns = cs.gridTemplateColumns
-        archivedContainer.style.gap = cs.gap
-      }
     }
 
     function parseAndDecorateFlows(attempt = 0) {
@@ -462,6 +524,14 @@
       }
     }
 
+    function getSearchScopeElement(flowElement) {
+      return (
+        flowElement.querySelector(
+          ":scope > div > div > .mantine-Stack-root > .mantine-Stack-root",
+        ) || flowElement
+      )
+    }
+
     function applyFilters() {
       const filterValue = searchInput.value.toLowerCase().trim()
       const onlyMine = mineFilterInput.checked
@@ -472,7 +542,8 @@
       const availableTags = new Set()
 
       for (const child of [...children, ...archivedChildren]) {
-        const text = child.textContent.toLowerCase()
+        const searchScope = getSearchScopeElement(child)
+        const text = searchScope.textContent.toLowerCase()
         const matchesSearch = !filterValue || text.includes(filterValue)
         const isMine = child.dataset.isMine === "true"
         const matchesMine = !onlyMine || isMine
@@ -487,6 +558,7 @@
       renderTagFilters(availableTags)
 
       for (const child of [...children, ...archivedChildren]) {
+        const searchScope = getSearchScopeElement(child)
         const text = child.textContent.toLowerCase()
         const matchesSearch = !filterValue || text.includes(filterValue)
         const isMine = child.dataset.isMine === "true"
@@ -504,7 +576,7 @@
 
         removeHighlights(child)
         if (filterValue && matchesSearch && matchesMine && matchesTags) {
-          highlightText(child, filterValue)
+          highlightText(searchScope, filterValue)
         }
       }
     }
@@ -569,6 +641,7 @@
   chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
     flowFilterEnabled = Boolean(settings.flowFilter)
     myFlowsOnlyEnabled = Boolean(settings.myFlowsOnly)
+    tableViewEnabled = Boolean(settings.tableViewEnabled)
     applyFlowFilterSetting(flowFilterEnabled)
   })
 
@@ -591,6 +664,32 @@
       if (mineFilterInput) {
         mineFilterInput.checked = myFlowsOnlyEnabled
         mineFilterInput.dispatchEvent(new Event("change"))
+      }
+    }
+
+    if (changes.tableViewEnabled) {
+      tableViewEnabled = Boolean(changes.tableViewEnabled.newValue)
+
+      const contentContainer = document.querySelector(
+        '[id^="mantine-"][id$="-panel-flows"]',
+      )?.nextElementSibling
+      const gridViewButton = document.querySelector(
+        ".flow-filter-view-button:first-child",
+      )
+      const listViewButton = document.querySelector(
+        ".flow-filter-view-button:last-child",
+      )
+
+      if (contentContainer && gridViewButton && listViewButton) {
+        if (tableViewEnabled) {
+          contentContainer.classList.add("table-view")
+          gridViewButton.classList.remove("is-active")
+          listViewButton.classList.add("is-active")
+        } else {
+          contentContainer.classList.remove("table-view")
+          gridViewButton.classList.add("is-active")
+          listViewButton.classList.remove("is-active")
+        }
       }
     }
   })

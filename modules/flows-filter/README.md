@@ -18,8 +18,11 @@ The setting key is `flowFilter` in `chrome.storage.sync`.
 - Injects a flow filter UI into the flows panel
 - Supports text filtering with debounce
 - Supports quick tag filtering controls
-- Supports a **My flows** mode based on initials parsed from naming convention
+- Supports a **My flows** mode\* based on initials parsed from naming convention
 - Moves flows with `(Archived)` in their title into a collapsible **View Archived** section at the bottom of the list
+- Provides **grid and list view toggles** for switching between flow layout modes (list view available at 1050px+ screen width)\*
+
+\* _The user's most recent preference is saved across page loads/visits_
 
 ## Scope
 
@@ -29,8 +32,9 @@ This module targets Content Studio flow pages under:
 
 ## Files
 
-- `flows-filter.js`: UI injection, filtering logic, and settings listener
-- `flows-filter.css`: Styles for filter UI elements
+- `flows-filter.js`: UI injection, filtering logic, settings listener, and view toggle behavior
+- `flows-filter.css`: Styles for filter UI elements and sticky filter bar
+- `table-view.css`: Styles for tabular (list) flow layout with responsive grid-based design (visible at 1050px+)
 - `utils.js`: Shared helper functions for parsing/color utilities
 
 ## Troubleshooting

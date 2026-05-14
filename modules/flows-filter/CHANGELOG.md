@@ -1,5 +1,30 @@
 # Flows Filter Changelog
 
+# 2026-05-14 (extension v2.3.9)
+
+### Added
+
+- Grid/list view toggle buttons with persistent view preference storage (`tableViewEnabled` setting).
+- Sticky filter bar that remains visible while scrolling through the flows list.
+- `table-view.css` stylesheet with tabular layout styles (6-column grid layout, responsive at 1050px+).
+- Improved search highlighter scope limiting to only highlight within title, description & time badge, not tags etc.
+- Better grid layout alignment for archived flows section using CSS Grid subgrid.
+- Popover z-index handling to prevent overlap with view toggle buttons.
+
+### Changed
+
+- Filter bar background styling for improved visual hierarchy and readability.
+- Archived section now uses CSS Grid subgrid for better alignment with main flow list.
+- Search highlighting now targets only the relevant flow card content area.
+
+### Notes
+
+- Grid/list view toggle is only visible at screen widths ≥1050px.
+- Grid layout (default) shows flows in a flexible grid; list layout shows flows in a 6-column table format with separated rows.
+- View preference survives page reloads and navigation.
+
+---
+
 # 2026-05-06 (extension v2.3.4)
 
 ### Fixed

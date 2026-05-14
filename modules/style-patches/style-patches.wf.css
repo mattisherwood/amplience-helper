@@ -1,0 +1,8 @@
+/* ============== DYNAMIC CONTENT APP ============== */
+/* This simply fixes a z-index issue for the header  */
+
+[data-amplience-style-patches="enabled"] {
+  .mantine-AppShell-header {
+    z-index: 200;
+  }
+}

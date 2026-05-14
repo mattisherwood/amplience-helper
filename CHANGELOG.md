@@ -1,5 +1,23 @@
 # Changelog
 
+## v2.3.9 - 2026-05-14
+
+### Summary
+
+Flows Filter gains toggleable grid and list view modes with a sticky filter bar, and Style Patches adds a z-index fix for Workforce.
+
+### Module Highlights
+
+- Flows Filter: New grid/list view toggle for switching between flow layouts (responsive, visible at 1050px+).
+- Flows Filter: Sticky filter bar that stays visible while scrolling the flows list, with improved search limiting.
+- Style Patches: Fixed z-index issue in Workforce header.
+
+### Migration Notes
+
+- View preference (grid/list) is persisted in `chrome.storage.sync` and restored on page load.
+
+---
+
 ## v2.3.8 - 2026-05-09
 
 ### Summary
