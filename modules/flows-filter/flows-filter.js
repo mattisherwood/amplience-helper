@@ -546,7 +546,8 @@
         const text = searchScope.textContent.toLowerCase()
         const matchesSearch = !filterValue || text.includes(filterValue)
         const isMine = child.dataset.isMine === "true"
-        const matchesMine = !onlyMine || isMine
+        const isOrg = child.dataset.flowAuthor === "Org"
+        const matchesMine = !onlyMine || isMine || isOrg
 
         if (matchesSearch && matchesMine) {
           for (const tag of getFlowTags(child)) {
@@ -562,7 +563,8 @@
         const text = child.textContent.toLowerCase()
         const matchesSearch = !filterValue || text.includes(filterValue)
         const isMine = child.dataset.isMine === "true"
-        const matchesMine = !onlyMine || isMine
+        const isOrg = child.dataset.flowAuthor === "Org"
+        const matchesMine = !onlyMine || isMine || isOrg
         const flowTags = getFlowTags(child)
         const matchesTags =
           selectedTags.size === 0 ||

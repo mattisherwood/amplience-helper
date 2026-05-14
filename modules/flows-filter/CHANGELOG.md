@@ -16,6 +16,7 @@
 - Filter bar background styling for improved visual hierarchy and readability.
 - Archived section now uses CSS Grid subgrid for better alignment with main flow list.
 - Search highlighting now targets only the relevant flow card content area.
+- Now considers "Org" as one of your flows in the "My flows" filter
 
 ### Notes
 
