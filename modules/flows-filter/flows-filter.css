@@ -191,6 +191,7 @@
   border-radius: 99rem;
   padding: 0.4rem 0.6rem;
   pointer-events: none;
+  text-align: center;
 }
 
 .tags {
@@ -215,8 +216,8 @@
   display: none;
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
+  row-gap: 37px;
   width: 100%;
-  margin-top: 0.5rem;
 }
 
 #flow-archived-section:has(.flow-card:not([data-visibility="hidden"])) {
@@ -278,7 +279,7 @@
 #flow-archived-container {
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
-  margin-top: 0.5rem;
+  row-gap: 37px;
 }
 
 #flow-archived-container.hidden {

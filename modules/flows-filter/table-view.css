@@ -69,7 +69,6 @@
   }
 
   .table-view.table-view {
-    opacity: 1;
     gap: 20px 10px;
     grid-template-columns: repeat(6, auto);
     align-items: center;
@@ -149,6 +148,14 @@
 
     .tags {
       grid-column: 6;
+    }
+
+    #flow-archived-section {
+      row-gap: 20px;
+    }
+
+    #flow-archived-container {
+      row-gap: 20px;
     }
   }
 }
