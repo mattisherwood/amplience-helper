@@ -82,6 +82,7 @@
   }
 
   .primary-app {
+    position: relative;
     height: auto;
     width: auto;
     margin: 0;
@@ -102,6 +103,12 @@
 
     .button {
       margin: 16px 0 0;
+
+      &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+      }
     }
   }
 

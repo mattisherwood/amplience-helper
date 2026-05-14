@@ -7,7 +7,7 @@
     .button {
       font-size: 0;
 
-      &::before {
+      &::after {
         display: inline-block;
         vertical-align: middle;
       }
@@ -21,7 +21,7 @@
       font-size: 14px;
     }
 
-    .button::before {
+    .button::after {
       content: "Manage";
       font-size: 16px;
     }
