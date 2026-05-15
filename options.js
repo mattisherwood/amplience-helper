@@ -8,6 +8,7 @@
     stylesEnabled: true,
     enhancedNamingEnabled: true,
     themingEnabled: true,
+    flowsMigrationEnabled: true,
     themingHubs: {},
   }
 
@@ -22,6 +23,9 @@
   const stylesCheckbox = document.getElementById("stylesEnabled")
   const enhancedNamingCheckbox = document.getElementById(
     "enhancedNamingEnabled",
+  )
+  const flowsMigrationCheckbox = document.getElementById(
+    "flowsMigrationEnabled",
   )
   const themingCheckbox = document.getElementById("themingEnabled")
   const themeControls = document.getElementById("themeControls")
@@ -140,6 +144,7 @@
       faviconSwapperCheckbox.checked = settings.faviconSwapperEnabled
       contentFlowsCheckbox.checked = settings.flowFilter
       hotkeysCheckbox.checked = settings.hotkeysEnabled
+      flowsMigrationCheckbox.checked = settings.flowsMigrationEnabled
       stylesCheckbox.checked = settings.stylesEnabled
       enhancedNamingCheckbox.checked = settings.enhancedNamingEnabled
       themingCheckbox.checked = settings.themingEnabled
@@ -157,6 +162,7 @@
         hotkeysEnabled: hotkeysCheckbox.checked,
         stylesEnabled: stylesCheckbox.checked,
         enhancedNamingEnabled: enhancedNamingCheckbox.checked,
+        flowsMigrationEnabled: flowsMigrationCheckbox.checked,
         themingEnabled: themingCheckbox.checked,
       },
       () => {
@@ -199,6 +205,12 @@
       themeControls.hidden = !changes.themingEnabled.newValue
     }
 
+    if (changes.flowsMigrationEnabled) {
+      flowsMigrationCheckbox.checked = Boolean(
+        changes.flowsMigrationEnabled.newValue,
+      )
+    }
+
     if (changes.themingHubs) {
       hubs = changes.themingHubs.newValue || {}
       renderAllThemes()
@@ -210,6 +222,7 @@
   hotkeysCheckbox.addEventListener("change", saveSettings)
   stylesCheckbox.addEventListener("change", saveSettings)
   enhancedNamingCheckbox.addEventListener("change", saveSettings)
+  flowsMigrationCheckbox.addEventListener("change", saveSettings)
   themingCheckbox.addEventListener("change", () => {
     themeControls.hidden = !themingCheckbox.checked
     saveSettings()

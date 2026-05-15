@@ -1,5 +1,22 @@
 # Changelog
 
+## v2.4.0 - 2026-05-15
+
+### Summary
+
+Introduces the new Flows Migration module, enabling users to export individual Content Flow configurations as JSON files from the Content Studio interface.
+
+### Module Highlights
+
+- Flows Migration: New module. Adds an "Export Flow" button to individual Content Flow detail pages, allowing users to download complete flow configurations (label, description, status, flow) as `flow-<flowId>.json` files.
+
+### Notes
+
+- Flows Migration module is enabled by default and automatically injects/removes UI based on toggle state without requiring a page reload.
+- Export functionality requires an active Amplience session (Auth0 JWT authentication).
+
+---
+
 ## v2.3.10 - 2026-05-15
 
 ### Summary

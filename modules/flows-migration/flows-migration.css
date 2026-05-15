@@ -1,0 +1,76 @@
+.mantine-AppShell-main > div > div > div:first-child > div > div:last-child {
+  flex-wrap: wrap;
+}
+
+.flows-migration-tool {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  order: 1;
+}
+
+.flows-migration-btn {
+  background-color: var(--button-bg, var(--mantine-primary-color-filled));
+  color: white;
+  border: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.flows-migration-btn:hover:not(:disabled) {
+  background-color: var(
+    --button-hover,
+    var(--mantine-primary-color-filled-hover, #3590e4)
+  );
+}
+
+.flows-migration-btn:disabled {
+  opacity: 0.6;
+  filter: grayscale();
+  cursor: not-allowed;
+}
+
+.flows-migration-icon {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+  display: block;
+}
+
+.flows-migration-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.flows-migration-status {
+  display: inline-block;
+  font-size: 12px;
+  color: #666;
+  min-height: 18px;
+}
+
+.flows-migration-status.error {
+  color: #d32f2f;
+  font-weight: 500;
+}
+
+.flows-migration-status.success {
+  color: #388e3c;
+  font-weight: 500;
+}
