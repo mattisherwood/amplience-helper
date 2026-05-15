@@ -40,6 +40,12 @@
       "run_at": "document_idle"
     },
     {
+      "matches": ["https://app.amplience.net/content-studio/*"],
+      "css": ["modules/flows-migration/flows-migration.css"],
+      "js": ["modules/flows-migration/flows-migration.js"],
+      "run_at": "document_idle"
+    },
+    {
       "matches": ["https://app.amplience.net/content*"],
       "css": ["modules/hotkeys/hotkeys.css"],
       "js": ["modules/hotkeys/hotkeys.js"],
@@ -70,12 +76,6 @@
         "modules/theming/theming.js",
         "modules/theming/hub-switcher-row-colors.js"
       ],
-      "run_at": "document_idle"
-    },
-    {
-      "matches": ["https://app.amplience.net/content-studio/*"],
-      "css": ["modules/flows-migration/flows-migration.css"],
-      "js": ["modules/flows-migration/flows-migration.js"],
       "run_at": "document_idle"
     }
   ],
