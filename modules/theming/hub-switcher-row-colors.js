@@ -76,14 +76,20 @@
       const hubKey = resolveHubKeyForMenuRow(menuRow, hubs)
       if (!hubKey || isExcludedHub(hubKey)) {
         menuRow.style.removeProperty("--hub-row-color")
+        menuRow.style.removeProperty("--hub-row-bg-color")
         return
       }
 
       const hubTheme = hubs[hubKey]
       if (hubTheme?.color) {
         menuRow.style.setProperty("--hub-row-color", `rgb(${hubTheme.color})`)
+        menuRow.style.setProperty(
+          "--hub-row-bg-color",
+          hubTheme.isDark ? "#000" : "#fff",
+        )
       } else {
         menuRow.style.removeProperty("--hub-row-color")
+        menuRow.style.removeProperty("--hub-row-bg-color")
       }
     })
   }

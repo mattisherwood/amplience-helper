@@ -57,10 +57,8 @@
 
   function applyColorSetting(color) {
     document.documentElement.style.setProperty("--theme-color-rgb", color)
-    document.documentElement.style.setProperty(
-      "--hub-row-color",
-      `rgb(${color})`,
-    )
+    const menuToggle = document.querySelector("ui-view")
+    if (menuToggle) menuToggle.style.setProperty("--hub-row-color", color)
   }
 
   /**

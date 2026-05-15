@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.3.10 - 2026-05-15
+
+### Summary
+
+Very minor CSS fix and remove console.logs
+
+---
+
 ## v2.3.9 - 2026-05-14
 
 ### Summary
