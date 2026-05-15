@@ -41,10 +41,11 @@
     display: inline-block;
     margin-inline: 1rem 1rem;
     padding: 0;
+    background: var(--hub-row-bg-color, #fff);
     border: solid 2px var(--hub-row-color, rgb(3, 116, 221));
     border-radius: 50%;
     box-sizing: content-box;
-    color: #fff;
+    color: var(--hub-row-bg-color, #fff);
     opacity: 1;
     vertical-align: middle;
   }
@@ -52,6 +53,7 @@
   .am-hub-selector__list > md-menu > .md-button ng-transclude::before,
   .am-hub-selector__menu-option--is-selected md-icon {
     background: var(--theme-color);
+    color: #fff;
   }
 
   .am-hub-selector__menu-option:hover md-icon {

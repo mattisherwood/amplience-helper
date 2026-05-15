@@ -264,8 +264,6 @@
       listViewButton.classList.add("is-active")
     }
 
-    console.log(contentContainer)
-
     let archivedSection = null
     let archivedContainer = null
 

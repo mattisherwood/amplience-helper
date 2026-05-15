@@ -1,10 +1,24 @@
 # Theming Changelog
 
+## 2026-05-09 (extension v2.3.10)
+
+### Fixed
+
+- Updated the dots in the hub switcher menu to accurately show their hub's colour even when they don't have one specified (Previously defaulted to current hub's theme)
+
+### Added
+
+- The hub switcher menu now shows dark dots for dark-theme hubs
+
+---
+
 ## 2026-05-09 (extension v2.3.8)
 
 ### Changed
 
 - Updated themed styling for secondary app links in the switcher menu to improve contrast and hover clarity.
+
+---
 
 ## 2026-04-27 (extension v2.2.4)
 
@@ -16,6 +30,8 @@
 
 - Added dots to the Hub-switcher menu, each showing its own saved theme colour.
 - (Extracted the hub-switcher row colour logic into a dedicated theming script to keep the main theming runtime simpler.)
+
+---
 
 ## 2026-04-24 (extension v2.2.3)
 
@@ -39,6 +55,8 @@
 
 - Legacy single-theme keys (`themingColor`, `themingDark`) are no longer used.
 
+---
+
 ## 2026-04-22 (extension v2.2.1)
 
 ### Fixed
@@ -49,6 +67,8 @@
 
 - Updated default colour to match existing default
 - Cleaning up of colour variables
+
+---
 
 ## 2026-04-16 (extension v2.2)
 

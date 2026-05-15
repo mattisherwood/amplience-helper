@@ -1,5 +1,13 @@
 # Flows Filter Changelog
 
+# 2026-05-15 (extension v2.3.10)
+
+### Changed
+
+- Removed console.logs
+
+---
+
 # 2026-05-14 (extension v2.3.9)
 
 ### Added
