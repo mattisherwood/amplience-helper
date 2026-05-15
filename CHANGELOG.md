@@ -4,16 +4,20 @@
 
 ### Summary
 
-Introduces the new Flows Migration module, enabling users to export individual Content Flow configurations as JSON files from the Content Studio interface.
+Introduces the new Flows Migration module, enabling users to export individual Content Flow configurations as JSON files from the Content Studio interface, and then import them either to the same hub or a different one.
 
 ### Module Highlights
 
-- Flows Migration: New module. Adds an "Export Flow" button to individual Content Flow detail pages, allowing users to download complete flow configurations (label, description, status, flow) as `flow-<flowId>.json` files.
+- Flows Migration: New module.
+  - Adds an "Export Flow" button to individual Content Flow detail pages, allowing users to download complete flow configurations (label, description, status, flow) as `flow-<flowId>.json` files.
+  - Adds an "Import Flow" button to the Content Flows listing page, allowing users to import previously exported flow configurations.
 
 ### Notes
 
 - Flows Migration module is enabled by default and automatically injects/removes UI based on toggle state without requiring a page reload.
-- Export functionality requires an active Amplience session (Auth0 JWT authentication).
+- Import/Export functionality requires an active Amplience session (Auth0 JWT authentication).
+- Flows can be exported from one hub and imported into another.
+- One complication with cross-hub flow migration is the integration IDs and webhook IDs have to be updated manually after import. This will hopefully be addressed in a future update.
 
 ---
 

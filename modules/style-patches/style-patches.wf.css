@@ -5,4 +5,17 @@
   .mantine-AppShell-header {
     z-index: 200;
   }
+
+  /* Sorry, there's no direct way to target this element */
+  .mantine-AppShell-main > div > div > div:first-child > div > div:last-child {
+    flex-wrap: wrap;
+  }
+
+  .mantine-Button-inner {
+    gap: 0.5rem;
+  }
+
+  .mantine-Button-label {
+    padding-inline: 0;
+  }
 }
