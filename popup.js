@@ -4,6 +4,7 @@
   const DEFAULT_SETTINGS = {
     faviconSwapperEnabled: true,
     flowFilter: true,
+    flowsMigrationEnabled: true,
     hotkeysEnabled: true,
     stylesEnabled: true,
     enhancedNamingEnabled: true,
@@ -18,6 +19,9 @@
 
   const faviconSwapperCheckbox = document.getElementById("faviconSwapper")
   const contentFlowsCheckbox = document.getElementById("flowFilter")
+  const flowsMigrationCheckbox = document.getElementById(
+    "flowsMigrationEnabled",
+  )
   const hotkeysCheckbox = document.getElementById("hotkeysEnabled")
   const stylesCheckbox = document.getElementById("stylesEnabled")
   const enhancedNamingCheckbox = document.getElementById(
@@ -124,6 +128,7 @@
     chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
       faviconSwapperCheckbox.checked = settings.faviconSwapperEnabled
       contentFlowsCheckbox.checked = settings.flowFilter
+      flowsMigrationCheckbox.checked = settings.flowsMigrationEnabled
       hotkeysCheckbox.checked = settings.hotkeysEnabled
       stylesCheckbox.checked = settings.stylesEnabled
       enhancedNamingCheckbox.checked = settings.enhancedNamingEnabled
@@ -138,6 +143,7 @@
     chrome.storage.sync.set({
       faviconSwapperEnabled: faviconSwapperCheckbox.checked,
       flowFilter: contentFlowsCheckbox.checked,
+      flowsMigrationEnabled: flowsMigrationCheckbox.checked,
       hotkeysEnabled: hotkeysCheckbox.checked,
       stylesEnabled: stylesCheckbox.checked,
       enhancedNamingEnabled: enhancedNamingCheckbox.checked,
@@ -158,6 +164,12 @@
 
     if (changes.flowFilter) {
       contentFlowsCheckbox.checked = Boolean(changes.flowFilter.newValue)
+    }
+
+    if (changes.flowsMigrationEnabled) {
+      flowsMigrationCheckbox.checked = Boolean(
+        changes.flowsMigrationEnabled.newValue,
+      )
     }
 
     if (changes.hotkeysEnabled) {
@@ -187,6 +199,7 @@
 
   faviconSwapperCheckbox.addEventListener("change", saveSettings)
   contentFlowsCheckbox.addEventListener("change", saveSettings)
+  flowsMigrationCheckbox.addEventListener("change", saveSettings)
   hotkeysCheckbox.addEventListener("change", saveSettings)
   stylesCheckbox.addEventListener("change", saveSettings)
   enhancedNamingCheckbox.addEventListener("change", saveSettings)

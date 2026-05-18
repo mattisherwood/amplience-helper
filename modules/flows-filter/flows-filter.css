@@ -289,3 +289,10 @@
 .flow-card .mantine-Popover-dropdown {
   z-index: 190 !important; /* Must be !important to override inline z-index */
 }
+
+.mantine-Modal-body:has([data-testid="delete-content-flow"])
+  > .mantine-Text-root:first-child::after {
+  content: "Be aware you can also disable a flow with the toggle button, and archive a flow by adding '(Archived)' to the end of its title.";
+  display: block;
+  margin-top: 1.2em;
+}
