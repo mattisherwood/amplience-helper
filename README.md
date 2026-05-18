@@ -2,14 +2,18 @@
 
 A suite of tools bundled in a browser extension to help every-day Amplience super-users create content at the speed of ideas.
 
+This browser extension will work on Chrome, Brave and other chromium browsers, and we're working on making it more readily available to Edge & Firefox users.
+
 ## Features / Modules
 
 |                                                                                 |                                                                                                                                                                                                                             |
 | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ![Hotkeys](screenshots/feature-1-hotkeys.png)                                   | [**Hotkeys** (Read more)](modules/hotkeys/README.md)<br />Keyboard shortcut layer for faster navigation and actions. (Press `?` to see a list)                                                                              |
 | ![Flows Filter](screenshots/feature-2-flows-filter.png)                         | [**Flows Filter** (Read more)](modules/flows-filter/README.md)<br/>Adds filters to better manage your Workforce Content Flows. (You can now archive flows and search & filter by search-term, tag or author)                |
+| ![Flows Migration](screenshots/flows-migration.png)                             | [**Flows Migration** (Read more)](modules/flows-migration/README.md)<br/>Export & Import your flows (for backups or migration between hubs).                                                                                |
 | ![Favicon & Title Updater](screenshots/feature-3-favicon-and-title-updater.png) | [**Favicon & Title Updater** (Read more)](modules/favicon-swapper/README.md)<br />Swaps the browser tab favicon to reflect which Amplience interface you're in, and prepends a context-aware title to help tell tabs apart. |
 | ![Theming](screenshots/feature-4-theming.png)                                   | [**Theming** (Read more)](modules/theming/README.md)<br />Per-hub colour and dark-mode controls for the Amplience DC interface, configurable from popup and options, to help tell your hubs apart.                          |
+| ![Enhanced Naming](screenshots/enhanced-naming.png)                             | [**Enhanced Naming** (Read more)](modules/enhanced-naming/README.md)<br />Uses more intuitive labels to navigate between the various apps.                                                                                  |
 | ![Style Patches](screenshots/feature-5-style-patches.png)                       | [**Style Patches** (Read more)](modules/style-patches/README.md)<br />Responsive and readability CSS improvements for the Amplience DC interface.                                                                           |
 
 Each of these can be toggled on/off from the toolbar or in the options page.
@@ -21,6 +25,8 @@ Each of these can be toggled on/off from the toolbar or in the options page.
 Install directly from the [Chrome Web Store](https://chromewebstore.google.com/detail/amplience-helper) — Chrome handles all future updates automatically.
 
 ### Manual install (for developers)
+
+_Warning: if you use the manual install, you will also have to handle updates manually._
 
 1. Download or clone this repository
 
@@ -90,12 +96,6 @@ amplience-helper/
 2. Update `manifest.json` to include the new module files
 3. Update the `options.html/js` and `popup.html/js` files to include the new module in the toggle lists
 4. It's up to you to get your module to trigger and clean-up when that toggle value changes.
-
-## What's up next?
-
-Future additions include
-
-- Bundling in the favicon+title updater currently in [Favicon Swapper](https://github.com/mattisherwood/favicon-swapper)
 
 ## License
 
