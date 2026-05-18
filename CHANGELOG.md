@@ -17,7 +17,8 @@ Introduces the new Flows Migration module, enabling users to export individual C
 - Flows Migration module is enabled by default and automatically injects/removes UI based on toggle state without requiring a page reload.
 - Import/Export functionality requires an active Amplience session (Auth0 JWT authentication).
 - Flows can be exported from one hub and imported into another.
-- One complication with cross-hub flow migration is the integration IDs and webhook IDs have to be updated manually after import. This will hopefully be addressed in a future update.
+- The import also handles the swapping of interfaceIds when moving between hubs. But if the new hub doesn't have the same extensions enabled you will need to fix that part manually.
+- One complication with cross-hub flow migration is the webhook IDs have to be updated manually after import. This could hopefully be addressed in a future update.
 
 ---
 

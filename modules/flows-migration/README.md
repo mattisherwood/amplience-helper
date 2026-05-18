@@ -28,6 +28,7 @@ The setting key is `flowsMigrationEnabled` in `chrome.storage.sync`.
 - On click, it allows the user to select a previously downloaded JSON file
 - the flow data (label, description, status, flow) is taken from the JSON file and imported into the hub via the Amplience GraphQL API
 - Shows inline status messages for export progress and errors or refreshes the page to show the newly updated flow at the top of the list
+- Because instanceIds are individual to the hub, one extra step before it imports the flow is to swap out the instanceIds that were relevant to the old hub with new instanceIds relevant to the new hub. (However, if the new hub doesn't have the same extension installed that will still have to be fixed manually by the user.)
 
 ## Scope
 
@@ -92,6 +93,21 @@ mutation createContentFlow(
     }
   ) {
     id
+  }
+}
+```
+
+And during the update of instanceIds it uses the following GraphQL query to get the relevant new instanceIds
+
+```gql
+query extensionInstances($targetHubId: ID!) {
+  cmsHub(id: $targetHubId) {
+    extensionInstances {
+      id
+      extensionRelease {
+        id
+      }
+    }
   }
 }
 ```
