@@ -182,6 +182,38 @@
         }
       }
 
+      const { label, description, flow } = flowData
+
+      // Create mapping of old instance IDs to new instance IDs
+      // based on extension release ID
+
+      const flowObject = JSON.parse(flow)
+
+      const extensionActions = flowObject.virtualActions.filter(
+        ({ baseAction }) => baseAction === "extension-action",
+      )
+      const oldInstances = extensionActions
+        .map(({ data }) => data.instances)
+        .flat()
+
+      const newInstances = await fetchInstances(hubId)
+
+      let mapping = {}
+      for (const oldInstance of oldInstances) {
+        mapping[oldInstance.id] =
+          newInstances.data.find(
+            ({ extensionRelease }) =>
+              extensionRelease.id === oldInstance.releaseId,
+          )?.id || null
+      }
+
+      // Swap out old instance IDs in the flow definition with new instance IDs
+      const regexString = Object.keys(mapping).join("|")
+      const parsedFlow = flow.replace(
+        new RegExp(regexString, "g"),
+        (matched) => mapping[matched],
+      )
+
       const mutation = `
         mutation createContentFlow($hubId: ID!, $label: String!, $description: String!, $flow: String!) {
           createContentFlow(
@@ -208,9 +240,9 @@
           query: mutation,
           variables: {
             hubId,
-            label: flowData.label,
-            description: flowData.description,
-            flow: flowData.flow,
+            label,
+            description,
+            flow: parsedFlow,
           },
         }),
       })
@@ -241,6 +273,72 @@
       return {
         success: false,
         error: "Import error. Check console for details.",
+      }
+    }
+  }
+
+  async function fetchInstances(targetHubId) {
+    try {
+      const jwt = extractJwtFromAuth0Storage()
+      if (!jwt) {
+        return {
+          success: false,
+          error: "Authentication failed. Please refresh the page.",
+        }
+      }
+
+      const query = `
+        query extensionInstances( $targetHubId: ID!) {
+          cmsHub(id: $targetHubId) {
+            extensionInstances {
+              id
+              extensionRelease {
+                id
+              }
+            }
+          }
+        }
+      `
+
+      const response = await fetch("https://api.amplience.net/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({
+          query,
+          variables: { targetHubId },
+        }),
+      })
+
+      const payload = await response.json()
+
+      if (!response.ok || payload?.errors?.length > 0) {
+        const errorMsg = payload?.errors?.[0]?.message || "Failed to fetch flow"
+        return {
+          success: false,
+          error: `Export failed: ${errorMsg}`,
+        }
+      }
+
+      if (!payload?.data?.cmsHub?.extensionInstances) {
+        return {
+          success: false,
+          error: "Flow data not found",
+        }
+      }
+
+      return {
+        success: true,
+        data: payload.data.cmsHub.extensionInstances,
+      }
+    } catch (error) {
+      console.error("[Amplience Helper] Flow export error:", error)
+      return {
+        success: false,
+        error: "Export error. Check console for details.",
       }
     }
   }
