@@ -2,13 +2,31 @@
 /* This simply fixes a z-index issue for the header  */
 
 [data-amplience-style-patches="enabled"] {
+  #root {
+    --mantine-radius-sm: 6px;
+  }
+
   .mantine-AppShell-header {
     z-index: 200;
+  }
+
+  .mantine-AppShell-main > div > .mantine-Flex-root {
+    flex-wrap: wrap;
+    justify-content: end !important; /* !important needed to override inline styles */
   }
 
   /* Sorry, there's no direct way to target this element */
   .mantine-AppShell-main > div > div > div:first-child > div > div:last-child {
     flex-wrap: wrap;
+    gap: 12px !important; /* !important needed to override inline styles */
+
+    .mantine-Text-root:first-child {
+      margin-right: 0 !important; /* !important needed to override inline styles */
+
+      + button {
+        margin-left: 10px;
+      }
+    }
   }
 
   .mantine-Button-inner {

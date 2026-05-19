@@ -1,6 +1,24 @@
 # Flows Filter Changelog
 
-# 2026-05-15 (extension v2.3.10)
+## 2026-05-19 (extension v2.4.1)
+
+### Added
+
+- Table view header row (columns: Name, Description, Last Run, Actions, Author, Tags) that inserts at the top of the flow list when table/list view is active, and is removed when switching back to grid view.
+- `isFlowCardElement()` helper to reliably exclude the header (and the archived section) from flow-card operations such as parsing, archiving, and filtering.
+
+### Fixed
+
+- Content-container lookup in the `tableViewEnabled` storage-change handler was targeting the wrong parent element; now correctly resolves relative to `#flow-filter-wrapper`.
+
+### Changed
+
+- Border-radius values standardised to `var(--mantine-radius-sm)` throughout (search input, clear button, tag pills, archive badge).
+- Author badge gains `align-self: center` in table view rather than stretching to fit.
+
+---
+
+## 2026-05-15 (extension v2.3.10)
 
 ### Changed
 

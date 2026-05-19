@@ -209,10 +209,12 @@
 
       // Swap out old instance IDs in the flow definition with new instance IDs
       const regexString = Object.keys(mapping).join("|")
-      const parsedFlow = flow.replace(
-        new RegExp(regexString, "g"),
-        (matched) => mapping[matched],
-      )
+      const parsedFlow = regexString
+        ? flow.replace(
+            new RegExp(regexString, "g"),
+            (matched) => mapping[matched],
+          )
+        : flow
 
       const mutation = `
         mutation createContentFlow($hubId: ID!, $label: String!, $description: String!, $flow: String!) {
@@ -645,8 +647,6 @@
     const statusElement = document.createElement("span")
     statusElement.id = "flows-migration-export-status"
     statusElement.className = "flows-migration-status"
-    statusElement.style.fontSize = "12px"
-    statusElement.style.whiteSpace = "nowrap"
 
     // Add click handler
     exportButton.addEventListener("click", () => {
@@ -721,8 +721,6 @@
     const statusElement = document.createElement("span")
     statusElement.id = "flows-migration-import-status"
     statusElement.className = "flows-migration-status"
-    statusElement.style.fontSize = "12px"
-    statusElement.style.whiteSpace = "nowrap"
 
     importButton.addEventListener("click", () => {
       handleImportClick(importButton, statusElement)

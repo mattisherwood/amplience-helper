@@ -28,7 +28,7 @@
   width: 100%;
   padding: 0.5rem 2.5rem 0.5rem 0.75rem;
   border: 0.0625rem solid #b4c5fc;
-  border-radius: 0.5rem;
+  border-radius: var(--mantine-radius-sm);
   font-size: 0.875rem;
   font-weight: 400;
   color: #002c42;
@@ -65,7 +65,7 @@
   font-size: 1.25rem;
   line-height: 1;
   padding: 0;
-  border-radius: 0.25rem;
+  border-radius: var(--mantine-radius-sm);
 }
 
 .flow-filter-clear:hover {
@@ -145,7 +145,7 @@
   border: 1px solid var(--tag-color);
   color: var(--tag-color);
   background: #fff;
-  border-radius: var(--button-radius, var(--mantine-radius-default));
+  border-radius: var(--mantine-radius-sm);
   padding: 2px 8px;
   font-size: 0.75rem;
   line-height: 1.2;
@@ -203,7 +203,7 @@
   padding: 2px 8px;
   background: var(--mantine-color-gray-8);
   color: var(--mantine-color-white);
-  border-radius: var(--button-radius, var(--mantine-radius-default));
+  border-radius: var(--mantine-radius-sm);
 }
 
 .flow-search-highlight {

@@ -1,5 +1,20 @@
 # Flows Migration Changelog
 
+## 2026-05-19 (extension v2.4.1)
+
+### Fixed
+
+- **Import bug**: when importing a flow with no interfaceId mappings (e.g. a flow with no extensions, or importing into the same hub), the code was building an empty regex string (`new RegExp("", "g")`) which replaced every character position and corrupted the flow JSON. The regex replacement is now skipped entirely when the mapping is empty, and the original flow string is used as-is.
+
+### Changed
+
+- Button styling updated to use a transparent background with a bordered outline, matching the Amplience UI more closely.
+- Import/export status messages are now positioned absolutely beneath their respective buttons (instead of inline).
+- `font-size` and `white-space` styles removed from inline JS and consolidated into the `.flows-migration-status` CSS class.
+- CSS selector updated from `> div:first-child` to `> .mantine-Flex-root` for more precise and resilient button-row targeting.
+
+---
+
 ## 2026-05-15 (extension v2.4.0)
 
 ### Added
