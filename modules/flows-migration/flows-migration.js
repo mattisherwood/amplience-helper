@@ -209,10 +209,12 @@
 
       // Swap out old instance IDs in the flow definition with new instance IDs
       const regexString = Object.keys(mapping).join("|")
-      const parsedFlow = flow.replace(
-        new RegExp(regexString, "g"),
-        (matched) => mapping[matched],
-      )
+      const parsedFlow = regexString
+        ? flow.replace(
+            new RegExp(regexString, "g"),
+            (matched) => mapping[matched],
+          )
+        : flow
 
       const mutation = `
         mutation createContentFlow($hubId: ID!, $label: String!, $description: String!, $flow: String!) {
