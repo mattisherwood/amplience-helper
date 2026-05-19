@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.4.1 - 2026-05-19
+
+### Summary
+
+Polish and bug-fix pass across Flows Filter and Flows Migration, plus Workforce layout fixes in Style Patches.
+
+### Module Highlights
+
+- Flows Filter: Table view now shows a sticky column-header row (Name, Description, Last Run, Actions, Author, Tags) when in list/table mode.
+- Flows Migration: Fixed a bug where importing a flow with no interfaceId mappings would fail silently due to an empty regex.
+- Style Patches: Defines `--mantine-radius-sm` and tightens Workforce flow-detail header layout.
+
+---
+
 ## v2.4.0 - 2026-05-15
 
 ### Summary

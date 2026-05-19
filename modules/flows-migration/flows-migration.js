@@ -645,8 +645,6 @@
     const statusElement = document.createElement("span")
     statusElement.id = "flows-migration-export-status"
     statusElement.className = "flows-migration-status"
-    statusElement.style.fontSize = "12px"
-    statusElement.style.whiteSpace = "nowrap"
 
     // Add click handler
     exportButton.addEventListener("click", () => {
@@ -721,8 +719,6 @@
     const statusElement = document.createElement("span")
     statusElement.id = "flows-migration-import-status"
     statusElement.className = "flows-migration-status"
-    statusElement.style.fontSize = "12px"
-    statusElement.style.whiteSpace = "nowrap"
 
     importButton.addEventListener("click", () => {
       handleImportClick(importButton, statusElement)

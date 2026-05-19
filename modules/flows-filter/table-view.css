@@ -1,8 +1,14 @@
-.flow-filter-view-toggle {
+.flow-filter-view-toggle,
+#flow-table-header {
   display: none;
 }
 
 @media (min-width: 1050px) {
+  #flow-table-header {
+    display: contents;
+    font-weight: bold;
+  }
+
   .mantine-Tabs-panel {
     position: relative;
   }
@@ -69,10 +75,10 @@
   }
 
   .table-view.table-view {
+    position: relative;
     gap: 20px 10px;
     grid-template-columns: repeat(6, auto);
     align-items: center;
-    position: relative;
 
     .flow-card,
     .flow-card > div > div,
@@ -142,6 +148,7 @@
 
     .author-badge {
       grid-column: 5;
+      align-self: center;
       position: relative;
       inset: auto;
     }

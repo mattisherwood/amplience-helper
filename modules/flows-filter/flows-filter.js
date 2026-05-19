@@ -17,6 +17,63 @@
 
   const MAX_INITIALS_WAIT_ATTEMPTS = 20
   const INITIALS_WAIT_RETRY_INTERVAL = 250
+  const TABLE_VIEW_HEADER_ID = "flow-table-header"
+
+  function createTableViewHeaderElement() {
+    const header = document.createElement("header")
+    header.id = TABLE_VIEW_HEADER_ID
+
+    const columns = [
+      "Name",
+      "Description",
+      "Last Run",
+      "Actions",
+      "Author",
+      "Tags",
+    ]
+
+    columns.forEach((column) => {
+      const columnEl = document.createElement("div")
+      columnEl.textContent = column
+      header.appendChild(columnEl)
+    })
+
+    return header
+  }
+
+  function syncTableViewHeader(contentContainer, tableViewIsEnabled) {
+    if (!contentContainer) {
+      return
+    }
+
+    const existingHeader = contentContainer.querySelector(
+      `:scope > #${TABLE_VIEW_HEADER_ID}`,
+    )
+
+    if (!tableViewIsEnabled) {
+      if (existingHeader) {
+        existingHeader.remove()
+      }
+      return
+    }
+
+    if (!existingHeader) {
+      const header = createTableViewHeaderElement()
+      contentContainer.insertAdjacentElement("afterbegin", header)
+      return
+    }
+
+    if (contentContainer.firstElementChild !== existingHeader) {
+      contentContainer.insertBefore(existingHeader, contentContainer.firstChild)
+    }
+  }
+
+  function isFlowCardElement(element) {
+    return (
+      element.id !== "flow-archived-section" &&
+      element.id !== TABLE_VIEW_HEADER_ID
+    )
+  }
 
   function removeFlowsFilter() {
     const wrapper = document.querySelector("#flow-filter-wrapper")
@@ -39,6 +96,11 @@
         }
       }
       archivedSectionEl.remove()
+    }
+
+    const tableViewHeader = document.querySelector(`#${TABLE_VIEW_HEADER_ID}`)
+    if (tableViewHeader) {
+      tableViewHeader.remove()
     }
 
     const hiddenElements = document.querySelectorAll(
@@ -244,6 +306,7 @@
 
     gridViewButton.addEventListener("click", () => {
       contentContainer.classList.remove("table-view")
+      syncTableViewHeader(contentContainer, false)
       gridViewButton.classList.add("is-active")
       listViewButton.classList.remove("is-active")
       tableViewEnabled = false
@@ -252,6 +315,7 @@
 
     listViewButton.addEventListener("click", () => {
       contentContainer.classList.add("table-view")
+      syncTableViewHeader(contentContainer, true)
       listViewButton.classList.add("is-active")
       gridViewButton.classList.remove("is-active")
       tableViewEnabled = true
@@ -263,6 +327,8 @@
       gridViewButton.classList.remove("is-active")
       listViewButton.classList.add("is-active")
     }
+
+    syncTableViewHeader(contentContainer, tableViewEnabled)
 
     let archivedSection = null
     let archivedContainer = null
@@ -401,8 +467,7 @@
     function redistributeArchivedFlows() {
       const toArchive = Array.from(contentContainer.children).filter(
         (child) =>
-          child.id !== "flow-archived-section" &&
-          child.dataset.isArchived === "true",
+          isFlowCardElement(child) && child.dataset.isArchived === "true",
       )
       toArchive.forEach((child) => archivedContainer.appendChild(child))
 
@@ -413,8 +478,7 @@
 
     function parseAndDecorateFlows(attempt = 0) {
       const unparsed = Array.from(contentContainer.children).filter(
-        (child) =>
-          child.id !== "flow-archived-section" && !child.dataset.flowParsed,
+        (child) => isFlowCardElement(child) && !child.dataset.flowParsed,
       )
       const ready = unparsed.filter((flow) => flow.querySelector("p"))
 
@@ -533,8 +597,8 @@
     function applyFilters() {
       const filterValue = searchInput.value.toLowerCase().trim()
       const onlyMine = mineFilterInput.checked
-      const children = Array.from(contentContainer.children).filter(
-        (c) => c.id !== "flow-archived-section",
+      const children = Array.from(contentContainer.children).filter((c) =>
+        isFlowCardElement(c),
       )
       const archivedChildren = Array.from(archivedContainer.children)
       const availableTags = new Set()
@@ -670,9 +734,11 @@
     if (changes.tableViewEnabled) {
       tableViewEnabled = Boolean(changes.tableViewEnabled.newValue)
 
-      const contentContainer = document.querySelector(
+      const flowsPanel = document.querySelector(
         '[id^="mantine-"][id$="-panel-flows"]',
-      )?.nextElementSibling
+      )
+      const filterWrapper = flowsPanel?.querySelector("#flow-filter-wrapper")
+      const contentContainer = filterWrapper?.nextElementSibling
       const gridViewButton = document.querySelector(
         ".flow-filter-view-button:first-child",
       )
@@ -683,10 +749,12 @@
       if (contentContainer && gridViewButton && listViewButton) {
         if (tableViewEnabled) {
           contentContainer.classList.add("table-view")
+          syncTableViewHeader(contentContainer, true)
           gridViewButton.classList.remove("is-active")
           listViewButton.classList.add("is-active")
         } else {
           contentContainer.classList.remove("table-view")
+          syncTableViewHeader(contentContainer, false)
           gridViewButton.classList.add("is-active")
           listViewButton.classList.remove("is-active")
         }

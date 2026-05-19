@@ -1,5 +1,18 @@
 # Style Patches Changelog
 
+## 2026-05-19 (extension v2.4.1)
+
+### Added
+
+- Defined `--mantine-radius-sm: 6px` on `#root` in the Workforce stylesheet, providing a consistent radius token(also used by other modules Flows Filter, Flows Migration) that is small enough so it works for both buttons and tags.
+
+### Fixed
+
+- Workforce flow-detail header: button row (`> .mantine-Flex-root`) now wraps at narrow widths and aligns to the right fitting better on small screens.
+- Workforce flow-detail header: reduced gap and removed stray right margin from the title element so the layout stays tidy no matter how many buttons.
+
+---
+
 ## 2026-05-14 (extension v2.3.9)
 
 ### Fixed
