@@ -11,11 +11,54 @@
     ".switcheroo__primary-applist, .switcheroo-menu__primary-actions"
   const MONACO_EDITOR_SELECTOR = ".monaco-editor"
 
+  function isScrollableElement(element) {
+    if (!(element instanceof Element)) {
+      return false
+    }
+
+    const style = window.getComputedStyle(element)
+    const overflowY = style.overflowY
+    const allowsVerticalScroll =
+      overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay"
+
+    return allowsVerticalScroll && element.scrollHeight > element.clientHeight
+  }
+
+  function getNearestScrollableAncestor(startElement) {
+    let current = startElement
+
+    while (
+      current &&
+      current !== document.body &&
+      current !== document.documentElement
+    ) {
+      if (isScrollableElement(current)) {
+        return current
+      }
+
+      current = current.parentElement
+    }
+
+    return null
+  }
+
   let switcherooObserver = null
   let monacoScrollFixEnabled = false
 
   function handleMonacoWheel(event) {
-    if (!event.target.closest(MONACO_EDITOR_SELECTOR)) {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const monacoEditor = target.closest(MONACO_EDITOR_SELECTOR)
+    if (!monacoEditor) {
+      return
+    }
+
+    const scrollContainer = getNearestScrollableAncestor(monacoEditor)
+    if (scrollContainer) {
+      scrollContainer.scrollBy(0, event.deltaY)
       return
     }
 
