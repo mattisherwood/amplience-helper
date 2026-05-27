@@ -16,11 +16,14 @@
   let wasOnLoginRoute = false
 
   function isLoginRoute() {
-    return window.location.hash === "#/login"
+    const hash = window.location.hash || ""
+    return /^#!?\/login(?:-prompt)?(?:[/?].*)?$/.test(hash)
   }
 
   function getLoginButton() {
-    const button = document.querySelector(".login-button")
+    const button = document.querySelector(
+      ".login-button, .am-login-prompt__button",
+    )
 
     if (!button || button.disabled) {
       return null
