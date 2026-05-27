@@ -10,6 +10,7 @@ Adds a new optional Skip Splash Screen module that can automatically skip the sp
 
 - Skip Splash Screen: New module. Automatically clicks the login splash screen button on `#/login` when enabled.
 - Skip Splash Screen: Defaults to off and can be toggled from both the popup and the options page.
+- Also improved popup & options screens slightly.
 
 ---
 

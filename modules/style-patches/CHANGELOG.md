@@ -1,5 +1,13 @@
 # Style Patches Changelog
 
+## 2026-05-21 (extension v2.4.2)
+
+### Fixed
+
+- Extended the fix for the monaco scroll bug to include modals
+
+---
+
 ## 2026-05-19 (extension v2.4.1)
 
 ### Added
