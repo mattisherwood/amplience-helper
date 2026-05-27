@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.4.2 - 2026-05-21
+
+### Summary
+
+Adds a new optional Skip Splash Screen module that can automatically skip the splash screen when logging in, making for a smoother/quicker login journey.
+
+### Module Highlights
+
+- Skip Splash Screen: New module. Automatically clicks the login splash screen button on `#/login` when enabled.
+- Skip Splash Screen: Defaults to off and can be toggled from both the popup and the options page.
+- Also improved popup & options screens slightly.
+
+---
+
 ## v2.4.1 - 2026-05-19
 
 ### Summary
