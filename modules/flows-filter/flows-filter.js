@@ -103,6 +103,13 @@
       tableViewHeader.remove()
     }
 
+    const viewToggleContainer = document.querySelector(
+      ".flow-filter-view-toggle",
+    )
+    if (viewToggleContainer) {
+      viewToggleContainer.remove()
+    }
+
     const hiddenElements = document.querySelectorAll(
       '[data-visibility="hidden"]',
     )
@@ -405,6 +412,7 @@
     const PARSE_RETRY_INTERVAL = 250
 
     function decorateFlow(flow) {
+      console.log("decorating flow", flow)
       const { author, title, description, tags, isArchived } =
         parseFlowData(flow)
       const isMine = author && author === initials
@@ -679,6 +687,12 @@
   }
 
   function applyFlowFilterSetting(enabled) {
+    if (enabled) {
+      document.documentElement.setAttribute("data-flows-filter", "enabled")
+    } else {
+      document.documentElement.removeAttribute("data-flows-filter")
+    }
+
     if (!enabled) {
       removeFlowsFilter()
       return

@@ -350,7 +350,7 @@
   }
 
   .md-select-menu-container.md-active md-select-menu {
-    background: var(--background-color-rgb);
+    background-color: var(--background-color);
   }
 
   .am-dashboard__tabs > md-tabs-content-wrapper {
