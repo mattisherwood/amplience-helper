@@ -412,7 +412,6 @@
     const PARSE_RETRY_INTERVAL = 250
 
     function decorateFlow(flow) {
-      console.log("decorating flow", flow)
       const { author, title, description, tags, isArchived } =
         parseFlowData(flow)
       const isMine = author && author === initials
