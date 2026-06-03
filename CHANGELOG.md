@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.4.2 - 2026-06-02
+
+### Summary
+
+Fix flows filter to work with the latest core-product release.
+
+---
+
 ## v2.4.2 - 2026-05-21
 
 ### Summary

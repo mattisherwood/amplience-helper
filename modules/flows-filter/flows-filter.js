@@ -103,6 +103,13 @@
       tableViewHeader.remove()
     }
 
+    const viewToggleContainer = document.querySelector(
+      ".flow-filter-view-toggle",
+    )
+    if (viewToggleContainer) {
+      viewToggleContainer.remove()
+    }
+
     const hiddenElements = document.querySelectorAll(
       '[data-visibility="hidden"]',
     )
@@ -679,6 +686,12 @@
   }
 
   function applyFlowFilterSetting(enabled) {
+    if (enabled) {
+      document.documentElement.setAttribute("data-flows-filter", "enabled")
+    } else {
+      document.documentElement.removeAttribute("data-flows-filter")
+    }
+
     if (!enabled) {
       removeFlowsFilter()
       return

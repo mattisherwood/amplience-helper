@@ -1,5 +1,13 @@
 # Flows Filter Changelog
 
+## 2026-06-02 (extension v2.4.3)
+
+### Fixed
+
+- Updated flows filter code to work with the latest core-product release.
+
+---
+
 ## 2026-05-19 (extension v2.4.1)
 
 ### Added

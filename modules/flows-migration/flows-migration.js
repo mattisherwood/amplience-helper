@@ -41,38 +41,72 @@
 
   // Parse flow ID from current URL
   function extractFlowIdFromUrl() {
-    const match = window.location.pathname.match(/\/content-flows\/([^/]+)/)
-    return match ? match[1] : null
+    const segments = window.location.pathname.split("/").filter(Boolean)
+    const flowsIndex = segments.indexOf("content-flows")
+
+    if (flowsIndex === -1 || flowsIndex + 1 >= segments.length) {
+      return null
+    }
+
+    return segments[flowsIndex + 1]
   }
 
   // Parse hub ID from listing/detail URL
   function extractHubIdFromUrl() {
-    const match = window.location.pathname.match(
-      /\/content-studio\/([^/]+)\/content-flows/,
-    )
-    if (!match || !match[1]) {
+    const pathname = window.location.pathname
+    const contentStudioPrefix = "/content-studio/"
+    const contentFlowsMarker = "/content-flows"
+    const startIndex = pathname.indexOf(contentStudioPrefix)
+
+    if (startIndex === -1) {
       return null
     }
 
+    const hubStart = startIndex + contentStudioPrefix.length
+    const flowsIndex = pathname.indexOf(contentFlowsMarker, hubStart)
+
+    if (flowsIndex === -1 || flowsIndex <= hubStart) {
+      return null
+    }
+
+    const rawHubId = pathname.slice(hubStart, flowsIndex)
+
     try {
-      return decodeURIComponent(match[1])
+      return decodeURIComponent(rawHubId)
     } catch (error) {
-      return match[1]
+      return rawHubId
+    }
+  }
+
+  function getContentFlowsPathContext() {
+    const segments = window.location.pathname.split("/").filter(Boolean)
+    const flowsIndex = segments.indexOf("content-flows")
+
+    if (flowsIndex === -1) {
+      return {
+        hasContentFlows: false,
+        flowId: null,
+      }
+    }
+
+    const flowId = segments[flowsIndex + 1] || null
+
+    return {
+      hasContentFlows: true,
+      flowId,
     }
   }
 
   // Check if we're on a flow detail page
   function isFlowDetailPage() {
-    return /\/content-studio\/[^/]+\/content-flows\/[^/]+/.test(
-      window.location.pathname,
-    )
+    const { hasContentFlows, flowId } = getContentFlowsPathContext()
+    return hasContentFlows && Boolean(flowId)
   }
 
   // Check if we're on the flow listing page
   function isFlowListingPage() {
-    return /\/content-studio\/[^/]+\/content-flows$/.test(
-      window.location.pathname,
-    )
+    const { hasContentFlows, flowId } = getContentFlowsPathContext()
+    return hasContentFlows && !flowId
   }
 
   function scheduleRouteCheck() {
