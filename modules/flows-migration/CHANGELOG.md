@@ -1,5 +1,13 @@
 # Flows Migration Changelog
 
+## 2026-06-11 (extension v2.4.4)
+
+### Fixed
+
+- Import now safely handles flows where `virtualActions` is missing, avoiding runtime errors and continuing with the original flow definition when no extension-action mapping is available.
+
+---
+
 ## 2026-05-19 (extension v2.4.1)
 
 ### Fixed

@@ -1,5 +1,17 @@
 # Hotkeys Changelog
 
+## 2026-06-11 (extension v2.4.4)
+
+### Fixed
+
+- Arrow-key pagination hotkeys (→ and ←) now fire correctly on listing page and schema listing pages. Previous condition was checking the function reference instead of calling it.
+
+### Added
+
+- New "S" hotkey for bulk-selection Sync action on listing page.
+- New "T" hotkey for bulk-selection Tag action on listing page.
+- Schema listing pagination now also applies to content-types pages.
+
 ## 2026-05-07 (extension v2.3.7)
 
 ### Changed
