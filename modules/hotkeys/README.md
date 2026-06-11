@@ -51,6 +51,8 @@ The setting key is `hotkeysEnabled` in `chrome.storage.sync`.
 | E   | Archive selected items                |
 | L   | Localize selected items               |
 | P   | Publish selected items                |
+| S   | Sync selected items                   |
+| T   | Tag selected items with a status      |
 | U   | Unpublish or Unarchive selected items |
 
 |          | Interface                 |

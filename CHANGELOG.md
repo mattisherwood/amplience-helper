@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.4.4 - 2026-06-11
+
+### Summary
+
+Hardening pass: Flows Migration now handles flows with no `virtualActions`, Style Patches adds defensive Workforce flow-page CSS for tighter spaces, and Hotkeys gains pagination fixes plus new bulk-selection shortcuts.
+
+### Module Highlights
+
+- Flows Migration: Import no longer errors when a flow payload omits `virtualActions`.
+- Style Patches: Added defensive Workforce flow CSS for better small-space behaviour in flow run/review layouts.
+- Hotkeys: Fixed arrow-key pagination hotkeys (→ and ←) on listing and schema pages; added "S" for Sync and "T" for Tag bulk actions on listing page.
+
+---
+
 ## v2.4.3 - 2026-06-02
 
 ### Summary

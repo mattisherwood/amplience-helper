@@ -222,33 +222,36 @@
       // based on extension release ID
 
       const flowObject = JSON.parse(flow)
+      let parsedFlow = flow
 
-      const extensionActions = flowObject.virtualActions.filter(
-        ({ baseAction }) => baseAction === "extension-action",
-      )
-      const oldInstances = extensionActions
-        .map(({ data }) => data.instances)
-        .flat()
+      if (flowObject.virtualActions) {
+        const extensionActions = flowObject.virtualActions.filter(
+          ({ baseAction }) => baseAction === "extension-action",
+        )
+        const oldInstances = extensionActions
+          .map(({ data }) => data.instances)
+          .flat()
 
-      const newInstances = await fetchInstances(hubId)
+        const newInstances = await fetchInstances(hubId)
 
-      let mapping = {}
-      for (const oldInstance of oldInstances) {
-        mapping[oldInstance.id] =
-          newInstances.data.find(
-            ({ extensionRelease }) =>
-              extensionRelease.id === oldInstance.releaseId,
-          )?.id || null
+        let mapping = {}
+        for (const oldInstance of oldInstances) {
+          mapping[oldInstance.id] =
+            newInstances.data.find(
+              ({ extensionRelease }) =>
+                extensionRelease.id === oldInstance.releaseId,
+            )?.id || null
+        }
+
+        // Swap out old instance IDs in the flow definition with new instance IDs
+        const regexString = Object.keys(mapping).join("|")
+        parsedFlow = regexString
+          ? flow.replace(
+              new RegExp(regexString, "g"),
+              (matched) => mapping[matched],
+            )
+          : flow
       }
-
-      // Swap out old instance IDs in the flow definition with new instance IDs
-      const regexString = Object.keys(mapping).join("|")
-      const parsedFlow = regexString
-        ? flow.replace(
-            new RegExp(regexString, "g"),
-            (matched) => mapping[matched],
-          )
-        : flow
 
       const mutation = `
         mutation createContentFlow($hubId: ID!, $label: String!, $description: String!, $flow: String!) {

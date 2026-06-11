@@ -1,7 +1,10 @@
-/* ============== DYNAMIC CONTENT APP ============== */
-/* This simply fixes a z-index issue for the header  */
+/* ==================== WORKFORCE FLOWS APP ===================== */
+/* Fixes a z-index issue for the header, standardizes the buttons */
+/* a bit, and allows for nicer degradation on smaller screens     */
 
 [data-amplience-style-patches="enabled"] {
+  --text-line-clamp: 4 !important; /* !important needed to override inline styles */
+
   #root {
     --mantine-radius-sm: 6px;
   }
@@ -35,5 +38,100 @@
 
   .mantine-Button-label {
     padding-inline: 0;
+  }
+}
+
+/* Flow Run Page */
+.mantine-AppShell-main
+  > div
+  > .mantine-Stack-root:nth-child(2)
+  > .mantine-Stack-root
+  > .mantine-Flex-root {
+  flex-wrap: wrap;
+  gap: 16px !important; /* !important needed to override inline styles */
+
+  /* Title block */
+  > div:first-child {
+    margin-right: auto;
+  }
+
+  /* Actions */
+  > .mantine-Group-root {
+    flex-wrap: wrap;
+
+    button {
+      flex-grow: 1;
+    }
+  }
+}
+
+/* Review Popout Panel */
+.mantine-Drawer-body > div > div > div {
+  height: calc(100vh - 72px);
+
+  > div:first-child {
+    display: contents;
+
+    /* Pane Header */
+    > div:first-child {
+      height: auto !important; /* !important needed to override inline styles */
+      gap: 8px 16px;
+      flex-wrap: wrap;
+      padding-bottom: var(--mantine-spacing-md, 1.25rem);
+      padding-right: 50px !important; /* !important needed to override inline styles */
+
+      > .mantine-Flex-root {
+        padding-bottom: 0 !important; /* !important needed to override inline styles */
+
+        > div > .mantine-Group-root {
+          padding-bottom: 0 !important; /* !important needed to override inline styles */
+        }
+
+        /* Title */
+        &:first-child {
+          > div {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+          }
+        }
+
+        /* Actions */
+        &:last-child {
+          gap: 4px 16px;
+          flex-wrap: wrap;
+
+          /* Make sure the children don't add their own spacing */
+          > * {
+            width: auto;
+            margin-right: 0 !important; /* !important needed to override inline styles */
+          }
+
+          /* Unneeded margin above 'approved' tag */
+          > span > span {
+            margin-top: 0 !important; /* !important needed to override inline styles */
+            display: flex;
+          }
+
+          /* Put Cross always top-right */
+          > svg {
+            position: absolute;
+            right: 16px;
+            top: 26px;
+          }
+        }
+      }
+    }
+
+    /* Pane body */
+    > div:last-child {
+      height: auto !important; /* !important needed to override inline styles */
+    }
+  }
+
+  /* Pane footer / Pagination panel */
+  > div:last-child {
+    height: auto !important; /* !important needed to override inline styles */
+    padding-block: 24px !important; /* !important needed to override inline styles */
   }
 }

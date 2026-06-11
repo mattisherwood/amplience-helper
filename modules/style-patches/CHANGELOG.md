@@ -1,5 +1,18 @@
 # Style Patches Changelog
 
+## 2026-06-11 (extension v2.4.4)
+
+### Added
+
+- Added defensive Workforce flow-page CSS for tighter viewports, including improved wrapping/spacing for header actions and review panel controls.
+- Added a Workforce override for `--text-line-clamp` to reduce truncation issues caused by inline styles in flow UI surfaces.
+
+### Notes
+
+- New rules are scoped under `data-amplience-style-patches="enabled"` and are intended to improve degradation rather than force a full layout redesign.
+
+---
+
 ## 2026-05-21 (extension v2.4.2)
 
 ### Fixed
