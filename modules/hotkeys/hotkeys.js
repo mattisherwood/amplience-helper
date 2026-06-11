@@ -74,7 +74,10 @@ const handleKeydown = (event) => {
 
   // Apply schema-listing hotkeys
   const isInSchemaListing = document.querySelector("am-schemas-list") !== null
-  if (isInSchemaListing) applySchemaListingHotkeys(event)
+  const isInContentTypesListing =
+    document.querySelector("am-content-types-list") !== null
+  if (isInSchemaListing || isInContentTypesListing)
+    applySchemaListingHotkeys(event)
 
   // Apply schema-editing hotkeys
   const isInSchemaEditor = document.querySelector("am-schema-editor") !== null
@@ -194,6 +197,11 @@ const initializeTooltips = () => {
   addTooltipToButton(".am-inline-filters__button", "Filters (F)")
   addTooltipToButton("am-bulk-assign-locale button", "Localize (L)")
   addTooltipToButton('[am-id="am-bulk-action-publish"]', "Publish (P)")
+  addTooltipToButton(".am-bulk-action-controls__button", "Sync (S)")
+  addTooltipToButton(
+    ".am-workflow-pill--bulk-controls",
+    "Tag with a status (T)",
+  )
   addTooltipToButton(
     ".am-bulk-action-controls__button--unarchive",
     "Unarchive (U)",
@@ -504,6 +512,20 @@ const applyListingHotkeys = (event) => {
     return
   }
 
+  // =================== S ===================
+  if (!isCtrlOrCmd(event) && ["s", "S"].includes(event.key)) {
+    // Sync selected items
+    clickButton(".am-bulk-action-controls__button", event)
+    return
+  }
+
+  // =================== T ===================
+  if (!isCtrlOrCmd(event) && ["t", "T"].includes(event.key)) {
+    // Tag selected items with a status
+    clickButton(".am-workflow-pill--bulk-controls", event)
+    return
+  }
+
   // =================== P ===================
   if (!isCtrlOrCmd(event) && ["p", "P"].includes(event.key)) {
     // Publish selected items
@@ -540,14 +562,14 @@ const applyListingHotkeys = (event) => {
   }
 
   // =================== → ===================
-  if (!isCtrlOrCmd && event.key === "ArrowRight") {
+  if (!isCtrlOrCmd(event) && event.key === "ArrowRight") {
     // Go to next page of items
     clickButton('[am-id="content-pagination--next"]', event)
     return
   }
 
   // =================== ← ===================
-  if (!isCtrlOrCmd && event.key === "ArrowLeft") {
+  if (!isCtrlOrCmd(event) && event.key === "ArrowLeft") {
     // Go to previous page of items
     clickButton('[am-id="content-pagination--prev"]', event)
     return
@@ -682,7 +704,7 @@ const applySchemaListingHotkeys = (event) => {
   // =================== ← ===================
   if (event.key === "ArrowLeft") {
     // Go to previous page of items
-    clickButton("am-pagination__link--prev", event)
+    clickButton(".am-pagination__link--prev", event)
     return
   }
 }
@@ -1042,6 +1064,10 @@ const createHelpOverlay = () => {
             <dd>Localize selected items</dd>
             <dt>P</dt>
             <dd>Publish selected items</dd>
+            <dt>S</dt>
+            <dd>Sync selected items</dd>
+            <dt>T</dt>
+            <dd>Tag selected items with a status</dd>
             <dt>U</dt>
             <dd>Unpublish or Unarchive selected items</dd>
             <dt>⏎</dt>
