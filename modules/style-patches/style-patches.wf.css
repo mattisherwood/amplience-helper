@@ -3,8 +3,6 @@
 /* a bit, and allows for nicer degradation on smaller screens     */
 
 [data-amplience-style-patches="enabled"] {
-  --text-line-clamp: 4 !important; /* !important needed to override inline styles */
-
   #root {
     --mantine-radius-sm: 6px;
   }
@@ -13,26 +11,33 @@
     z-index: 200;
   }
 
+  /* List view header for flows, runs & review listing pages */
   .mantine-AppShell-main > div > .mantine-Flex-root {
     flex-wrap: wrap;
     justify-content: end !important; /* !important needed to override inline styles */
   }
 
-  /* Sorry, there's no direct way to target this element */
-  .mantine-AppShell-main > div > div > div:first-child > div > div:last-child {
-    flex-wrap: wrap;
-    gap: 12px !important; /* !important needed to override inline styles */
+  /* Detail view header for flows */
+  .mantine-AppShell-main > div > div > div:first-child {
+    > .mantine-Flex-root > .mantine-Flex-root:last-child {
+      flex-wrap: wrap;
+      gap: 12px !important; /* !important needed to override inline styles */
 
-    .mantine-Text-root:first-child {
-      margin-right: 0 !important; /* !important needed to override inline styles */
+      /* Last updated text */
+      .mantine-Text-root:first-child {
+        margin-right: 0 !important; /* !important needed to override inline styles */
 
-      + button {
-        margin-left: 10px;
+        /* View runs button */
+        + button {
+          margin-left: 10px;
+        }
       }
     }
   }
 
-  .mantine-Button-inner {
+  /* PDP */
+  /* We should get a better way of targeting this element but there is none */
+  .mantine-AppShell-main > div > div > div:first-child .mantine-Button-inner {
     gap: 0.5rem;
   }
 
@@ -58,6 +63,7 @@
   /* Actions */
   > .mantine-Group-root {
     flex-wrap: wrap;
+    flex: 0 0 auto !important; /* !important needed to override inline styles */
 
     button {
       flex-grow: 1;
@@ -66,7 +72,10 @@
 }
 
 /* Review Popout Panel */
-.mantine-Drawer-body > div > div > div {
+.mantine-Drawer-body
+  > div
+  > div
+  > div:not(:has([data-testid="create-webhook-url-button"])) {
   height: calc(100vh - 72px);
 
   > div:first-child {
@@ -126,6 +135,7 @@
     /* Pane body */
     > div:last-child {
       height: auto !important; /* !important needed to override inline styles */
+      flex-grow: 1;
     }
   }
 
