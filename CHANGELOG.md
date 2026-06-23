@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.4.6 - 2026-06-23
+
+### Summary
+
+Make sure the export button is in a good position.
+
+### Module Highlights
+
+- Flows Migration: Make sure the export button is in a good position.
+
+---
+
 ## v2.4.5 - 2026-06-23
 
 ### Summary

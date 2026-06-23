@@ -1,5 +1,13 @@
 # Flows Migration Changelog
 
+## 2026-06-23 (extension v2.4.6)
+
+### Fixed
+
+- Make sure the export button is injected just after the save button. It fits better when grouped with the other buttons rather than the other side of the enabled button. (NB: We have to position it relative to the save button as we can't rely on the existence of the 'Enabled' button or not as that gets injected after page load.)
+
+---
+
 ## 2026-06-23 (extension v2.4.5)
 
 ### Added
