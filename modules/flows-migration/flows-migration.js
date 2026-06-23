@@ -696,7 +696,14 @@
     buttonWrapper.appendChild(exportButton)
     buttonWrapper.appendChild(statusElement)
 
-    targetContainer.appendChild(buttonWrapper)
+    const primaryButton = targetContainer.querySelector(
+      '[data-variant="primary"]',
+    )
+    if (primaryButton && primaryButton.parentElement === targetContainer) {
+      targetContainer.insertBefore(buttonWrapper, primaryButton.nextSibling)
+    } else {
+      targetContainer.appendChild(buttonWrapper)
+    }
     exportButtonInjected = true
     currentFlowId = flowId
     exportInjectAttempts = 0
