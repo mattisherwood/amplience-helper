@@ -180,6 +180,7 @@
 
       if (!response.ok || payload?.errors?.length > 0) {
         const errorMsg = payload?.errors?.[0]?.message || "Failed to fetch flow"
+        console.error("[Amplience Helper] Flow export error details:", payload)
         return {
           success: false,
           error: `Export failed: ${errorMsg}`,
@@ -291,6 +292,7 @@
       if (!response.ok || payload?.errors?.length > 0) {
         const errorMsg =
           payload?.errors?.[0]?.message || "Failed to import flow"
+        console.error("[Amplience Helper] Flow import error details:", payload)
         return {
           success: false,
           error: `Import failed: ${errorMsg}`,
@@ -356,6 +358,7 @@
 
       if (!response.ok || payload?.errors?.length > 0) {
         const errorMsg = payload?.errors?.[0]?.message || "Failed to fetch flow"
+        console.error("[Amplience Helper] Flow export error details:", payload)
         return {
           success: false,
           error: `Export failed: ${errorMsg}`,
