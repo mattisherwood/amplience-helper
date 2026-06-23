@@ -94,7 +94,7 @@
     const template = document.createElement("template")
     template.innerHTML = `
       <span class="switcheroo-item switcheroo-item--primary" aria-label="Workforce will be accessible once your organization admin finalizes your account setup" md-labeled-by-tooltip="md-tooltip-16" data-amplience-enhanced-naming-workforce-link="true">
-        <a href="https://app.amplience.net/content/" ng-click="disabled ? $event.preventDefault() : null" ng-attr-tabindex="{{ disabled ? -1 : 0 }}" tabindex="0">
+        <a href="https://app.amplience.net/content-studio/" ng-click="disabled ? $event.preventDefault() : null" ng-attr-tabindex="{{ disabled ? -1 : 0 }}" tabindex="0">
           <div class="switcheroo__primary-app switcheroo__primary-app--wf" ng-class="{'switcheroo__primary-app--disabled': disabled, 'switcheroo__primary-app--wf': !disabled}" style="">
             <div class="switcheroo__primary-app-arrow icon-container" amp-icon="ic-arrow-right-grey">
               <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
