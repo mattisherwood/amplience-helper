@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.4.5 - 2026-06-23
+
+### Summary
+
+Bug fixes and error logging enhancements across Style Patches and Flows Migration.
+
+### Module Highlights
+
+- Style Patches: Fixed Workforce hub link and improved Workforce CSS with clearer comments for better maintainability and layout stability.
+- Flows Migration: Enhanced error logging in console for import/export operations to help with debugging.
+
+---
+
 ## v2.4.4 - 2026-06-11
 
 ### Summary

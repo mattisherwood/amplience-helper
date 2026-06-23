@@ -1,5 +1,13 @@
 # Flows Migration Changelog
 
+## 2026-06-23 (extension v2.4.5)
+
+### Added
+
+- Added detailed error logging to the browser console for import/export failures. Full GraphQL error payloads are now logged with `[Amplience Helper]` prefix, making debugging easier.
+
+---
+
 ## 2026-06-11 (extension v2.4.4)
 
 ### Fixed

@@ -1,5 +1,14 @@
 # Style Patches Changelog
 
+## 2026-06-23 (extension v2.4.5)
+
+### Fixed
+
+- Fixed Workforce app link in hub switcher (was pointing to `/content/`, now correctly points to `/content-studio/`).
+- Improved Workforce CSS with clearer section comments for better maintainability; tightened styling for flow detail and review panel layouts.
+
+---
+
 ## 2026-06-11 (extension v2.4.4)
 
 ### Added
