@@ -229,33 +229,48 @@
 
       const sameHub = sourceHubId && sourceHubId === hubId
 
-      if (!sameHub && flowObject.virtualActions) {
-        const extensionActions = flowObject.virtualActions.filter(
-          ({ baseAction }) => baseAction === "extension-action",
-        )
-        const oldInstances = extensionActions
-          .map(({ data }) => data.instances)
-          .flat()
-
-        const newInstances = await fetchInstances(hubId)
-
-        let mapping = {}
-        for (const oldInstance of oldInstances) {
-          mapping[oldInstance.id] =
-            newInstances.data.find(
-              ({ extensionRelease }) =>
-                extensionRelease.id === oldInstance.releaseId,
-            )?.id || null
+      if (!sameHub) {
+        // Strip hub-specific reviewers from human-review actions — unrecognised
+        // user IDs cause the Workforce UI to crash when editing the step.
+        if (flowObject.actions) {
+          flowObject.actions = flowObject.actions.map((action) => {
+            if (action.action === "human-review" && action.config?.reviewers) {
+              return { ...action, config: { ...action.config, reviewers: [] } }
+            }
+            return action
+          })
+          parsedFlow = JSON.stringify(flowObject)
         }
 
-        // Swap out old instance IDs in the flow definition with new instance IDs
-        const regexString = Object.keys(mapping).join("|")
-        parsedFlow = regexString
-          ? flow.replace(
-              new RegExp(regexString, "g"),
-              (matched) => mapping[matched],
-            )
-          : flow
+        // Remap extension instance IDs from source hub to target hub
+        if (flowObject.virtualActions) {
+          const extensionActions = flowObject.virtualActions.filter(
+            ({ baseAction }) => baseAction === "extension-action",
+          )
+          const oldInstances = extensionActions
+            .map(({ data }) => data.instances)
+            .flat()
+
+          const newInstances = await fetchInstances(hubId)
+
+          let mapping = {}
+          for (const oldInstance of oldInstances) {
+            mapping[oldInstance.id] =
+              newInstances.data.find(
+                ({ extensionRelease }) =>
+                  extensionRelease.id === oldInstance.releaseId,
+              )?.id || null
+          }
+
+          // Swap out old instance IDs in the flow definition with new instance IDs
+          const regexString = Object.keys(mapping).join("|")
+          parsedFlow = regexString
+            ? parsedFlow.replace(
+                new RegExp(regexString, "g"),
+                (matched) => mapping[matched],
+              )
+            : parsedFlow
+        }
       }
 
       const mutation = `
