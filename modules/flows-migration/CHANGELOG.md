@@ -1,5 +1,18 @@
 # Flows Migration Changelog
 
+## 2026-06-25 (extension v2.4.7)
+
+### Changed
+
+- Import now detects whether the source and target hubs differ (`sameHub` check using `sourceHubId` from the export file). Instance ID remapping only runs on cross-hub imports; same-hub imports use the original flow definition unchanged.
+- On cross-hub import, `reviewers` are stripped from all human-review actions before upload. User IDs from the source hub don't exist in the target hub — leaving them in caused unresolvable user references in the Workforce UI.
+
+### Notes
+
+- Exports created before `sourceHubId` was added to the export format are treated as cross-hub (remapping and stripping always apply) to stay safe.
+
+---
+
 ## 2026-06-23 (extension v2.4.6)
 
 ### Fixed

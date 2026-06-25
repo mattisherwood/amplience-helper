@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.4.7 - 2026-06-25
+
+### Summary
+
+Flows Migration now detects cross-hub imports and strips hub-specific data (assigned reviewers) from human-review steps, preventing unresolvable user IDs from appearing after import. Flows Filter updated to match a recent Amplience card layout change.
+
+### Module Highlights
+
+- Flows Migration: Cross-hub imports now automatically strip assigned reviewers from human-review steps, so imported flows don't carry over user references that don't exist in the target hub.
+- Flows Filter: Fixed author/tag badge injection to match the updated flow card DOM structure in the latest Amplience release.
+
+---
+
 ## v2.4.6 - 2026-06-23
 
 ### Summary
