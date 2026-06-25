@@ -425,8 +425,8 @@
       flow.classList.add("flow-card")
       flow.dataset.flowParsed = "true"
 
-      const cardContent = flow.children[0].children[0].children
-      const stage = cardContent[cardContent.length - 1]
+      const cardContent = flow.children[0].children[1].children
+      const stage = cardContent[0]
 
       // Add a little circle badge with the author name
       if (author) {
