@@ -23,14 +23,7 @@
     const header = document.createElement("header")
     header.id = TABLE_VIEW_HEADER_ID
 
-    const columns = [
-      "Name",
-      "Description",
-      "Last Run",
-      "Actions",
-      "Author",
-      "Tags",
-    ]
+    const columns = ["Last Run", "Name", "Description", "Author", "Tags", ""]
 
     columns.forEach((column) => {
       const columnEl = document.createElement("div")

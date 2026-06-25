@@ -5,10 +5,7 @@
 
 [data-flows-filter="enabled"] {
   @media (min-width: 1050px) {
-    #flow-table-header {
-      display: contents;
-      font-weight: bold;
-    }
+    /* View Toggle Button */
 
     .mantine-Tabs-panel {
       position: relative;
@@ -75,111 +72,160 @@
       }
     }
 
+    /* Table View */
+
     .table-view.table-view {
+      --table-padding: 20px;
       position: relative;
-      gap: 20px 10px;
+      gap: 0 var(--table-padding);
       grid-template-columns: repeat(6, auto);
       align-items: center;
 
-      [data-testid="control-panel"],
-      [data-testid="control-panel"] > div,
-      [data-testid="control-panel"] > div > div,
-      [data-testid="control-panel"] > div > div > .mantine-Stack-root,
-      [data-testid="control-panel"]
-        > div
-        > div
-        > .mantine-Stack-root
-        > .mantine-Stack-root {
+      #flow-table-header {
         display: contents;
-      }
+        font-weight: bold;
 
-      /* Last Run */
-      [data-testid="control-panel"] > div > div > .mantine-Group-root {
-        position: relative;
-        inset: auto;
-        grid-column: 1;
-        display: block;
-        align-self: initial;
-        min-width: 110px;
-        padding: 7px 12px;
-        height: auto;
-        line-height: 1.2;
-        text-align: center;
-        text-wrap: auto;
-
-        time {
-          display: inline;
-          margin-left: 0.2em;
-        }
-      }
-
-      /* Title */
-      [data-testid="control-panel"]
-        > div
-        > div
-        > .mantine-Stack-root
-        > .mantine-Stack-root
-        > span {
-        grid-column: 2;
-        align-self: start;
-
-        p {
-          padding-right: 0;
-          -webkit-line-clamp: none;
-        }
-
-        &::before {
-          content: "";
-          position: absolute;
-          inset: auto 0;
-          border-top: solid 1px var(--mantine-color-default-border, #d9dfe3);
-          margin-top: -10px;
-        }
-      }
-
-      /* Description */
-      [data-testid="control-panel"]
-        > div
-        > div
-        > .mantine-Stack-root
-        > .mantine-Stack-root
         > div {
-        grid-column: 3;
-        align-self: start;
+          padding-bottom: calc(var(--table-padding) * 0.5);
+        }
 
-        p {
-          padding-right: 0;
-          -webkit-line-clamp: none;
+        > div:first-child {
+          padding-left: var(--table-padding);
+        }
+
+        /* Centre the Last Run & Author column headers */
+        > div:first-child,
+        > div:nth-child(4) {
+          text-align: center;
+        }
+
+        /* Right-align the Tags column header */
+        > div:nth-child(5) {
+          text-align: right;
+          padding-right: 8px;
+        }
+
+        > div:last-child {
+          padding-right: var(--table-padding);
         }
       }
 
-      /* Group */
-      [data-testid="control-panel"]
-        > div
-        > div
-        > .mantine-Stack-root
-        > .mantine-Group-root {
-        grid-column: 4;
-        order: initial;
-      }
+      .flow-card {
+        display: contents;
 
-      .flow-card > div {
-        position: relative;
-        display: grid;
-        align-items: center;
-        grid-template-columns: subgrid;
-        grid-column: 1 / -1; /* span all columns */
+        > div {
+          position: relative;
+          display: grid;
+          align-items: center;
+          grid-template-columns: subgrid;
+          grid-column: 1 / -1; /* span all columns */
+          padding: var(--table-padding);
+          box-shadow: none;
+          border: 0;
 
-        .mantine-Popover-dropdown {
-          display: block !important;
-          top: auto !important;
-          left: auto !important;
-          right: 0;
-          margin: 0;
+          /* Last run chip */
+          > .mantine-Group-root {
+            position: relative;
+            inset: auto;
+            grid-column: 1;
+            display: block;
+            align-self: initial;
+            min-width: 110px;
+            margin-block: -7px;
+            padding: 7px 12px;
+            height: auto;
+            line-height: 1.2;
+            text-align: center;
+            text-wrap: auto;
 
-          > div {
-            height: 100%;
-            padding-top: 0;
+            &:has(time) {
+              font-size: 0;
+            }
+
+            time {
+              display: inline;
+              margin-left: 0.2em;
+              font-size: var(--mantine-font-size-md, 14px);
+            }
+          }
+
+          > .mantine-Stack-root {
+            display: contents;
+
+            > .mantine-Stack-root {
+              display: contents;
+
+              /* Title */
+              > span {
+                grid-column: 2;
+                align-self: start;
+
+                p {
+                  padding-right: 0;
+                  -webkit-line-clamp: none;
+                }
+
+                /* Dividing line */
+                &::before {
+                  content: "";
+                  position: absolute;
+                  inset: auto 0;
+                  border-top: solid 1px
+                    var(--mantine-color-default-border, #d9dfe3);
+                  margin-top: calc(var(--table-padding) * -1);
+                }
+              }
+
+              /* Description */
+              > div {
+                grid-column: 3;
+                align-self: start;
+
+                p {
+                  padding-right: 0;
+                  -webkit-line-clamp: none;
+                }
+              }
+
+              .author-badge {
+                grid-column: 4;
+                justify-self: center;
+                align-self: initial;
+                position: relative;
+                inset: auto;
+              }
+
+              .tags {
+                align-self: initial;
+                justify-content: flex-end;
+                grid-column: 5;
+              }
+            }
+
+            /* Actions Group */
+            > .mantine-Group-root {
+              grid-column: -1;
+              justify-content: flex-end;
+              gap: 8px;
+            }
+          }
+
+          .mantine-Popover-dropdown {
+            display: block !important;
+            top: auto !important;
+            bottom: auto !important;
+            left: 4px !important;
+            margin: 0;
+            padding: 8px;
+
+            > div {
+              height: 100%;
+              padding-top: 0;
+            }
+
+            button {
+              display: block;
+            }
           }
         }
       }
@@ -188,23 +234,12 @@
         display: none;
       }
 
-      .author-badge {
-        grid-column: 5;
-        justify-self: center;
-        position: relative;
-        inset: auto;
-      }
-
-      .tags {
-        grid-column: 6;
-      }
-
       #flow-archived-section {
         row-gap: 20px;
       }
 
       #flow-archived-container {
-        row-gap: 20px;
+        row-gap: 0;
       }
     }
   }
