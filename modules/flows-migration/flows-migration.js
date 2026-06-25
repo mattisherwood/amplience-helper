@@ -217,15 +217,19 @@
         }
       }
 
-      const { label, description, flow } = flowData
+      const { label, description, flow, sourceHubId } = flowData
 
-      // Create mapping of old instance IDs to new instance IDs
-      // based on extension release ID
+      // If the flow was exported from a different hub, create mapping of old instance
+      // IDs to new instance IDs based on extension release ID. (sourceHubId may be absent
+      // on files exported before this feature was added, so if in doubt treat those as
+      // requiring remapping to stay safe).
 
       const flowObject = JSON.parse(flow)
       let parsedFlow = flow
 
-      if (flowObject.virtualActions) {
+      const sameHub = sourceHubId && sourceHubId === hubId
+
+      if (!sameHub && flowObject.virtualActions) {
         const extensionActions = flowObject.virtualActions.filter(
           ({ baseAction }) => baseAction === "extension-action",
         )
@@ -493,8 +497,9 @@
   }
 
   // Trigger download of JSON file
-  function downloadFlowAsJson(flowId, flowData) {
-    const jsonContent = JSON.stringify(flowData, null, 2)
+  function downloadFlowAsJson(flowId, flowData, sourceHubId) {
+    const exportData = sourceHubId ? { ...flowData, sourceHubId } : flowData
+    const jsonContent = JSON.stringify(exportData, null, 2)
     const blob = new Blob([jsonContent], { type: "application/json" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
@@ -531,7 +536,8 @@
     const result = await fetchFlowData(flowId)
 
     if (result.success) {
-      downloadFlowAsJson(flowId, result.data)
+      const sourceHubId = extractHubIdFromUrl()
+      downloadFlowAsJson(flowId, result.data, sourceHubId)
       setButtonStatus(button, statusEl, "Exported", false)
       button.disabled = false
     } else {
