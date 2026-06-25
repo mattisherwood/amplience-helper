@@ -1,5 +1,14 @@
 # Flows Filter Changelog
 
+## 2026-06-25 (extension v2.4.7)
+
+### Fixed
+
+- Updated card content traversal to match Amplience's revised flow card DOM structure. The selector used to locate the stage element (for author badge injection) changed from `children[0].children[0]` to `children[0].children[1]`, and the target from the last child to the first child of that container.
+- Updated table view CSS to work with Amplience's revised flow card DOM structure.
+
+---
+
 ## 2026-06-02 (extension v2.4.3)
 
 ### Fixed

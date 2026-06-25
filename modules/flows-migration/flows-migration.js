@@ -217,41 +217,60 @@
         }
       }
 
-      const { label, description, flow } = flowData
+      const { label, description, flow, sourceHubId } = flowData
 
-      // Create mapping of old instance IDs to new instance IDs
-      // based on extension release ID
+      // If the flow was exported from a different hub, create mapping of old instance
+      // IDs to new instance IDs based on extension release ID. (sourceHubId may be absent
+      // on files exported before this feature was added, so if in doubt treat those as
+      // requiring remapping to stay safe).
 
       const flowObject = JSON.parse(flow)
       let parsedFlow = flow
 
-      if (flowObject.virtualActions) {
-        const extensionActions = flowObject.virtualActions.filter(
-          ({ baseAction }) => baseAction === "extension-action",
-        )
-        const oldInstances = extensionActions
-          .map(({ data }) => data.instances)
-          .flat()
+      const sameHub = sourceHubId && sourceHubId === hubId
 
-        const newInstances = await fetchInstances(hubId)
-
-        let mapping = {}
-        for (const oldInstance of oldInstances) {
-          mapping[oldInstance.id] =
-            newInstances.data.find(
-              ({ extensionRelease }) =>
-                extensionRelease.id === oldInstance.releaseId,
-            )?.id || null
+      if (!sameHub) {
+        // Strip hub-specific reviewers from human-review actions — unrecognised
+        // user IDs cause the Workforce UI to crash when editing the step.
+        if (flowObject.actions) {
+          flowObject.actions = flowObject.actions.map((action) => {
+            if (action.action === "human-review" && action.config?.reviewers) {
+              return { ...action, config: { ...action.config, reviewers: [] } }
+            }
+            return action
+          })
+          parsedFlow = JSON.stringify(flowObject)
         }
 
-        // Swap out old instance IDs in the flow definition with new instance IDs
-        const regexString = Object.keys(mapping).join("|")
-        parsedFlow = regexString
-          ? flow.replace(
-              new RegExp(regexString, "g"),
-              (matched) => mapping[matched],
-            )
-          : flow
+        // Remap extension instance IDs from source hub to target hub
+        if (flowObject.virtualActions) {
+          const extensionActions = flowObject.virtualActions.filter(
+            ({ baseAction }) => baseAction === "extension-action",
+          )
+          const oldInstances = extensionActions
+            .map(({ data }) => data.instances)
+            .flat()
+
+          const newInstances = await fetchInstances(hubId)
+
+          let mapping = {}
+          for (const oldInstance of oldInstances) {
+            mapping[oldInstance.id] =
+              newInstances.data.find(
+                ({ extensionRelease }) =>
+                  extensionRelease.id === oldInstance.releaseId,
+              )?.id || null
+          }
+
+          // Swap out old instance IDs in the flow definition with new instance IDs
+          const regexString = Object.keys(mapping).join("|")
+          parsedFlow = regexString
+            ? parsedFlow.replace(
+                new RegExp(regexString, "g"),
+                (matched) => mapping[matched],
+              )
+            : parsedFlow
+        }
       }
 
       const mutation = `
@@ -493,8 +512,9 @@
   }
 
   // Trigger download of JSON file
-  function downloadFlowAsJson(flowId, flowData) {
-    const jsonContent = JSON.stringify(flowData, null, 2)
+  function downloadFlowAsJson(flowId, flowData, sourceHubId) {
+    const exportData = sourceHubId ? { ...flowData, sourceHubId } : flowData
+    const jsonContent = JSON.stringify(exportData, null, 2)
     const blob = new Blob([jsonContent], { type: "application/json" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
@@ -531,7 +551,8 @@
     const result = await fetchFlowData(flowId)
 
     if (result.success) {
-      downloadFlowAsJson(flowId, result.data)
+      const sourceHubId = extractHubIdFromUrl()
+      downloadFlowAsJson(flowId, result.data, sourceHubId)
       setButtonStatus(button, statusEl, "Exported", false)
       button.disabled = false
     } else {

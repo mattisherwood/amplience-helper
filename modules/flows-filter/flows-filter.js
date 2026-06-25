@@ -23,14 +23,7 @@
     const header = document.createElement("header")
     header.id = TABLE_VIEW_HEADER_ID
 
-    const columns = [
-      "Name",
-      "Description",
-      "Last Run",
-      "Actions",
-      "Author",
-      "Tags",
-    ]
+    const columns = ["Last Run", "Name", "Description", "Author", "Tags", ""]
 
     columns.forEach((column) => {
       const columnEl = document.createElement("div")
@@ -425,8 +418,8 @@
       flow.classList.add("flow-card")
       flow.dataset.flowParsed = "true"
 
-      const cardContent = flow.children[0].children[0].children
-      const stage = cardContent[cardContent.length - 1]
+      const cardContent = flow.children[0].children[1].children
+      const stage = cardContent[0]
 
       // Add a little circle badge with the author name
       if (author) {
