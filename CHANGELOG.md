@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.4.8 - 2026-06-30
+
+### Summary
+
+Improve the thumbnail card layout, in time for the clean Quadratic Lite hub.
+
+### Module Highlights
+
+- Style Patches: Improve the thumbnail card layout.
+
+---
+
 ## v2.4.7 - 2026-06-25
 
 ### Summary

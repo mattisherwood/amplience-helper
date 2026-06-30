@@ -1,5 +1,13 @@
 # Style Patches Changelog
 
+## 2026-06-30 (extension v2.4.8)
+
+### Added
+
+- Improved thumbnail card layout CSS, ready in time for the clean Quadratic Lite hub.
+
+---
+
 ## 2026-06-23 (extension v2.4.5)
 
 ### Fixed
