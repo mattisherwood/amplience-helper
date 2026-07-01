@@ -9,86 +9,8 @@
     '[data-amplience-enhanced-naming-workforce-link="true"]'
   const SWITCHEROO_APP_LIST_SELECTOR =
     ".switcheroo__primary-applist, .switcheroo-menu__primary-actions"
-  const MONACO_EDITOR_SELECTOR = ".monaco-editor"
-
-  function isScrollableElement(element) {
-    if (!(element instanceof Element)) {
-      return false
-    }
-
-    const style = window.getComputedStyle(element)
-    const overflowY = style.overflowY
-    const allowsVerticalScroll =
-      overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay"
-
-    return allowsVerticalScroll && element.scrollHeight > element.clientHeight
-  }
-
-  function getNearestScrollableAncestor(startElement) {
-    let current = startElement
-
-    while (
-      current &&
-      current !== document.body &&
-      current !== document.documentElement
-    ) {
-      if (isScrollableElement(current)) {
-        return current
-      }
-
-      current = current.parentElement
-    }
-
-    return null
-  }
 
   let switcherooObserver = null
-  let monacoScrollFixEnabled = false
-
-  function handleMonacoWheel(event) {
-    const target = event.target
-    if (!(target instanceof Element)) {
-      return
-    }
-
-    const monacoEditor = target.closest(MONACO_EDITOR_SELECTOR)
-    if (!monacoEditor) {
-      return
-    }
-
-    const scrollContainer = getNearestScrollableAncestor(monacoEditor)
-    if (scrollContainer) {
-      scrollContainer.scrollBy(0, event.deltaY)
-      return
-    }
-
-    window.scrollBy(0, event.deltaY)
-  }
-
-  function startMonacoScrollFix() {
-    if (monacoScrollFixEnabled) {
-      return
-    }
-
-    document.addEventListener("wheel", handleMonacoWheel, {
-      capture: true,
-      passive: true,
-    })
-
-    monacoScrollFixEnabled = true
-  }
-
-  function stopMonacoScrollFix() {
-    if (!monacoScrollFixEnabled) {
-      return
-    }
-
-    document.removeEventListener("wheel", handleMonacoWheel, {
-      capture: true,
-    })
-
-    monacoScrollFixEnabled = false
-  }
 
   function createWorkforceLink() {
     const template = document.createElement("template")
@@ -183,12 +105,10 @@
 
       insertWorkforceLink()
       startSwitcherooObserver()
-      startMonacoScrollFix()
       return
     }
 
     document.documentElement.removeAttribute("data-amplience-style-patches")
-    stopMonacoScrollFix()
     stopSwitcherooObserver()
     removeWorkforceLink()
   }
