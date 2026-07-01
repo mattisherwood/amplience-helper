@@ -4,11 +4,11 @@
 
 ### Summary
 
-Improve the thumbnail card layout, in time for the clean Quadratic Lite hub.
+Improve the thumbnail card layout, tabs & field groups UI.
 
 ### Module Highlights
 
-- Style Patches: Improve the thumbnail card layout.
+- Style Patches: Improve the thumbnail card layout, tabs and field groups UI.
 
 ---
 

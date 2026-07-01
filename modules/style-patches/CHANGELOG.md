@@ -4,7 +4,7 @@
 
 ### Added
 
-- Improved thumbnail card layout CSS, ready in time for the clean Quadratic Lite hub.
+- Improved the layout CSS for the thumbnail cards, tabs & field groups UI.
 
 ---
 

@@ -464,7 +464,6 @@
 
   .am-rounded-icon-button.md-button {
     background: var(--background-color);
-    position: relative;
 
     &::before {
       content: "";

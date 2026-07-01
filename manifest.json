@@ -52,7 +52,10 @@
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://app.amplience.net/*"],
+      "matches": [
+        "https://app.amplience.net/*",
+        "https://content-form.extensions.content.amplience.net/*"
+      ],
       "css": [
         "modules/style-patches/style-patches.home.css",
         "modules/style-patches/style-patches.account.css",
@@ -61,7 +64,8 @@
         "modules/style-patches/style-patches.wf.css"
       ],
       "js": ["modules/style-patches/style-patches.js"],
-      "run_at": "document_idle"
+      "run_at": "document_idle",
+      "all_frames": true
     },
     {
       "matches": ["https://app.amplience.net/*"],
