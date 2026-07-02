@@ -8,6 +8,7 @@
     min-width: 0 !important;
   }
 
+  /* ====================================================== 
   /* HEADER STRUCTURE */
 
   am-masthead {
@@ -172,6 +173,7 @@
     }
   }
 
+  /* ====================================================== 
   /* HEADER BUTTONS */
 
   .am-masthead-menu__btn,
@@ -225,6 +227,7 @@
     align-items: center;
   }
 
+  /* ====================================================== 
   /* DASHBOARD */
 
   .am-dashboard__tab-content > *,
@@ -284,7 +287,8 @@
     }
   }
 
-  /* CONTENT */
+  /* ====================================================== 
+  /* CONTENT: FOLDERS & FILTERS */
 
   .am-content-folders__tree-item__inner {
     gap: 4px;
@@ -431,9 +435,9 @@
     left: auto;
   }
 
-  /* CONTENT FORMS */
+  /* ====================================================== 
+  /* CONTENT: TABS */
 
-  /* Nicer tabs */
   .am-content-item-editor__tabs {
     display: flex;
     flex-direction: column;
@@ -447,32 +451,21 @@
     left: -3.125rem;
     right: -3.125rem;
   }
-  .extension-content > [data-testid="component-spacer"] > div:first-child {
-    margin-inline: -3.125rem;
-    padding-inline: 3.125rem;
+  .extension-content > [data-testid="component-spacer"] > div {
+    /* Allow sticky spacer to span the full width */
+    &:first-child:not(:has(> [data-testid="component-spacer"])) {
+      margin-inline: -3.125rem;
+      padding-inline: 3.125rem;
+    }
+    /* Don't allow empty spacers to be sticky */
+    &:has([data-testid="component-spacer"]:empty) {
+      position: static;
+    }
   }
-  [data-rfd-droppable-context-id]
+  [data-testid="component-spacer"]
+    [data-rfd-droppable-context-id]
     [data-variant="outline"][data-orientation="horizontal"][data-active] {
     border-bottom-color: #f8f9fe;
-  }
-
-  /* Tighter object-container */
-  [data-testid="content-form:object-container"] {
-    > div > div {
-      padding: 1rem;
-
-      &[data-testid="control-panel-target"] {
-        padding: 0;
-
-        > div {
-          min-height: 0;
-        }
-      }
-
-      > .mantine-SimpleGrid-root {
-        gap: 1rem;
-      }
-    }
   }
   [data-testid="content-form:object-container"],
   [data-testid="content-form:inline-array"] {
@@ -481,28 +474,47 @@
       right: -1rem;
     }
   }
-  [data-testid="control-panel-target"] > div {
+
+  /* ====================================================== 
+  /* CONTENT: TIGHTER PADDING */
+
+  /* Fix the padding on the expandable control panel header */
+  [data-testid="control-panel-target"]:not([data-pointer]) {
+    padding: 0.8rem 1rem;
     min-height: 0;
-    padding: 1rem;
-  }
-  [data-testid="control-panel"] + div {
-    border-top: 0.0625rem solid #d6dff8;
-  }
-  .amplience-tabs-panel > .mantine-SimpleGrid-root {
-    gap: 1rem;
-    margin-bottom: -1.25rem;
   }
 
+  /* Normalise its title & description contents */
   .input__title-section,
   .amplience-description {
     padding: 0;
 
     > span {
       margin-right: 0;
+      line-height: 1.2;
     }
   }
 
-  /* NICER THUMBNAIL CARDS */
+  /* Fields within the content form */
+  [data-testid="content-form:object-container"],
+  [data-testid="content-form:localized-value"] {
+    > div > div > .mantine-SimpleGrid-root {
+      gap: 1rem;
+    }
+  }
+
+  /* Separate the control panel header from the content form */
+  [data-testid="control-panel"] + div {
+    border-top: 0.0625rem solid #d6dff8;
+  }
+
+  .amplience-tabs-panel > .mantine-SimpleGrid-root {
+    gap: 1rem;
+    margin-bottom: -1.25rem;
+  }
+
+  /* ====================================================== 
+  /* CONTENT: THUMBNAIL CARDS */
 
   .am-grid__item__card-wrapper__header {
     margin-top: 0 !important;
@@ -588,8 +600,14 @@
 
   /* Show empty publish status icon (draft) as a dashed circle */
   am-status-icon md-icon.am-status-icon:empty {
+    aspect-ratio: 1;
     border: dashed 2px #eee;
     border-radius: 50%;
+  }
+  /* Make sure the containing td in list-view can cope with all status icon types */
+  .am-content-view-list__publish-status-column {
+    width: 34px !important; /* !important to override the existing important */
+    flex: 1 0 34px !important; /* !important to override the existing important */
   }
 
   /* The status tag & user-assigning icons */
@@ -701,7 +719,8 @@
     opacity: 1;
   }
 
-  /* CONTENT TYPES FORM */
+  /* ====================================================== 
+  /* CONTENT-TYPES FORM */
 
   .am-content-type-registration__form {
     padding: 0;
