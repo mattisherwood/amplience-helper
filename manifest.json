@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Amplience Helper",
-  "version": "2.4.8",
+  "version": "2.4.9",
   "description": "A suite of tools bundled in a browser extension to help every-day Amplience super-users create content at the speed of ideas.",
   "browser_specific_settings": {
     "gecko": {
@@ -52,20 +52,38 @@
       "run_at": "document_idle"
     },
     {
+      "matches": ["https://app.amplience.net/"],
+      "css": ["modules/style-patches/style-patches.home.css"],
+      "js": ["modules/style-patches/style-patches.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://app.amplience.net/#/organizations/*"],
+      "css": ["modules/style-patches/style-patches.account.css"],
+      "js": ["modules/style-patches/style-patches.js"],
+      "run_at": "document_idle"
+    },
+    {
       "matches": [
-        "https://app.amplience.net/*",
+        "https://app.amplience.net/content/*",
         "https://content-form.extensions.content.amplience.net/*"
       ],
-      "css": [
-        "modules/style-patches/style-patches.home.css",
-        "modules/style-patches/style-patches.account.css",
-        "modules/style-patches/style-patches.dc.css",
-        "modules/style-patches/style-patches.dam.css",
-        "modules/style-patches/style-patches.wf.css"
-      ],
+      "css": ["modules/style-patches/style-patches.dc.css"],
       "js": ["modules/style-patches/style-patches.js"],
       "run_at": "document_idle",
       "all_frames": true
+    },
+    {
+      "matches": ["https://app.amplience.net/media/*"],
+      "css": ["modules/style-patches/style-patches.dam.css"],
+      "js": ["modules/style-patches/style-patches.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://app.amplience.net/content-studio/*"],
+      "css": ["modules/style-patches/style-patches.wf.css"],
+      "js": ["modules/style-patches/style-patches.js"],
+      "run_at": "document_idle"
     },
     {
       "matches": ["https://app.amplience.net/*"],
