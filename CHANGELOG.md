@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.4.11 - 2026-07-03
+
+### Summary
+
+Fine-tuning
+
+### Module Highlights
+
+- Style Patches: Fine-tune the manifest to load the files at the right times.
+
+---
+
 ## v2.4.10 - 2026-07-03
 
 ### Summary
