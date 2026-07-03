@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.4.8 - 2026-06-30
+
+### Summary
+
+Improve the thumbnail card layout, tabs & field groups UI & remove a fix that's been incorporated into the main product.
+
+### Module Highlights
+
+- Style Patches: Improve the thumbnail card layout, tabs and field groups UI.
+- Style Patches: We no longer need the monaco scroll bug fix, as it's now been fixed in the core product.
+
+---
+
 ## v2.4.7 - 2026-06-25
 
 ### Summary

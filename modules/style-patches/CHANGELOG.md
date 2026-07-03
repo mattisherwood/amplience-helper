@@ -1,5 +1,17 @@
 # Style Patches Changelog
 
+## 2026-06-30 (extension v2.4.8)
+
+### Added
+
+- Improved the layout CSS for the thumbnail cards, tabs & field groups UI.
+
+### Removed
+
+- Removed the Monaco scroll bug fix, as it's now been fixed within the core product.
+
+---
+
 ## 2026-06-23 (extension v2.4.5)
 
 ### Fixed

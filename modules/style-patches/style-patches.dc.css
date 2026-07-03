@@ -8,6 +8,7 @@
     min-width: 0 !important;
   }
 
+  /* ====================================================== 
   /* HEADER STRUCTURE */
 
   am-masthead {
@@ -172,6 +173,7 @@
     }
   }
 
+  /* ====================================================== 
   /* HEADER BUTTONS */
 
   .am-masthead-menu__btn,
@@ -225,6 +227,7 @@
     align-items: center;
   }
 
+  /* ====================================================== 
   /* DASHBOARD */
 
   .am-dashboard__tab-content > *,
@@ -284,7 +287,8 @@
     }
   }
 
-  /* CONTENT */
+  /* ====================================================== 
+  /* CONTENT: FOLDERS & FILTERS */
 
   .am-content-folders__tree-item__inner {
     gap: 4px;
@@ -328,12 +332,60 @@
     min-width: 200px;
   }
 
+  /* Add missing border back in to the content pane */
+  .am-content-item-library__content-pane {
+    border-left: 1px solid #d6dff8;
+  }
+
+  /* Don't show a border when the grabber is there showing a border */
+  am-grabber + .am-content-item-library__content-pane {
+    border-left: 0;
+  }
+
+  .am-inline-filters__button-wrapper {
+    display: contents;
+  }
+
+  .am-inline-filters__button {
+    position: relative;
+    margin: initial;
+    min-width: initial;
+    min-height: initial;
+    border-radius: initial;
+    border-right: solid 1px transparent;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-color: var(--background-color, #fff);
+      z-index: -1;
+    }
+  }
+
+  button.am-inline-filters__button--active {
+    background-color: var(--background-color, #fff);
+    border-right-color: #d9dfe3;
+    box-shadow: initial;
+    z-index: 89;
+  }
+
   .md-panel.am-inline-filters-overlay__wrapper._md-panel-animate-enter {
     width: auto;
     max-width: none;
     right: 0;
+    margin-top: 2px;
     margin-right: 20px;
     padding-inline: 20px;
+    border: solid 1px #d9dfe3;
+  }
+
+  /* Stop the overflow from cutting off before the bottom of the filter */
+  .am-inline-filters-overlay__wrapper {
+    padding-bottom: 0;
+  }
+  .am-inline-filters-facet-group__facets-wrapper {
+    padding-bottom: 20px;
   }
 
   am-inline-filters-facet-group {
@@ -362,6 +414,15 @@
     min-width: 110px;
   }
 
+  .am-content-item-library-collapsible-inline-folders,
+  .am-content-item-library__toolbar {
+    margin-bottom: 0;
+  }
+
+  .am-content-item-library__toolbar {
+    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.1);
+  }
+
   am-visualization-options-menu .md-menu .md-button,
   am-visualization-options-menu .md-menu md-checkbox,
   am-visualization-options-menu md-menu .md-button,
@@ -372,5 +433,300 @@
 
   md-checkbox .md-container {
     left: auto;
+  }
+
+  /* ====================================================== 
+  /* CONTENT: TABS */
+
+  .am-content-item-editor__tabs {
+    display: flex;
+    flex-direction: column;
+
+    md-tabs-wrapper {
+      height: auto;
+      flex-grow: 1;
+    }
+  }
+  .mantine-Tabs-list::before {
+    left: -3.125rem;
+    right: -3.125rem;
+  }
+  .extension-content > [data-testid="component-spacer"] > div {
+    /* Allow sticky spacer to span the full width */
+    &:first-child:not(:has(> [data-testid="component-spacer"])) {
+      margin-inline: -3.125rem;
+      padding-inline: 3.125rem;
+    }
+    /* Don't allow empty spacers to be sticky */
+    &:has([data-testid="component-spacer"]:empty) {
+      position: static;
+    }
+  }
+  [data-testid="component-spacer"]
+    [data-rfd-droppable-context-id]
+    [data-variant="outline"][data-orientation="horizontal"][data-active] {
+    border-bottom-color: #f8f9fe;
+  }
+  [data-testid="content-form:object-container"],
+  [data-testid="content-form:inline-array"] {
+    .mantine-Tabs-list::before {
+      left: -1rem;
+      right: -1rem;
+    }
+  }
+
+  /* ====================================================== 
+  /* CONTENT: TIGHTER PADDING */
+
+  /* Fix the padding on the expandable control panel header */
+  [data-testid="control-panel-target"]:not([data-pointer]) {
+    padding: 0.8rem 1rem;
+    min-height: 0;
+  }
+
+  /* Normalise its title & description contents */
+  .input__title-section,
+  .amplience-description {
+    padding: 0;
+
+    > span {
+      margin-right: 0;
+      line-height: 1.2;
+    }
+  }
+
+  /* Fields within the content form */
+  [data-testid="content-form:object-container"],
+  [data-testid="content-form:localized-value"] {
+    > div > div > .mantine-SimpleGrid-root {
+      gap: 1rem;
+    }
+  }
+
+  /* Separate the control panel header from the content form */
+  [data-testid="control-panel"] + div {
+    border-top: 0.0625rem solid #d6dff8;
+  }
+
+  .amplience-tabs-panel > .mantine-SimpleGrid-root {
+    gap: 1rem;
+    margin-bottom: -1.25rem;
+  }
+
+  /* ====================================================== 
+  /* CONTENT: THUMBNAIL CARDS */
+
+  .am-grid__item__card-wrapper__header {
+    margin-top: 0 !important;
+    padding: 0 !important;
+    height: auto;
+    max-height: none;
+    border-bottom: solid 1px #ddd;
+  }
+
+  /* The title of the card */
+  .am-grid__link-wrapper {
+    padding: 6px 0 6px 34px;
+  }
+
+  am-archived-icon {
+    display: none;
+  }
+
+  /* The "..." more button in the top-right of each card */
+  am-content-view-grid
+    .am-grid__item__card-wrapper__header
+    .am-context-menu__trigger-button {
+    margin: 0;
+    height: 34px;
+    width: 34px;
+    padding: 0;
+    min-height: 0;
+    min-width: 0;
+    border-radius: 50%;
+  }
+
+  /* The preview thumbnail area */
+  .am-content-card__body {
+    inset: 0;
+    cursor: pointer;
+    transition: opacity 0.15s ease-in-out;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0) 80%,
+        rgba(0, 0, 0, 0.1) 100%
+      );
+      opacity: 0;
+      transition: opacity 0.15s ease-in-out;
+    }
+  }
+  /* This needs some work before we can use the commented out part. */
+  /* It'll currently show the overlay on hover, but it would be good
+     if it could also show it if the card has one of the following:
+      - a status tag that doesn't contain an md-icon
+      - an assigned user that doesn't contain an md-icon */
+  .am-grid__item {
+    /* &:not(:has(.am-workflow-state-selector__wrapper md-icon)), */
+    /* &:not(:has(am-assigned-user md-icon)), */
+    &:hover {
+      .am-content-card__body::after {
+        opacity: 1;
+      }
+    }
+  }
+
+  /* Don't have these take up a row */
+  .am-grid__item__card-wrapper__toolbar,
+  .am-grid__item__card-wrapper__toolbar.am-grid__actions,
+  .am-grid__card-wrapper__actions-wrapper {
+    display: contents;
+  }
+
+  /* The publish status & locale icon/tag */
+  .am-grid__card-wrapper__actions-wrapper > div:first-child {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1;
+  }
+
+  /* Show empty publish status icon (draft) as a dashed circle */
+  am-status-icon md-icon.am-status-icon:empty {
+    aspect-ratio: 1;
+    border: dashed 2px #eee;
+    border-radius: 50%;
+  }
+  /* Make sure the containing td in list-view can cope with all status icon types */
+  .am-content-view-list__publish-status-column {
+    width: 34px !important; /* !important to override the existing important */
+    flex: 1 0 34px !important; /* !important to override the existing important */
+  }
+
+  /* The status tag & user-assigning icons */
+  .am-grid__card-wrapper__actions-wrapper > div:last-child {
+    position: absolute;
+    bottom: 5px;
+    left: 6px;
+    gap: 4px;
+    margin-right: 0;
+    z-index: 1;
+
+    /* Assign User & Tag Icons */
+    md-icon {
+      background: #fff;
+      border-radius: 50%;
+    }
+
+    am-gravatar {
+      background: #fff;
+    }
+    /* More than 1 assigned user has this "+1" circle */
+    .am-assigned-user__more {
+      background: #fff;
+      border-radius: 99rem;
+      display: flex;
+      aspect-ratio: 1;
+      height: 28px;
+      width: auto;
+      justify-content: center;
+      align-items: center;
+      margin-left: -5px;
+      z-index: -1;
+      transition:
+        opacity 0.15s ease-in-out,
+        margin-left 0.15s ease-in-out;
+    }
+  }
+  am-gravatar img,
+  .am-gravatar__initials {
+    transition: opacity 0.15s ease-in-out;
+  }
+
+  am-content-view-grid .am-grid__item am-workflow-assignee-chooser {
+    transition: opacity 0.15s ease-in-out;
+    display: block;
+
+    &:hover {
+      am-gravatar img,
+      .am-gravatar__initials,
+      .am-assigned-user__more {
+        opacity: 0.9;
+      }
+    }
+  }
+
+  /* Only show status tags on hover or when there is one set */
+  .am-grid__item {
+    .am-workflow-pill__wrapper--small {
+      margin-right: 0;
+
+      .am-workflow-pill {
+        min-width: 0;
+        margin-left: calc(-28px - 10px - 4px);
+        padding: 0;
+        transition:
+          opacity 0.15s ease-in-out,
+          margin-left 0.15s ease-in-out;
+      }
+    }
+
+    &:hover .am-workflow-pill__wrapper--small .am-workflow-pill,
+    .am-workflow-pill__wrapper--small .am-workflow-pill:not(:has(md-icon)) {
+      margin-left: 0;
+    }
+  }
+
+  /* The checkbox in the bottom-left of each card */
+  .am-grid__item-tooltip {
+    bottom: 10px;
+    right: 10px;
+    width: 25px;
+    height: 25px;
+    border-radius: 3px;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+  }
+  am-grid am-table-checkbox {
+    margin-top: 0;
+    position: relative;
+    width: 25px;
+    height: 25px;
+    margin-right: 0;
+
+    .am-table-checkbox__selected-icon {
+      left: 0;
+      top: 0;
+      min-width: initial;
+      min-height: initial;
+      font-size: 25px;
+      line-height: 1;
+    }
+  }
+
+  /* Only show the checkboxes on hover or if the card is selected */
+  .am-grid__item:hover .am-grid__item-tooltip,
+  .am-grid__item.am-grid__item--is-selected .am-grid__item-tooltip {
+    opacity: 1;
+  }
+
+  /* ====================================================== 
+  /* CONTENT-TYPES FORM */
+
+  .am-content-type-registration__form {
+    padding: 0;
+  }
+
+  md-tabs[md-border-bottom]:not(.md-dynamic-height) md-tabs-content-wrapper {
+    top: 44px;
   }
 }
