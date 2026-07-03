@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.4.9 - 2026-07-03
+
+### Summary
+
+Scope the style patches to only load on their product area.
+
+### Module Highlights
+
+- Style Patches: Scope the style patches to only load on their product area.
+
+---
+
 ## v2.4.8 - 2026-06-30
 
 ### Summary

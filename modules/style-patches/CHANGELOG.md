@@ -1,5 +1,13 @@
 # Style Patches Changelog
 
+## 2026-07-03 (extension v2.4.9)
+
+### Fixed
+
+- Scoped the patches to only load on their product area. This has a slight performance benefit, but also avoids accidentally styling a different part of the product.
+
+---
+
 ## 2026-06-30 (extension v2.4.8)
 
 ### Added
