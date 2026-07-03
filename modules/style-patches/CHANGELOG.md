@@ -1,5 +1,13 @@
 # Style Patches Changelog
 
+## 2026-07-03 (extension v2.4.10)
+
+### Fixed
+
+- Re-add responsive width fix on homepage
+
+---
+
 ## 2026-07-03 (extension v2.4.9)
 
 ### Fixed

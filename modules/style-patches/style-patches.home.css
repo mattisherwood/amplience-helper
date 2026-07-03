@@ -5,6 +5,11 @@
 /* NB: We must include .App.App in the classes to */
 /* match the specificity of the existing styles.  */
 [data-amplience-style-patches="enabled"] .App.App {
+  min-width: 0;
+  min-height: 100%;
+  height: auto;
+  overflow: auto;
+
   /* Header */
 
   .landing-page {
