@@ -1,5 +1,13 @@
 # Style Patches Changelog
 
+## 2026-07-03 (extension v2.4.11)
+
+### Fixed
+
+- Fine-tune the manifest to load the files at the right times.
+
+---
+
 ## 2026-07-03 (extension v2.4.10)
 
 ### Fixed
