@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.4.10 - 2026-07-03
+
+### Summary
+
+Bug fix following style-patch-scoping
+
+### Module Highlights
+
+- Style Patches: Re-add responsive width fix on homepage
+
+---
+
 ## v2.4.9 - 2026-07-03
 
 ### Summary
