@@ -110,10 +110,18 @@
         }
       }
 
+      /* Card parts are stamped with data-flow-part by flows-filter.js, so this
+         layout survives Amplience adding or removing wrapper elements. */
       .flow-card {
         display: contents;
 
+        /* Card surface - collapse so the body becomes the table row */
         > div {
+          display: contents;
+        }
+
+        /* Card body - the table row */
+        [data-flow-part="body"] {
           position: relative;
           display: grid;
           align-items: center;
@@ -122,115 +130,116 @@
           padding: var(--table-padding);
           box-shadow: none;
           border: 0;
+        }
 
-          /* Last run chip */
-          > .mantine-Group-root {
-            position: relative;
-            inset: auto;
-            grid-column: 1;
+        /* Last run chip */
+        [data-flow-part="meta"] {
+          position: relative;
+          inset: auto;
+          grid-column: 1;
+          display: block;
+          align-self: initial;
+          min-width: 110px;
+          margin-block: -7px;
+          padding: 7px 12px;
+          height: auto;
+          line-height: 1.2;
+          text-align: center;
+          text-wrap: auto;
+
+          &:has(time) {
+            font-size: 0;
+          }
+
+          time {
+            display: inline;
+            margin-left: 0.2em;
+            font-size: var(--mantine-font-size-md, 14px);
+          }
+        }
+
+        [data-flow-part="content"],
+        [data-flow-part="stage"] {
+          display: contents;
+        }
+
+        /* Title */
+        [data-flow-part="stage"] > span {
+          grid-column: 2;
+          align-self: start;
+
+          p {
+            padding-right: 0;
+            -webkit-line-clamp: none;
+          }
+
+          /* Dividing line */
+          &::before {
+            content: "";
+            position: absolute;
+            inset: auto 0;
+            border-top: solid 1px var(--mantine-color-default-border, #d9dfe3);
+            margin-top: calc(var(--table-padding) * -1);
+          }
+        }
+
+        /* Description. The :not() matters: the author badge and the tags
+           container are also direct div children of the stage, so without it
+           this rule would both match and outspecify their own column rules. */
+        [data-flow-part="stage"] > div:not(.author-badge):not(.tags) {
+          grid-column: 3;
+          align-self: start;
+
+          p {
+            padding-right: 0;
+            -webkit-line-clamp: none;
+          }
+        }
+
+        /* Author badge — injected into the stage by flows-filter.js */
+        [data-flow-part="stage"] > .author-badge {
+          grid-column: 4;
+          justify-self: center;
+          align-self: initial;
+          position: relative;
+          inset: auto;
+        }
+
+        /* Tags — injected into the stage by flows-filter.js */
+        [data-flow-part="stage"] > .tags {
+          align-self: initial;
+          justify-content: flex-end;
+          grid-column: 5;
+        }
+
+        /* Actions Group */
+        [data-flow-part="actions"] {
+          grid-column: -1;
+          justify-content: flex-end;
+          gap: 8px;
+        }
+
+        .mantine-Popover-dropdown {
+          display: block !important;
+          top: auto !important;
+          bottom: auto !important;
+          left: 4px !important;
+          margin: 0;
+          padding: 8px;
+
+          > div {
+            height: 100%;
+            padding-top: 0;
+          }
+
+          button {
             display: block;
-            align-self: initial;
-            min-width: 110px;
-            margin-block: -7px;
-            padding: 7px 12px;
-            height: auto;
-            line-height: 1.2;
-            text-align: center;
-            text-wrap: auto;
-
-            &:has(time) {
-              font-size: 0;
-            }
-
-            time {
-              display: inline;
-              margin-left: 0.2em;
-              font-size: var(--mantine-font-size-md, 14px);
-            }
-          }
-
-          > .mantine-Stack-root {
-            display: contents;
-
-            > .mantine-Stack-root {
-              display: contents;
-
-              /* Title */
-              > span {
-                grid-column: 2;
-                align-self: start;
-
-                p {
-                  padding-right: 0;
-                  -webkit-line-clamp: none;
-                }
-
-                /* Dividing line */
-                &::before {
-                  content: "";
-                  position: absolute;
-                  inset: auto 0;
-                  border-top: solid 1px
-                    var(--mantine-color-default-border, #d9dfe3);
-                  margin-top: calc(var(--table-padding) * -1);
-                }
-              }
-
-              /* Description */
-              > div {
-                grid-column: 3;
-                align-self: start;
-
-                p {
-                  padding-right: 0;
-                  -webkit-line-clamp: none;
-                }
-              }
-
-              .author-badge {
-                grid-column: 4;
-                justify-self: center;
-                align-self: initial;
-                position: relative;
-                inset: auto;
-              }
-
-              .tags {
-                align-self: initial;
-                justify-content: flex-end;
-                grid-column: 5;
-              }
-            }
-
-            /* Actions Group */
-            > .mantine-Group-root {
-              grid-column: -1;
-              justify-content: flex-end;
-              gap: 8px;
-            }
-          }
-
-          .mantine-Popover-dropdown {
-            display: block !important;
-            top: auto !important;
-            bottom: auto !important;
-            left: 4px !important;
-            margin: 0;
-            padding: 8px;
-
-            > div {
-              height: 100%;
-              padding-top: 0;
-            }
-
-            button {
-              display: block;
-            }
           }
         }
       }
 
-      .flow-card:first-child > div > div > .mantine-Stack-root p::before {
+      /* No dividing line above the first row */
+      .flow-card:first-child [data-flow-part="stage"] > span::before {
         display: none;
       }
 

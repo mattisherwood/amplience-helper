@@ -1,5 +1,13 @@
 # Style Patches Changelog
 
+## 2026-08-14 (extension v2.4.12)
+
+### Fixed
+
+- Update padding targeting to better match the latest interface updates.
+
+---
+
 ## 2026-07-03 (extension v2.4.11)
 
 ### Fixed

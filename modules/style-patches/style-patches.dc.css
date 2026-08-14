@@ -479,9 +479,15 @@
   /* CONTENT: TIGHTER PADDING */
 
   /* Fix the padding on the expandable control panel header */
-  [data-testid="control-panel-target"]:not([data-pointer]) {
+  [data-testid="control-panel-target"]:not([data-pointer]) > div {
     padding: 0.8rem 1rem;
     min-height: 0;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
   }
 
   /* Normalise its title & description contents */
@@ -501,11 +507,11 @@
     > div > div > .mantine-SimpleGrid-root {
       gap: 1rem;
     }
-  }
 
-  /* Separate the control panel header from the content form */
-  [data-testid="control-panel"] + div {
-    border-top: 0.0625rem solid #d6dff8;
+    /* Separate the control panel header from the content form */
+    > [data-testid="control-panel"] + div {
+      border-top: 0.0625rem solid #d6dff8;
+    }
   }
 
   .amplience-tabs-panel > .mantine-SimpleGrid-root {

@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.4.12 - 2026-08-14
+
+### Summary
+
+A couple of fixes for the latest Amplience release
+
+### Module Highlights
+
+- Style Patches: Updated padding targeting to better match the latest interface updates.
+- Flows Filter: Fixed the flows list breaking (no badges, tags, archiving or list view) after the latest core-product update, and hardened it so a future Amplience layout change degrades to standard Amplience behaviour instead of breaking the panel.
+
+---
+
 ## v2.4.11 - 2026-07-03
 
 ### Summary

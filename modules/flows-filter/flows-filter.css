@@ -171,17 +171,20 @@
   .flow-card {
     position: relative;
 
+    /* Card surface - stretch to the height of its grid row */
     > div {
       display: flex;
       height: 100% !important; /* !important needed to override inline styles */
+    }
 
-      > div {
-        height: auto !important;
+    /* Card body - drop Amplience's fixed height so injected tags still fit */
+    [data-flow-part="body"] {
+      height: auto !important; /* !important needed to override inline styles */
+    }
 
-        > div > .mantine-Group-root {
-          order: 1;
-        }
-      }
+    /* Keep the enable/Run buttons below the injected tags */
+    [data-flow-part="actions"] {
+      order: 1;
     }
 
     &:has(.author-badge) p:first-child {
