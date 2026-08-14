@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.4.12 - 2026-08-14
+
+### Summary
+
+A couple of fixes for the latest Amplience release
+
+### Module Highlights
+
+- Style Patches: Updated padding targeting to better match the latest interface updates.
+
+---
+
 ## v2.4.11 - 2026-07-03
 
 ### Summary
