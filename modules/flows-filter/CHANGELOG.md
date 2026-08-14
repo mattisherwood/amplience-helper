@@ -1,5 +1,21 @@
 # Flows Filter Changelog
 
+## 2026-08-14 (extension v2.4.12)
+
+### Fixed
+
+- Flow cards stopped decorating entirely (`Cannot read properties of undefined (reading 'children')`) after a core-product release inserted an extra wrapper `div` between the card surface and its contents, so `children[0].children[1]` no longer resolved. Because the exception was thrown on the first card, every downstream feature - author badges, tags, tag chips, archiving and table view - died with it.
+- Amplience's fixed inline card height moved onto that new wrapper, so the `height: auto` override that lets tagged cards grow was being applied to the wrong element.
+
+### Changed
+
+- Card parts are no longer found by walking fixed child indexes. The stage (title + description) is derived from the title `<p>` via `closest(".mantine-Stack-root")`, and the surrounding parts are resolved relative to it. This is the fourth DOM-shape break in five months, so the traversal is now structure-agnostic rather than re-indexed.
+- Located parts are stamped with `data-flow-part="body|meta|content|stage|actions"`, and both stylesheets target those roles instead of nesting depth (`> div > div > .mantine-Group-root`). A data attribute is used rather than a class because React overwrites `className` when it re-renders a card.
+- Decoration is now wrapped per card: a card that can't be parsed or decorated is left as stock Amplience and the rest of the list still filters, instead of one failure taking down the whole panel. Failures log a single `console.warn`.
+- Search matching is now consistently scoped to the title and description. The final filter pass previously matched against the whole card's text, which since the release includes the "Last run" chip - so searching "run" matched every flow.
+
+---
+
 ## 2026-06-25 (extension v2.4.7)
 
 ### Fixed

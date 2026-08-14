@@ -9,6 +9,7 @@ A couple of fixes for the latest Amplience release
 ### Module Highlights
 
 - Style Patches: Updated padding targeting to better match the latest interface updates.
+- Flows Filter: Fixed the flows list breaking (no badges, tags, archiving or list view) after the latest core-product update, and hardened it so a future Amplience layout change degrades to standard Amplience behaviour instead of breaking the panel.
 
 ---
 

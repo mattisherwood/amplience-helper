@@ -68,6 +68,86 @@
     )
   }
 
+  /**
+   * Structural hooks for a single flow card.
+   *
+   * Amplience has reshaped this markup several times (see CHANGELOG), so
+   * nothing here walks fixed child indexes. Everything is derived from the
+   * title <p> - the one node this module genuinely needs - and every part is
+   * optional: if a lookup fails we skip the badge/tag injection rather than
+   * throwing and taking the whole filter down with it.
+   *
+   * Markup as of 2026-08 (Amplience class names are hashed, so the only class
+   * relied on is Mantine's stable `mantine-*` naming):
+   *
+   *   div.flow-card                 flow list item
+   *   └ div                         card surface
+   *     └ div          [body]       fixed-height row: meta + content
+   *       ├ div        [meta]       "Last run ..." / "New" chip
+   *       └ div        [content]    column: stage + actions
+   *         ├ div      [stage]      title + description  <- badge & tags go here
+   *         └ div      [actions]    enable toggle + Run button
+   *
+   * Each part is stamped with `data-flow-part="..."` so the stylesheets can
+   * target it by role rather than by nesting depth - a class would be at risk
+   * of being overwritten when React re-renders the card.
+   */
+  const FLOW_PART_ATTRIBUTE = "data-flow-part"
+
+  function getFlowCardParts(flow) {
+    const titleEl = flow.querySelector("p")
+    if (!titleEl) {
+      return null
+    }
+
+    // Mantine's Stack wraps the title and description. Fall back to walking up
+    // two levels (p -> span -> stage) should that class ever disappear.
+    const stage =
+      titleEl.closest(".mantine-Stack-root") ||
+      titleEl.parentElement?.parentElement ||
+      titleEl.parentElement
+
+    if (!stage || stage === flow || !flow.contains(stage)) {
+      return null
+    }
+
+    const content = stage.parentElement === flow ? null : stage.parentElement
+    const body =
+      content && content.parentElement !== flow ? content.parentElement : null
+
+    // Popover dropdowns are Group-like siblings, so exclude them when looking
+    // for the meta and action chips.
+    const groupSelector =
+      ":scope > .mantine-Group-root:not(.mantine-Popover-dropdown)"
+
+    return {
+      body,
+      meta: body ? body.querySelector(groupSelector) : null,
+      content,
+      stage,
+      actions: content ? content.querySelector(groupSelector) : null,
+    }
+  }
+
+  /**
+   * Stamps `data-flow-part` on whichever card parts could be located and
+   * returns the stage element (or null if the card can't be decorated).
+   */
+  function tagFlowCardParts(flow) {
+    const parts = getFlowCardParts(flow)
+    if (!parts) {
+      return null
+    }
+
+    Object.entries(parts).forEach(([part, element]) => {
+      if (element) {
+        element.setAttribute(FLOW_PART_ATTRIBUTE, part)
+      }
+    })
+
+    return parts.stage
+  }
+
   function removeFlowsFilter() {
     const wrapper = document.querySelector("#flow-filter-wrapper")
     if (wrapper) {
@@ -405,8 +485,12 @@
     const PARSE_RETRY_INTERVAL = 250
 
     function decorateFlow(flow) {
-      const { author, title, description, tags, isArchived } =
-        parseFlowData(flow)
+      const flowData = parseFlowData(flow)
+      if (!flowData) {
+        return
+      }
+
+      const { author, title, description, tags, isArchived } = flowData
       const isMine = author && author === initials
 
       flow.dataset.flowAuthor = author
@@ -418,11 +502,13 @@
       flow.classList.add("flow-card")
       flow.dataset.flowParsed = "true"
 
-      const cardContent = flow.children[0].children[1].children
-      const stage = cardContent[0]
+      // Where the author badge and tags get injected. Null if Amplience has
+      // changed the card markup again - filtering still works, the card just
+      // isn't decorated.
+      const stage = tagFlowCardParts(flow)
 
       // Add a little circle badge with the author name
-      if (author) {
+      if (stage && author) {
         const authorColor = createHexColorFromString(author, {
           shade: "light",
           threshold: 200,
@@ -438,7 +524,7 @@
       }
 
       // Append the tags
-      if (tags.length) {
+      if (stage && tags.length) {
         const tagsContainer = document.createElement("div")
         tagsContainer.className = "tags"
         tags.forEach((tag) => {
@@ -492,7 +578,19 @@
         return
       }
 
-      ready.forEach(decorateFlow)
+      ready.forEach((flow) => {
+        try {
+          decorateFlow(flow)
+        } catch (error) {
+          // A core-product DOM change shouldn't take the whole list down: mark
+          // the card handled, leave it as stock Amplience, and carry on.
+          flow.dataset.flowParsed = "true"
+          console.warn(
+            "Amplience Helper: could not decorate a flow card",
+            error,
+          )
+        }
+      })
       redistributeArchivedFlows()
       applyFilters()
     }
@@ -586,11 +684,13 @@
       }
     }
 
+    // Limits search matching and highlighting to the title and description, so
+    // "run" doesn't match every card via its "Last run" chip. Falls back to the
+    // whole card if the stage couldn't be located.
     function getSearchScopeElement(flowElement) {
       return (
-        flowElement.querySelector(
-          ":scope > div > div > .mantine-Stack-root > .mantine-Stack-root",
-        ) || flowElement
+        flowElement.querySelector(`[${FLOW_PART_ATTRIBUTE}="stage"]`) ||
+        flowElement
       )
     }
 
@@ -622,7 +722,7 @@
 
       for (const child of [...children, ...archivedChildren]) {
         const searchScope = getSearchScopeElement(child)
-        const text = child.textContent.toLowerCase()
+        const text = searchScope.textContent.toLowerCase()
         const matchesSearch = !filterValue || text.includes(filterValue)
         const isMine = child.dataset.isMine === "true"
         const isOrg = child.dataset.flowAuthor === "Org"
