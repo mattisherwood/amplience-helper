@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.5.0 - 2026-09-03
+
+### Summary
+
+Webhook URLs are now visible from the flows list, instead of being buried in a flow edit screen
+
+### Module Highlights
+
+- Flows Webhooks (new): Adds a "Webhooks" tab next to Flows, Runs and Reviews, listing every webhook URL in the hub with its payload schema and security type. Copy any URL in one click. URLs stay masked until you reveal them, and re-mask themselves after 30 seconds so they don't linger on screen during a screen-share. Off by default - enable it from the popup or options page.
+
+---
+
 ## v2.4.12 - 2026-08-14
 
 ### Summary
