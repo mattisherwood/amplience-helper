@@ -13,6 +13,10 @@
 - URLs are masked by default and re-mask 30 s after being revealed, so a hook URL — effectively a credential — doesn't linger on screen during a screen-share.
 - `#webhooks` hash makes the tab deep-linkable and back-button friendly.
 
+### Fixed
+
+- The tab now also loads on `/content-flows/reviews`, Amplience's one routed sub-tab. `isFlowsListingPage()` was requiring `content-flows` to be the final path segment, so landing on the Reviews tab skipped injection entirely. It now uses an allowlist of sub-routes (`LISTING_SUBROUTES`) rather than a path-length check — a length check would also match `/content-flows/<flowId>`, i.e. every flow detail page, which has no tab bar.
+
 ### Notes
 
 - Injection is **declarative**, not event-driven: `syncUi()` reconciles "should the tab be here, and is it?" and every trigger routes through it. A `MutationObserver` on `document.body` is the load-bearing trigger — it's what makes the tab appear when the user navigates to the flows list client-side, where there's no tab bar to observe yet and no guarantee the route change came through an event we hooked. The History API hooks are only a fast path. There is no retry budget or timeout as a result.

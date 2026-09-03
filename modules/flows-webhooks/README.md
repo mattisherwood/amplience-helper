@@ -51,17 +51,42 @@ Leaving the tab (clicking Flows/Runs/Reviews, navigating away, or disabling the 
 
 ## Scope
 
-The flow listing page only:
+The flow listing page, including its one routed sub-tab:
 
 - `https://app.amplience.net/content-studio/<hubId>/content-flows`
+- `https://app.amplience.net/content-studio/<hubId>/content-flows/reviews`
 
-Flow *detail* pages carry no tab bar, so the module deliberately does nothing there (`isFlowsListingPage()` checks that `content-flows` is the last path segment).
+Flow *detail* pages carry no tab bar, so the module deliberately does nothing there.
+
+`isFlowsListingPage()` uses an **allowlist** (`LISTING_SUBROUTES`) for what may follow `/content-flows`, rather than a path-length check. That matters because a flow detail URL is also one segment deeper — `…/content-flows/<flowId>` — so a length check would match every flow in the hub.
+
+Verified against the live app: `/content-flows/reviews` renders the tab bar with Reviews active, while `/content-flows/runs` and `/content-flows/flows` render an empty page. Only `reviews` is a real route (see [Known core-product quirk](#known-core-product-quirk)).
 
 ## Deep linking
 
 Activating the tab appends `#webhooks` to the URL, so the view is bookmarkable and shareable, and the browser's back button returns to the Flows tab. Loading a `…/content-flows#webhooks` URL opens straight onto the tab once the page has hydrated.
 
 Amplience's router is path-based and ignores the hash, so this doesn't collide with anything in the core product. Clicking a native tab clears the hash with `history.replaceState`, so hash entries don't pile up in history.
+
+## Known core-product quirk
+
+Amplience's own tab switching is inconsistent, which is worth knowing before debugging anything tab-related here:
+
+- `reviews` has a real route (`/content-flows/reviews`) and sets the initial tab on load.
+- `runs` and `flows` have **no** route — navigating to them directly renders an empty page.
+- Clicking any tab **never updates the URL**. Verified by starting on `/content-flows/reviews`, clicking Flows, then Runs, then Reviews: the path stayed `/reviews` throughout.
+
+So the URL sets the initial tab but tab changes are never written back. Landing on `/reviews`, clicking Flows and refreshing throws you back to Reviews, and Runs can't be linked to at all.
+
+This module is unaffected — it keys off its own `#webhooks` hash, which the app's router ignores.
+
+The [style-patches](../style-patches/README.md) module now works around it, keeping the active tab in the URL (`#runs` for Runs, the real `/content-flows/reviews` route for Reviews, a bare path for Flows). **Both modules write to the URL of the same tab bar**, so two contracts keep them apart:
+
+1. style-patches only acts on tabs carrying a `-tab-<value>` Mantine id, so it never touches this module's injected tab or overwrites `#webhooks`.
+2. This module clears the hash from a **capture**-phase click listener; style-patches writes its URL from a **bubble**-phase one, so it runs afterwards and its URL wins.
+3. style-patches treats any hash it doesn't own — `#webhooks` included — as "hands off", and suppresses its own tab restoring for the duration of a tab click. Both were needed: without them, activating this module's tab from the Reviews route was undone instantly, and leaving it took two clicks.
+
+If you change the phase of `handleNativeTabClick` here, or make `deactivateView()` stop clearing the hash, re-read the guards in [style-patches](../style-patches/README.md#why-restore-has-two-guards--dont-remove-either) — they are written around this module's exact behaviour. Either module can still be toggled off independently.
 
 ## Implementation Details
 

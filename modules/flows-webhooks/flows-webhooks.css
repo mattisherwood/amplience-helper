@@ -76,16 +76,6 @@
     cursor: not-allowed;
   }
 
-  .awh-btn[data-state="ok"] {
-    border-color: #2f9e44;
-    color: #2f9e44;
-  }
-
-  .awh-btn[data-state="error"] {
-    border-color: var(--mantine-color-error, #fa5252);
-    color: var(--mantine-color-error, #fa5252);
-  }
-
   /* Labels the badge column. Sits outside the bordered list, so its right
      padding matches the row padding plus the list's 1px border to line up
      with the badges beneath it. */

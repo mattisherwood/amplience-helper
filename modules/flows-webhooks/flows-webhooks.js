@@ -26,7 +26,6 @@
   let syncTimeout = null
   let pageObserver = null
   let lastHubId = null
-  let currentUrl = window.location.href
   let cache = null // { hubId, items }
   let fetchInFlight = false
   const revealTimers = new Map()
@@ -49,12 +48,33 @@
 
   /* ---------------------------------------------------------------- routing */
 
-  // Only the flow listing page carries the Flows/Runs/Reviews tab bar. A flow
-  // detail URL has an id after /content-flows, so we bail on those.
+  /*
+   * Tab sub-routes that still render the flow listing's tab bar.
+   *
+   * Amplience routes only `reviews` - verified against the live app:
+   * /content-flows/reviews renders the tab bar with Reviews active, while
+   * /content-flows/runs and /content-flows/flows render an empty page (those
+   * routes do not exist). Anything else after /content-flows is a flow id,
+   * and flow detail pages have no tab bar, so an allowlist is what keeps us
+   * off them - a length check alone would match every flow.
+   */
+  const LISTING_SUBROUTES = ["reviews"]
+
   function isFlowsListingPage() {
     const segments = window.location.pathname.split("/").filter(Boolean)
     const index = segments.indexOf("content-flows")
-    return index !== -1 && index === segments.length - 1
+
+    if (index === -1) {
+      return false
+    }
+
+    const rest = segments.slice(index + 1)
+
+    if (!rest.length) {
+      return true
+    }
+
+    return rest.length === 1 && LISTING_SUBROUTES.indexOf(rest[0]) !== -1
   }
 
   function extractHubIdFromUrl() {
@@ -500,8 +520,6 @@
       if (!enabled) {
         return
       }
-
-      currentUrl = window.location.href
 
       // Only pay for a sync when the page and the wanted state disagree.
       if (isFlowsListingPage() !== Boolean(document.getElementById(TAB_ID))) {

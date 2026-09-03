@@ -8,6 +8,7 @@ Webhook URLs are now visible from the flows list, instead of being buried in a f
 
 ### Module Highlights
 
+- Style Patches: The flow tab you're on (Flows, Runs or Reviews) is now kept in the URL, so refreshing no longer drops you onto a different tab, and you can link someone straight to Runs. Works around a core-product quirk where the URL set the tab on load but never followed your clicks.
 - Flows Webhooks (new): Adds a "Webhooks" tab next to Flows, Runs and Reviews, listing every webhook URL in the hub with its payload schema and security type. Copy any URL in one click. URLs stay masked until you reveal them, and re-mask themselves after 30 seconds so they don't linger on screen during a screen-share. Off by default - enable it from the popup or options page.
 
 ---
