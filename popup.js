@@ -5,7 +5,7 @@
     faviconSwapperEnabled: true,
     flowFilter: true,
     flowsMigrationEnabled: true,
-    flowsWebhooksEnabled: false,
+    flowsWebhooksEnabled: true,
     hotkeysEnabled: true,
     stylesEnabled: true,
     enhancedNamingEnabled: true,
@@ -24,9 +24,7 @@
   const flowsMigrationCheckbox = document.getElementById(
     "flowsMigrationEnabled",
   )
-  const flowsWebhooksCheckbox = document.getElementById(
-    "flowsWebhooksEnabled",
-  )
+  const flowsWebhooksCheckbox = document.getElementById("flowsWebhooksEnabled")
   const hotkeysCheckbox = document.getElementById("hotkeysEnabled")
   const stylesCheckbox = document.getElementById("stylesEnabled")
   const enhancedNamingCheckbox = document.getElementById(

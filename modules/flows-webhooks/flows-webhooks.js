@@ -2,7 +2,7 @@
   "use strict"
 
   const DEFAULT_SETTINGS = {
-    flowsWebhooksEnabled: false,
+    flowsWebhooksEnabled: true,
   }
 
   // <html> attributes. ENABLED_ATTRIBUTE gates every rule in
