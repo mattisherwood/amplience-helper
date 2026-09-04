@@ -176,8 +176,8 @@
   }
 
   .awh-url {
-    font-family: var(--mantine-font-family-monospace, ui-monospace, monospace);
-    font-size: 0.75rem;
+    font-family: inherit;
+    font-size: 0.8rem;
     color: inherit;
     overflow-wrap: anywhere;
     user-select: all;
@@ -304,6 +304,14 @@
     line-height: 1.5;
     max-height: 22rem;
     overflow: auto;
+
+    h4 {
+      margin-block: 0 0.5rem;
+      color: var(--mantine-color-gray-7, #597684);
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-family: var(--mantine-font-family, system-ui, sans-serif);
+    }
   }
 
   .awh-message {

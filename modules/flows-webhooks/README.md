@@ -22,16 +22,24 @@ The setting key is `flowsWebhooksEnabled` in `chrome.storage.sync`. It defaults 
 - Copies the full URL to the clipboard in one click
 - Refetches on demand via a refresh button (circular-arrow icon, top right, which spins while a fetch is running — honouring `prefers-reduced-motion`)
 
+## What It Doesn't Do (Yet)
+
+This first iteration is read-only meaning that, while you can do the above things, the following features will only be added in a later version:
+
+- Edit/update a webhook from here
+- Add a new webhook from here
+- Delete/remove a webhook from here
+
 ### Row layout
 
 The two per-row actions are small icon buttons sitting **inline, immediately after the URL**, rather than in a column of their own:
 
-| Icon | Action |
-| --- | --- |
-| eye / eye-with-slash | Reveal or re-mask the full URL |
-| two offset squares | Copy the full URL (briefly becomes a green tick) |
+| Icon                 | Action                                           |
+| -------------------- | ------------------------------------------------ |
+| eye / eye-with-slash | Reveal or re-mask the full URL                   |
+| two offset squares   | Copy the full URL (briefly becomes a green tick) |
 
-The panel's refresh control is icon-only too. It keeps the bordered button treatment, so `.awh-refresh` overrides the `.awh-icon` base — those rules sit *after* `.awh-icon` in the stylesheet and match its specificity, winning on source order. Because the word "Refresh" is gone, `data-busy="true"` spins the glyph while a fetch is in flight; that attribute is set alongside the existing `disabled` in `setRefreshBusy()`.
+The panel's refresh control is icon-only too. It keeps the bordered button treatment, so `.awh-refresh` overrides the `.awh-icon` base — those rules sit _after_ `.awh-icon` in the stylesheet and match its specificity, winning on source order. Because the word "Refresh" is gone, `data-busy="true"` spins the glyph while a fetch is in flight; that attribute is set alongside the existing `disabled` in `setRefreshBusy()`.
 
 They inherit the URL's colour via `color: inherit` on `.awh-url-row`, so they sit at the same visual weight as the text they belong to and shift with it when a row is revealed — grey (`--mantine-color-gray-7`) while masked, full text colour once revealed. The glyphs are 13px inside an 18px hit area, at 0.75 opacity until hovered.
 
@@ -56,7 +64,7 @@ The flow listing page, including its one routed sub-tab:
 - `https://app.amplience.net/content-studio/<hubId>/content-flows`
 - `https://app.amplience.net/content-studio/<hubId>/content-flows/reviews`
 
-Flow *detail* pages carry no tab bar, so the module deliberately does nothing there.
+Flow _detail_ pages carry no tab bar, so the module deliberately does nothing there.
 
 `isFlowsListingPage()` uses an **allowlist** (`LISTING_SUBROUTES`) for what may follow `/content-flows`, rather than a path-length check. That matters because a flow detail URL is also one segment deeper — `…/content-flows/<flowId>` — so a length check would match every flow in the hub.
 
@@ -131,13 +139,13 @@ No new manifest permissions are needed: `api.amplience.net` serves permissive CO
 
 Amplience's Mantine class names are hashed and change between builds, so the module hangs off `data-testid` and ARIA roles, with the hashed class as a fallback. Every lookup is optional — if any of these disappear the module gives up quietly and the page behaves exactly as Amplience ships it.
 
-| Target | Primary | Fallback | If it disappears |
-| --- | --- | --- | --- |
-| Tabs component | `[data-testid="tabs"]` | `.mantine-Tabs-root` | No tab is injected |
-| Tab list | `[role="tablist"]` | `.mantine-Tabs-list` | No tab is injected |
-| Tab template | `[role="tab"]` (first) | — | No tab is injected |
-| Native panels | `.mantine-Tabs-panel` | — | Our panel renders below theirs instead of replacing it |
-| Tab label / icon slots | `.mantine-Tabs-tabLabel`, `.mantine-Tabs-tabSection` | `textContent` on the button | Tab shows text without an icon |
+| Target                 | Primary                                              | Fallback                    | If it disappears                                       |
+| ---------------------- | ---------------------------------------------------- | --------------------------- | ------------------------------------------------------ |
+| Tabs component         | `[data-testid="tabs"]`                               | `.mantine-Tabs-root`        | No tab is injected                                     |
+| Tab list               | `[role="tablist"]`                                   | `.mantine-Tabs-list`        | No tab is injected                                     |
+| Tab template           | `[role="tab"]` (first)                               | —                           | No tab is injected                                     |
+| Native panels          | `.mantine-Tabs-panel`                                | —                           | Our panel renders below theirs instead of replacing it |
+| Tab label / icon slots | `.mantine-Tabs-tabLabel`, `.mantine-Tabs-tabSection` | `textContent` on the button | Tab shows text without an icon                         |
 
 **The injected tab is a `cloneNode` of a real one.** That's deliberate: the clone inherits Amplience's current hashed classes, so the tab keeps matching the genuine ones through restyles in a way hand-written markup wouldn't. Only the id, `aria-controls`, `data-testid`, label text and icon are swapped.
 
@@ -157,9 +165,9 @@ The native-tab click handler is registered in the **capture** phase so it runs b
 
 ### SPA navigation
 
-Amplience is a single-page app, so arriving at the flows list can mean any of: a real page load, a router `pushState`, a `popstate`, or a React remount with no URL change at all — and the tab bar renders some time *after* whichever of those happened.
+Amplience is a single-page app, so arriving at the flows list can mean any of: a real page load, a router `pushState`, a `popstate`, or a React remount with no URL change at all — and the tab bar renders some time _after_ whichever of those happened.
 
-Rather than trying to catch every one of those mechanisms, the module is **declarative**. `syncUi()` asks one question — *should the tab be on the page right now, and is it?* — and adds or removes it accordingly. Everything just calls `syncUi()`:
+Rather than trying to catch every one of those mechanisms, the module is **declarative**. `syncUi()` asks one question — _should the tab be on the page right now, and is it?_ — and adds or removes it accordingly. Everything just calls `syncUi()`:
 
 - A `MutationObserver` on `document.body`, which is the load-bearing one. This is what makes the module work when the user **navigates to the flows list client-side** instead of loading it directly: at that moment there is no tab bar to observe, and no guarantee the route change arrived through an event we hooked.
 - `history.pushState` / `history.replaceState` interception, `popstate`, and `hashchange`. These are only a **fast path** — they get the tab up as soon as the URL changes rather than waiting for the next DOM mutation. If they never fire (a router that captured `history.pushState` before our content script ran, say), the observer still handles it.
@@ -168,13 +176,15 @@ There is deliberately **no retry budget and no timeout**. A tab bar that renders
 
 The observer callback is debounced by 150 ms and only schedules work when the page and the wanted state disagree (`isFlowsListingPage() !== tabIsPresent`), so it costs three cheap lookups per mutation batch. Measured across a full away-and-back navigation on a populated hub: 5 callbacks, 2 of which scheduled a sync.
 
-**Note on `matches`.** The content script is scoped to `/content-studio/*`, which is sufficient because entering Workforce from the account switcher is a genuine page load — verified, not assumed. Client-side navigation *within* Workforce is what the observer covers.
+**Note on `matches`.** The content script is scoped to `/content-studio/*`, which is sufficient because entering Workforce from the account switcher is a genuine page load — verified, not assumed. Client-side navigation _within_ Workforce is what the observer covers.
 
 ### Styling
 
 Scoped entirely to `[data-amplience-flows-webhooks="enabled"]` on `<html>`, so turning the toggle off reverts the page immediately with no reload. Colours come from Mantine's own custom properties (`--mantine-color-text`, `--mantine-color-default-border`, `--mantine-color-gray-1`, …), so the panel follows Amplience's light/dark scheme and the theming module's per-hub colours without knowing anything about either.
 
-The tab icon uses `stroke="currentColor"` rather than the hardcoded `#002C42` Amplience puts on its own tab icons, so it stays visible in dark mode.
+The tab carries the **official webhook mark** — three nodes joined by arcs. The arc geometry is Tabler's `webhook` icon, on the same 24px grid as Amplience's own tab icons; the three filled circles at the arc centres (12,8), (7,17) and (17,17) are part of the official logo but absent from Tabler's outline version, so they're drawn in.
+
+It's set at stroke-width 1.5 to match the weight of the Flows/Runs/Reviews icons rather than the logo's heavier lockup, and uses `stroke="currentColor"` rather than the hardcoded `#002C42` Amplience puts on its own tab icons, so it stays visible in dark mode.
 
 All API data is written with `textContent` and `createElement` — never `innerHTML` — so a webhook label or schema can't inject markup. The only `innerHTML` write is the module's own static SVG.
 

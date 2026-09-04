@@ -30,20 +30,33 @@
   let fetchInFlight = false
   const revealTimers = new Map()
 
-  // Tabler "link" icon, drawn in the same 24px stroke style as the icons
-  // Amplience puts on Flows/Runs/Reviews. Theirs hardcode the brand navy;
-  // ours uses currentColor so it stays visible under the theming module's
-  // dark mode.
+  /*
+   * The official webhook mark - three nodes joined by arcs. The arc geometry
+   * is Tabler's `webhook` icon (same 24px grid as the icons Amplience puts on
+   * Flows/Runs/Reviews); the three filled circles sit at the arc centres,
+   * which is what the official logo has and Tabler's outline version leaves
+   * out.
+   *
+   * Drawn at stroke-width 1.5 to match the weight of Amplience's own tab
+   * icons rather than the logo's heavier lockup, and with currentColor
+   * instead of their hardcoded #002C42 so it stays visible in dark mode.
+   */
   const ICON_SVG =
     '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
-    '<path d="M9 15l6 -6"></path>' +
-    '<path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464"></path>' +
-    '<path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"></path>' +
+    '<path d="M4.876 13.61a4 4 0 1 0 6.124 3.39h6"></path>' +
+    '<path d="M15.066 20.502a4 4 0 1 0 1.934 -7.502c-.706 0 -1.424 .179 -2 .5l-3 -5.5"></path>' +
+    '<path d="M16 8a4 4 0 1 0 -8 0c0 1.506 .77 2.818 2 3.5l-3 5.5"></path>' +
+    '<circle cx="12" cy="8" r="1.7" fill="currentColor" stroke="none"></circle>' +
+    '<circle cx="7" cy="17" r="1.7" fill="currentColor" stroke="none"></circle>' +
+    '<circle cx="17" cy="17" r="1.7" fill="currentColor" stroke="none"></circle>' +
     "</svg>"
 
   function log() {
     const args = Array.prototype.slice.call(arguments)
-    console.debug.apply(console, ["[Amplience Helper] flows-webhooks:"].concat(args))
+    console.debug.apply(
+      console,
+      ["[Amplience Helper] flows-webhooks:"].concat(args),
+    )
   }
 
   /* ---------------------------------------------------------------- routing */
@@ -156,7 +169,9 @@
     const payload = await response.json()
 
     if (payload.errors && payload.errors.length) {
-      throw new Error(payload.errors[0].message || "The API rejected the query.")
+      throw new Error(
+        payload.errors[0].message || "The API rejected the query.",
+      )
     }
 
     const edges =
@@ -438,7 +453,10 @@
     }
 
     if (!isFlowsListingPage()) {
-      if (document.getElementById(TAB_ID) || document.getElementById(PANEL_ID)) {
+      if (
+        document.getElementById(TAB_ID) ||
+        document.getElementById(PANEL_ID)
+      ) {
         deactivateView(false)
         removeUi()
       }
@@ -824,7 +842,11 @@
     copy.disabled = !url
     copy.addEventListener("click", async function () {
       const copied = await copyToClipboard(url)
-      setIcon(copy, copied ? "check" : "copy", copied ? "Copied" : "Copy failed")
+      setIcon(
+        copy,
+        copied ? "check" : "copy",
+        copied ? "Copied" : "Copy failed",
+      )
       copy.setAttribute("data-state", copied ? "ok" : "error")
       setTimeout(function () {
         setIcon(copy, "copy", "Copy URL")
@@ -852,6 +874,10 @@
       const schemaWrap = document.createElement("pre")
       schemaWrap.className = "awh-schema"
       schemaWrap.hidden = true
+
+      const schemaTitle = document.createElement("h4")
+      schemaTitle.textContent = "Payload Schema"
+      schemaWrap.appendChild(schemaTitle)
 
       const schemaCode = document.createElement("code")
       schemaCode.textContent = schema
