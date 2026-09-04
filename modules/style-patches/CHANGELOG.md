@@ -1,5 +1,26 @@
 # Style Patches Changelog
 
+## 2026-09-03 (extension v2.5.0)
+
+### Added
+
+- Flow tab URL persistence. Amplience's flow tab bar sets its initial tab from the URL but never writes back to it, so a refresh threw you onto whatever tab the URL still named, and Runs couldn't be linked to at all. Tab clicks now update the URL: Flows to the bare `/content-flows`, Runs to `#runs`, Reviews to its real `/content-flows/reviews` route.
+
+### Fixed
+
+- Clicking Flows from Runs or Reviews needed two clicks — the first moved the URL but not the content. `restoreTabFromUrl()` runs from a `MutationObserver` callback, which is a microtask, so on a real click it fired ~200ms *before* the click reached this module's own listener, read the URL of the tab the user had just left, and clicked back to it. Now guarded two ways: each URL is reconciled at most once (`reconciledUrl`), and restore is suppressed for the whole click window (`tabClickInFlight`, raised on capture and released once the URL is written, with a 1s backstop).
+- Clicking the flows-webhooks "Webhooks" tab while on the Reviews tab did nothing. `flowTabFromUrl()` let the `/content-flows/reviews` path outrank the `#webhooks` hash, so restore clicked Reviews — and that click tore the Webhooks view straight back down. The hash is now checked before the path, and any hash this module doesn't own means hands off.
+
+### Notes
+
+- The hybrid route/hash scheme is forced by the product: `reviews` is a real route, but `/content-flows/runs` and `/content-flows/flows` render an empty page, so `runs` can only use a hash.
+- Restoring clicks Amplience's own tab rather than touching React state, so a core rework of tab switching still runs through whatever replaces it.
+- `replaceState` rather than `pushState`, so the back button skips past tab switches.
+- Two contracts keep this clear of the flows-webhooks module, which injects a fourth tab into the same bar and owns `#webhooks`: this patch only acts on tabs with a `-tab-<value>` Mantine id, and its click listener is registered in the **bubble** phase so it runs after that module's capture-phase hash clearing. See the module README before changing either.
+- The internal `switcherooObserver` was renamed `patchObserver`, since it now drives the tab restore as well as the app-switcher link.
+
+---
+
 ## 2026-08-14 (extension v2.4.12)
 
 ### Fixed

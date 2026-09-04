@@ -5,6 +5,7 @@
     faviconSwapperEnabled: true,
     flowFilter: true,
     flowsMigrationEnabled: true,
+    flowsWebhooksEnabled: true,
     hotkeysEnabled: true,
     stylesEnabled: true,
     enhancedNamingEnabled: true,
@@ -23,6 +24,7 @@
   const flowsMigrationCheckbox = document.getElementById(
     "flowsMigrationEnabled",
   )
+  const flowsWebhooksCheckbox = document.getElementById("flowsWebhooksEnabled")
   const hotkeysCheckbox = document.getElementById("hotkeysEnabled")
   const stylesCheckbox = document.getElementById("stylesEnabled")
   const enhancedNamingCheckbox = document.getElementById(
@@ -148,6 +150,7 @@
       faviconSwapperCheckbox.checked = settings.faviconSwapperEnabled
       contentFlowsCheckbox.checked = settings.flowFilter
       flowsMigrationCheckbox.checked = settings.flowsMigrationEnabled
+      flowsWebhooksCheckbox.checked = settings.flowsWebhooksEnabled
       hotkeysCheckbox.checked = settings.hotkeysEnabled
       stylesCheckbox.checked = settings.stylesEnabled
       enhancedNamingCheckbox.checked = settings.enhancedNamingEnabled
@@ -165,6 +168,7 @@
         faviconSwapperEnabled: faviconSwapperCheckbox.checked,
         flowFilter: contentFlowsCheckbox.checked,
         flowsMigrationEnabled: flowsMigrationCheckbox.checked,
+        flowsWebhooksEnabled: flowsWebhooksCheckbox.checked,
         hotkeysEnabled: hotkeysCheckbox.checked,
         stylesEnabled: stylesCheckbox.checked,
         enhancedNamingEnabled: enhancedNamingCheckbox.checked,
@@ -195,6 +199,12 @@
     if (changes.flowsMigrationEnabled) {
       flowsMigrationCheckbox.checked = Boolean(
         changes.flowsMigrationEnabled.newValue,
+      )
+    }
+
+    if (changes.flowsWebhooksEnabled) {
+      flowsWebhooksCheckbox.checked = Boolean(
+        changes.flowsWebhooksEnabled.newValue,
       )
     }
 
@@ -232,6 +242,7 @@
   faviconSwapperCheckbox.addEventListener("change", saveSettings)
   contentFlowsCheckbox.addEventListener("change", saveSettings)
   flowsMigrationCheckbox.addEventListener("change", saveSettings)
+  flowsWebhooksCheckbox.addEventListener("change", saveSettings)
   hotkeysCheckbox.addEventListener("change", saveSettings)
   stylesCheckbox.addEventListener("change", saveSettings)
   enhancedNamingCheckbox.addEventListener("change", saveSettings)
