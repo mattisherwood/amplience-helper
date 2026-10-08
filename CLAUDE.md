@@ -4,7 +4,7 @@ Context for Claude working in this repo. Read this first.
 
 ## What this is
 
-**Amplience Helper** is a Manifest V3 Chrome extension (live on the [Chrome Web Store](https://chromewebstore.google.com/detail/amplience-helper/pgkkeoeeecldakiakjbgddmlanlokeef), source on [GitHub](https://github.com/mattisherwood/amplience-helper)) that layers progressive enhancements on top of Amplience's Dynamic Content, Content Hub, and Workforce web apps. It exists because the core CMS rightly prioritises stability and roadmap commitments, so small UI improvements don't always fit the release cadence — and field/dashboard extensions only reach parts of the GUI. This extension is a complementary surface where low-risk enhancements can ship quickly, without competing for core-product engineering time.
+**Amplience Helper** is a Manifest V3 Chrome extension (live on the [Chrome Web Store](https://chromewebstore.google.com/detail/amplience-helper/pgkkeoeeecldakiakjbgddmlanlokeef), source on [GitHub](https://github.com/mattisherwood/amplience-helper)) that layers progressive enhancements on top of Amplience's CMS (fka Dynamic Content), DAM (fka Content Hub), and Workforce web apps. It exists because the core CMS rightly prioritises stability and roadmap commitments, so small UI improvements don't always fit the release cadence — and field/dashboard extensions only reach parts of the GUI. This extension is a complementary surface where low-risk enhancements can ship quickly, without competing for core-product engineering time.
 
 ### Progressive Enhancements
 
@@ -73,8 +73,9 @@ Each module folder is self-contained and ships its own `README.md` and `CHANGELO
 
 - Favicon swapper: `app.amplience.net/*` and `support.amplience.com/*`
 - Flows filter: `app.amplience.net/content-studio/*`
-- Hotkeys, theming: `app.amplience.net/content*`
-- Style patches: `app.amplience.net/*`
+- Hotkeys: `app.amplience.net/content*`
+- Theming: `app.amplience.net/content*` and `nextgen.amplience.net/*`
+- Style patches: `app.amplience.net/*` (per-area CSS under `/content/*`, `/media/*`, `/content-studio/*`) and `nextgen.amplience.net/*`
 
 **Permissions.** Only `storage` is requested. If a new module needs more, push back hard before adding — the privacy story matters and the Chrome Web Store review will scrutinise it.
 

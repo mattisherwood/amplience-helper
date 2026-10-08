@@ -8,9 +8,9 @@ While the full extension allows customisation (for the user to choose which icon
 
 ## What does it do?
 
-1. **Helpful Favicons:** Swaps the favicons to reflect which area of the site the user is on. (The Dynamic Content CMS, the DAM Asset Stores, or the Workforce apps)
+1. **Helpful Favicons:** Swaps the favicons to reflect which area of the site the user is on. (The CMS — formerly Dynamic Content — the DAM, or the Workforce apps)
 
-2. **Context-Aware Titles:** Picks up the title of the item you are currently editing to help differentiate between different tabs (e.g. "Homepage Carousel | Dynamic Content" in one tab and "Webhooks | Dynamic Content" in the other)
+2. **Context-Aware Titles:** Picks up the title of the item you are currently editing to help differentiate between different tabs (e.g. "Homepage Carousel | Amplience CMS" in one tab and "Webhooks | Amplience CMS" in the other)
 
 ## Enable Or Disable
 
@@ -21,14 +21,14 @@ While the full extension allows customisation (for the user to choose which icon
 ## What It Does
 
 - On each matching URL, sets `link[rel="icon"]` to the bundled `.ico` for that area
-- Prepends a page-specific title prefix (e.g. the repo name in Dynamic Content) to the browser tab title
+- Prepends a page-specific title prefix (e.g. the repo name in the CMS) to the browser tab title
 - Polls the DOM for up to ~7 seconds after navigation to catch Angular hydration
 - Reacts to SPA navigation (`pushState`, `replaceState`, `popstate`) and DOM mutations so the icon/title stay accurate without a full page reload
 
 ## Files
 
 - `favicon-swapper.js`: Reads the enabled setting, applies icons and titles, and manages start/stop lifecycle
-- `icons/`: Bundled `.ico` files for each Amplience area (Dynamic Content, Content Hub, Workforce)
+- `icons/`: Bundled `.ico` files for each Amplience area (CMS, DAM, Workforce — formerly Dynamic Content and Content Hub)
 
 ## Development Notes
 

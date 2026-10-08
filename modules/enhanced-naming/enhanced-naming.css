@@ -2,9 +2,7 @@
   /* TOP LEVEL HOMEPAGE */
 
   .apps__body > .primary-app {
-    .primary-app__title,
-    .primary-app__description,
-    .button {
+    .primary-app__subtitle {
       font-size: 0;
 
       &::after {
@@ -13,81 +11,41 @@
       }
     }
 
-    .primary-app__title::before {
-      font-size: 22px;
-    }
-
-    .primary-app__description::before {
-      font-size: 14px;
-    }
-
-    .button::after {
-      content: "Manage";
+    .primary-app__subtitle::before {
       font-size: 16px;
     }
 
     &:first-child {
-      .primary-app__title::before {
-        content: "Content";
-      }
-
-      .primary-app__description::before {
-        content: "Create, preview, schedule and publish your content.";
+      .primary-app__subtitle::before {
+        content: "Content Management System";
       }
     }
 
     &:nth-child(2) {
-      .primary-app__title::before {
-        content: "Digital Assets";
-      }
-
-      .primary-app__description::before {
-        content: "Organise and enrich your media";
+      .primary-app__subtitle::before {
+        content: "Digital Asset Management";
       }
     }
   }
 
-  .apps__studios_body {
-    border: dashed 3px;
-    border-radius: 20px;
-    position: relative;
-    color: #9748fe;
-    padding: 30px;
-    margin: -33px 0;
-
-    &::before {
-      content: "AI & Automation";
-      position: absolute;
-      left: 12px;
-      top: 0;
-      background: white;
-      padding: 6px;
-      font-size: 14px;
-      font-weight: bold;
-      transform: translateY(-50%);
-      margin-top: -2px;
-    }
-  }
-
-  /* DYNAMIC CONTENT APP */
+  /* CMS APP (FKA DYNAMIC CONTENT) */
 
   .am-switcheroo__title {
     font-size: 0;
 
     &::before {
-      content: "Content Management";
+      content: "CMS";
       font-size: 14px;
       vertical-align: middle;
     }
   }
 
-  #content-hub-link {
+  #content-hub-link .am-switcheroo__primary-subtitle {
     font-size: 0;
 
     &::after {
       content: "Digital Asset Management";
-      margin-left: -10px;
-      font-size: 16px;
+      font-size: 12px;
     }
   }
 
@@ -95,54 +53,62 @@
     order: 1;
   }
 
-  /* DAM */
+  /* The header break can now kick in later */
+  @media (min-width: 1119px) and (max-width: 1239px) {
+    .layout-align-start-center.layout-row.flex {
+      display: flex;
+    }
+
+    am-hub-selector.ng-isolate-scope {
+      width: auto;
+    }
+
+    am-masthead-menu.ng-scope.ng-isolate-scope {
+      height: 100%;
+    }
+  }
+
+  /* DAM APP (FKA CONTENT HUB)*/
 
   .switcheroo .content-hub p {
     font-size: 0;
 
     &::before {
-      content: "Digital Asset Management";
+      content: "DAM";
       font-size: 14px;
       vertical-align: middle;
     }
   }
 
   .switcheroo__primary-app--dc.switcheroo__primary-app--dc
-    .switcheroo__primary-app-text-content.switcheroo__primary-app-text-content {
+    .switcheroo__primary-app-subtitle.switcheroo__primary-app-subtitle {
     font-size: 0;
 
     &::after {
-      content: "Content Management";
-      font-size: 16px;
-      transition: opacity 0.3s;
-      vertical-align: middle;
+      content: "Content Management System";
+      font-size: 12px;
     }
   }
 
   /* ACCOUNT MANAGEMENT APP */
 
-  .switcheroo-item--primary
-    a[href="/content"]
-    .switcheroo-item__parent-wrapper
-    > span {
-    font-size: 0;
+  .switcheroo-item--primary a {
+    &[href="/content"] .switcheroo-item__subtitle.switcheroo-item__subtitle {
+      font-size: 0;
 
-    &::after {
-      content: "Content Management";
-      font-size: 16px;
-      vertical-align: middle;
+      &::after {
+        content: "Content Management System";
+        font-size: 12px;
+      }
     }
-  }
 
-  .switcheroo-item--primary
-    a[href="/media"]
-    .switcheroo-item__parent-wrapper
-    > span {
-    font-size: 0;
+    &[href="/media"] .switcheroo-item__subtitle.switcheroo-item__subtitle {
+      font-size: 0;
 
-    &::after {
-      content: "Digital Asset Management";
-      font-size: 16px;
+      &::after {
+        content: "Digital Asset Management";
+        font-size: 12px;
+      }
     }
   }
 }

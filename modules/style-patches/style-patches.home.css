@@ -74,6 +74,17 @@
     min-width: initial;
   }
 
+  .apps__wrapper {
+    height: auto;
+  }
+
+  .apps__title {
+    margin-block: 20px 0;
+    padding-inline: 26px;
+    opacity: 0.8;
+    text-align: center;
+  }
+
   .apps__body {
     height: auto;
     align-items: stretch;
@@ -83,7 +94,7 @@
 
   .primary-app__wrap {
     padding-top: 0;
-    gap: 8px;
+    gap: 24px;
   }
 
   .primary-app {
@@ -92,28 +103,26 @@
     width: auto;
     margin: 0;
 
+    .primary-app__icon-wrap,
+    .primary-app__text-wrapper,
+    .button {
+      margin: 0;
+    }
+
     .primary-app__title,
     .primary-app__description {
       height: auto;
       line-height: 1.5;
     }
 
-    .primary-app__title {
-      margin-top: 16px;
-    }
-
     .primary-app__description {
       margin-block: auto;
     }
 
-    .button {
-      margin: 16px 0 0;
-
-      &::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-      }
+    .button::before {
+      content: "";
+      position: absolute;
+      inset: 0;
     }
   }
 
@@ -121,6 +130,10 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 60px 80px;
+  }
+
+  .apps__image-studio {
+    margin-block: 0 60px;
   }
 
   /* Footer */

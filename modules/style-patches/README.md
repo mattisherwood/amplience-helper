@@ -18,7 +18,7 @@ The setting key is `stylesEnabled` in `chrome.storage.sync`.
 Despite the name, this module now covers UI patches generally, not only CSS:
 
 - Applies CSS improvements only when enabled, scoped by a data attribute on `<html>` (`data-amplience-style-patches="enabled"`) so disabling instantly reverts to the native Amplience UI
-- Adds a **Workforce** entry to the app switcher ("switcheroo") where the core product omits it
+- Restyles the app switcher ("switcheroo") and homepage app cards for readability, with consistent hover states across the CMS, DAM and account areas
 - Keeps the **flow tab** in step with the URL, so a refresh doesn't throw you onto a different tab (see below)
 
 ### Flow tab URL persistence
@@ -68,8 +68,9 @@ Either module can be toggled off independently without breaking the other.
 
 ## Files
 
-- `style-patches.js`: Settings, the gating data attribute, the switcheroo Workforce link, and flow tab URL persistence
-- `style-patches.home.css` / `.account.css` / `.dc.css` / `.dam.css` / `.wf.css`: Style overrides split by product area, loaded per-area from the manifest
+- `style-patches.js`: Settings, the gating data attribute, and flow tab URL persistence. (The switcheroo Workforce link was removed in v2.5.1, since the core product now includes it.)
+- `style-patches.home.css` / `.account.css` / `.cms.css` / `.dam.css` / `.wf.css`: Style overrides split by product area, loaded per-area from the manifest (`.cms.css` was `.dc.css` before v2.5.1)
+- `style-patches.nextgen.css`: Style overrides for the next-gen UI at `nextgen.amplience.net`. It's a separate React/Mantine app, so the legacy `am-*` selectors in the other files don't apply there
 
 ## Development Notes
 
