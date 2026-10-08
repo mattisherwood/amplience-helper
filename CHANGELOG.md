@@ -1,5 +1,23 @@
 # Changelog
 
+## v2.5.1 - 2026-10-07
+
+### Summary
+
+Updated for Amplience's latest release, which renames the core apps (Dynamic Content is now the **CMS** and Content Hub is now the **DAM**) and adds Workforce to the app switcher natively.
+
+### Module Highlights
+
+- Enhanced Naming: Reworked for the new app names. Amplience now labels its apps "CMS" and "DAM", so the module now spells those out in full ("Content Management System" and "Digital Asset Management") in the subtitles on the homepage cards and in the app switchers. The dashed "AI & Automation" frame on the homepage has been retired.
+- Style Patches: The app switcher and homepage app cards have been restyled to suit the new title-and-subtitle layout, with consistent hover colours across the CMS, DAM and account areas, and tidier spacing on the homepage.
+- Style Patches: The extra Workforce link we added to the app switcher has been removed, as Amplience now includes one itself.
+
+### Breaking / Behavioral Changes
+
+- The Workforce entry in the app switcher is now Amplience's own rather than one added by the extension. It works the same way, but no longer disappears when Style Patches is turned off.
+
+---
+
 ## v2.5.0 - 2026-09-03
 
 ### Summary

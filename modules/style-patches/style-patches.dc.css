@@ -1,4 +1,4 @@
-/* ============== DYNAMIC CONTENT APP ============== */
+/* ============== CMS (FKA DYNAMIC CONTENT) APP ============== */
 /* This makes the DC interface more responsive and   */
 /* mobile-friendly on any size down to about ___px.  */
 
@@ -101,6 +101,15 @@
     opacity: 1;
   }
 
+  .am-switcheroo__primary-text,
+  .am-switcheroo__primary-subtitle {
+    line-height: normal;
+  }
+
+  .am-switcheroo__primary-subtitle {
+    font-weight: 400;
+  }
+
   #content-hub-link {
     color: #f8855d;
     transition: color 0.3s;
@@ -123,6 +132,14 @@
     opacity: 0.5;
     background: #f8f9ff;
     filter: grayscale(1);
+  }
+
+  .am-switcheroo__secondary {
+    color: rgb(89, 118, 132);
+
+    &:hover {
+      color: #29333f;
+    }
   }
 
   .am-hub-selector__hub {
@@ -155,7 +172,7 @@
     margin-inline: 0;
   }
 
-  @media (max-width: 1166px) {
+  @media (max-width: 1239px) {
     .am-masthead-menu__menu-bar > .layout-row {
       display: contents;
     }
@@ -330,6 +347,10 @@
   .am-content-view-list__data--label,
   .am-content-view-list__header--label {
     min-width: 200px;
+  }
+
+  .am-content-item-library__repositories-pane {
+    min-width: 228px !important; /* important needed to override inline-styles */
   }
 
   /* Add missing border back in to the content pane */

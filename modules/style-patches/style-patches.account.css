@@ -178,9 +178,18 @@
     .switcheroo-item__parent-wrapper {
       display: contents;
 
-      > span {
+      .switcheroo-item__text {
         margin-left: 0 !important;
         line-height: initial;
+
+        .switcheroo-item__title,
+        .switcheroo-item__subtitle {
+          color: inherit;
+        }
+
+        .switcheroo-item__subtitle {
+          font-weight: 400;
+        }
       }
     }
 
@@ -200,34 +209,37 @@
 
     .switcheroo-item--primary {
       a {
-        &[href="/media"] .switcheroo-item__parent-wrapper > span {
+        &[href="/media"] .switcheroo-item__parent-wrapper {
           color: #f8855d;
           transition: color 0.3s;
         }
 
-        &[href="/content"] .switcheroo-item__parent-wrapper > span {
+        &[href="/content"] .switcheroo-item__parent-wrapper {
           color: #216083;
-          transition: opacity 0.3s;
-          opacity: 0.8;
+
+          .switcheroo-item__text {
+            transition: opacity 0.3s;
+            opacity: 0.8;
+          }
         }
 
-        .switcheroo__primary-app--wf .switcheroo__primary-app-text-content {
-          display: inline-block;
-          vertical-align: middle;
+        &[href="/content-studio"] .switcheroo-item__parent-wrapper {
           color: #9747ff;
         }
 
         &:hover {
-          &[href="/media"] .switcheroo-item__parent-wrapper > span {
+          &[href="/media"] .switcheroo-item__parent-wrapper {
             color: #ee6277;
           }
 
-          &[href="/content"] .switcheroo-item__parent-wrapper > span {
+          &[href="/content"] .switcheroo-item__parent-wrapper {
             color: #216083;
-            opacity: 1;
+            .switcheroo-item__text {
+              opacity: 1;
+            }
           }
 
-          .switcheroo__primary-app--wf .switcheroo__primary-app-text-content {
+          &[href="/content-studio"] .switcheroo-item__parent-wrapper {
             color: #5c61ff;
           }
 
@@ -258,16 +270,15 @@
       transition: all 0.3s;
     }
 
-    /* Injected WorkForce link */
-    .switcheroo__primary-app {
-      display: contents;
-    }
-
     /* Secondary */
 
-    .switcheroo-item--secondary .switcheroo-item__parent-wrapper > span {
+    .switcheroo-item--secondary .switcheroo-item__parent-wrapper {
       font-size: 13px;
       color: rgb(89, 118, 132);
+    }
+
+    .switcheroo-item--secondary a:hover .switcheroo-item__parent-wrapper {
+      color: #29333f;
     }
 
     .switcheroo-item__cta--popout {

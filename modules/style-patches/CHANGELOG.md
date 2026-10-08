@@ -1,5 +1,25 @@
 # Style Patches Changelog
 
+## 2026-10-07 (extension v2.5.1)
+
+### Changed
+
+- App switcher restyled for the core product's new title + subtitle markup:
+  - Account (`style-patches.account.css`): colours move from `.switcheroo-item__parent-wrapper > span` up to the wrapper itself; `.switcheroo-item__title` / `__subtitle` inherit colour, subtitle at weight 400. The Workforce colours now target the native `a[href="/content-studio"]` link. Secondary links darken to `#29333f` on hover.
+  - DAM (`style-patches.dam.css`): `.switcheroo__primary-app-text` replaces `.switcheroo__primary-app-text-content`; title/subtitle inherit colour (including on hover), subtitle at weight 400. Primary app icon left margin reset, secondary icons filled `#597684`, and secondary text and icons darken to `#29333f` on hover.
+  - CMS (`style-patches.dc.css`): normal line-height on `.am-switcheroo__primary-text` / `-subtitle`, subtitle at weight 400. Secondary links (`.am-switcheroo__secondary`) styled `rgb(89, 118, 132)`, darkening to `#29333f` on hover.
+- Homepage (`style-patches.home.css`): styles the new `.apps__title` heading (centred, 0.8 opacity), lets `.apps__wrapper` size to content, widens the primary card gap from 8px to 24px, zeroes the margins on the card icon, text and button, and adds bottom spacing to `.apps__image-studio`. The full-card click target (`.button::before`) is kept.
+
+### Removed
+
+- The injected Workforce link in the app switcher — Amplience now ships its own. `createWorkforceLink()`, `insertWorkforceLink()` and `removeWorkforceLink()` (and their calls from the patch observer and `applyStylesSetting()`) are removed from `style-patches.js`, and the injected-link `display: contents` rule is gone from the account CSS.
+
+### Notes
+
+- The patch observer still drives flow tab URL persistence; only the switcher link side of it has been retired.
+
+---
+
 ## 2026-09-03 (extension v2.5.0)
 
 ### Added

@@ -1,3 +1,4 @@
+/* ============== DAM (FKA CONTENT HUB) APP ============== */
 [data-amplience-style-patches="enabled"] {
   .switcheroo {
     position: relative;
@@ -33,6 +34,10 @@
     width: 100%;
     max-width: 320px;
     min-width: initial;
+
+    .switcheroo__primary-app-icon {
+      margin-left: 0;
+    }
   }
 
   /* Primary & secondary lists */
@@ -52,11 +57,6 @@
   .switcheroo__menu .switcheroo__secondary-app {
     height: auto;
     gap: 10px;
-  }
-
-  .switcheroo__primary-app-text-content {
-    display: inline-block;
-    vertical-align: middle;
   }
 
   /* Primary list */
@@ -80,6 +80,10 @@
           width: 14px !important;
           height: 14px !important;
           display: block;
+
+          path {
+            fill: #597684;
+          }
         }
       }
 
@@ -97,21 +101,37 @@
       }
     }
 
-    .switcheroo__primary-app--dc .switcheroo__primary-app-text-content {
+    .switcheroo__primary-app-text {
+      .switcheroo__primary-app-title,
+      .switcheroo__primary-app-subtitle {
+        color: inherit;
+      }
+
+      .switcheroo__primary-app-subtitle {
+        font-weight: 400;
+      }
+    }
+
+    .switcheroo__primary-app--dc .switcheroo__primary-app-text {
       color: #216083 !important;
       opacity: 0.8;
     }
 
-    .switcheroo__primary-app--wf {
+    .switcheroo__primary-app--wf .switcheroo__primary-app-text {
       color: #9747ff;
     }
 
     a:hover {
-      .switcheroo__primary-app--dc .switcheroo__primary-app-text-content {
+      .switcheroo__primary-app-title,
+      .switcheroo__primary-app-subtitle {
+        color: inherit !important;
+      }
+
+      .switcheroo__primary-app--dc .switcheroo__primary-app-text {
         opacity: 1;
       }
 
-      .switcheroo__primary-app--wf {
+      .switcheroo__primary-app--wf .switcheroo__primary-app-text {
         color: #5c61ff;
       }
 
@@ -133,8 +153,16 @@
   .switcheroo__secondary-applist a {
     cursor: pointer;
 
-    &:hover .switcheroo__secondary-app-icon {
-      opacity: 1;
+    &:hover {
+      .switcheroo__secondary-app-icon {
+        opacity: 1;
+      }
+      .switcheroo__secondary-app-text {
+        color: #29333f;
+      }
+      svg {
+        fill: #29333f;
+      }
     }
   }
 

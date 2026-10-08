@@ -4,7 +4,7 @@ Context for Claude working in this repo. Read this first.
 
 ## What this is
 
-**Amplience Helper** is a Manifest V3 Chrome extension (live on the [Chrome Web Store](https://chromewebstore.google.com/detail/amplience-helper/pgkkeoeeecldakiakjbgddmlanlokeef), source on [GitHub](https://github.com/mattisherwood/amplience-helper)) that layers progressive enhancements on top of Amplience's Dynamic Content, Content Hub, and Workforce web apps. It exists because the core CMS rightly prioritises stability and roadmap commitments, so small UI improvements don't always fit the release cadence — and field/dashboard extensions only reach parts of the GUI. This extension is a complementary surface where low-risk enhancements can ship quickly, without competing for core-product engineering time.
+**Amplience Helper** is a Manifest V3 Chrome extension (live on the [Chrome Web Store](https://chromewebstore.google.com/detail/amplience-helper/pgkkeoeeecldakiakjbgddmlanlokeef), source on [GitHub](https://github.com/mattisherwood/amplience-helper)) that layers progressive enhancements on top of Amplience's CMS (fka Dynamic Content), DAM (fka Content Hub), and Workforce web apps. It exists because the core CMS rightly prioritises stability and roadmap commitments, so small UI improvements don't always fit the release cadence — and field/dashboard extensions only reach parts of the GUI. This extension is a complementary surface where low-risk enhancements can ship quickly, without competing for core-product engineering time.
 
 ### Progressive Enhancements
 

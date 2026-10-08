@@ -2,7 +2,7 @@
 
 # Hotkeys Module
 
-Adds keyboard shortcuts to Amplience Dynamic Content pages. This module is part of the `amplience-helper` extension and can be toggled from popup/options.
+Adds keyboard shortcuts to Amplience CMS (formerly Dynamic Content) pages. This module is part of the `amplience-helper` extension and can be toggled from popup/options.
 
 ## Features
 
