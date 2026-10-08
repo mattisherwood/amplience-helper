@@ -1,0 +1,112 @@
+/* ============== NEXTGEN INTERFACE ============== */
+/* Some small tweaks to the UI */
+[data-amplience-style-patches="enabled"] {
+  /* This tidies up the thumbnails */
+  [data-testid="resource-card-shell"] {
+    position: relative;
+    /* Hide the overflow so the border-radii show */
+    /* and allow to come in from far left */
+    overflow: hidden;
+
+    /* Prevent select border from nudging layout or card/thumbnail contents */
+    &[data-selected="true"] {
+      border-width: 1px;
+      outline: solid 1px var(--mantine-color-primary-7);
+    }
+
+    /* Actions */
+    > .mantine-Stack-root > .mantine-Flex-root + div {
+      position: absolute;
+      inset: auto 0 0;
+      z-index: 1;
+
+      &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0) 0,
+          rgba(0, 0, 0, 0.1) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.15s ease-in-out;
+      }
+
+      > .mantine-Flex-root {
+        padding: var(--mantine-spacing-xs);
+
+        > .mantine-Group-root {
+          display: contents;
+
+          > span {
+            order: 2;
+            margin-left: auto;
+
+            /* Has a locale badge */
+            &:has(+ span) {
+              margin-left: 0;
+            }
+
+            /* Locale badge */
+            + span {
+              order: 1;
+            }
+          }
+        }
+
+        .mantine-Avatar-root {
+          background: var(--mantine-color-white);
+          border-radius: 99px;
+        }
+      }
+
+      button,
+      span[role="button"] {
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+
+      /* Label buttons */
+      button {
+        /* Existing label button */
+        > div {
+          cursor: pointer;
+        }
+
+        /* Empty label button */
+        &:has(> [data-testid="icon"]) {
+          --amplience-icon-size-m2: 18px;
+          margin-left: -34px;
+          padding: 4px;
+          border-radius: 99px;
+          background: var(--mantine-color-white);
+          transition:
+            opacity 0.15s ease,
+            margin-left 0.15s ease-in-out;
+        }
+      }
+    }
+
+    /* The preview thumbnail area */
+    .mantine-Card-section {
+      padding: 0 !important; /* important required to override inline styles */
+    }
+
+    &:hover {
+      /* Actions */
+      > .mantine-Stack-root > .mantine-Flex-root + div {
+        &::before {
+          opacity: 1;
+        }
+
+        /* Empty label button */
+        button:has(> [data-testid="icon"]) {
+          margin-left: 0;
+        }
+      }
+    }
+  }
+}

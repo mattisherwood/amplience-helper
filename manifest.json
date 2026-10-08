@@ -68,7 +68,7 @@
     },
     {
       "matches": ["https://app.amplience.net/content/*"],
-      "css": ["modules/style-patches/style-patches.dc.css"],
+      "css": ["modules/style-patches/style-patches.cms.css"],
       "run_at": "document_idle"
     },
     {
@@ -82,8 +82,14 @@
       "run_at": "document_idle"
     },
     {
+      "matches": ["https://nextgen.amplience.net/*"],
+      "css": ["modules/style-patches/style-patches.nextgen.css"],
+      "js": ["modules/style-patches/style-patches.js"],
+      "run_at": "document_idle"
+    },
+    {
       "matches": ["https://content-form.extensions.content.amplience.net/*"],
-      "css": ["modules/style-patches/style-patches.dc.css"],
+      "css": ["modules/style-patches/style-patches.cms.css"],
       "js": ["modules/style-patches/style-patches.js"],
       "run_at": "document_idle",
       "all_frames": true

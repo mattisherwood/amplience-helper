@@ -7,8 +7,16 @@
 - App switcher restyled for the core product's new title + subtitle markup:
   - Account (`style-patches.account.css`): colours move from `.switcheroo-item__parent-wrapper > span` up to the wrapper itself; `.switcheroo-item__title` / `__subtitle` inherit colour, subtitle at weight 400. The Workforce colours now target the native `a[href="/content-studio"]` link. Secondary links darken to `#29333f` on hover.
   - DAM (`style-patches.dam.css`): `.switcheroo__primary-app-text` replaces `.switcheroo__primary-app-text-content`; title/subtitle inherit colour (including on hover), subtitle at weight 400. Primary app icon left margin reset, secondary icons filled `#597684`, and secondary text and icons darken to `#29333f` on hover.
-  - CMS (`style-patches.dc.css`): normal line-height on `.am-switcheroo__primary-text` / `-subtitle`, subtitle at weight 400. Secondary links (`.am-switcheroo__secondary`) styled `rgb(89, 118, 132)`, darkening to `#29333f` on hover.
+  - CMS (`style-patches.cms.css`): normal line-height on `.am-switcheroo__primary-text` / `-subtitle`, subtitle at weight 400. Secondary links (`.am-switcheroo__secondary`) styled `rgb(89, 118, 132)`, darkening to `#29333f` on hover.
 - Homepage (`style-patches.home.css`): styles the new `.apps__title` heading (centred, 0.8 opacity), lets `.apps__wrapper` size to content, widens the primary card gap from 8px to 24px, zeroes the margins on the card icon, text and button, and adds bottom spacing to `.apps__image-studio`. The full-card click target (`.button::before`) is kept.
+
+### Added
+
+- `style-patches.nextgen.css`, loaded on `https://nextgen.amplience.net/*` along with `style-patches.js` (which sets the `data-amplience-style-patches` gate there too). The flow tab URL logic in the JS stays dormant on nextgen, since its flows route is `/:org/flows/:hub` rather than `/content-flows`.
+
+### Renamed
+
+- `style-patches.dc.css` → `style-patches.cms.css`, to match the product's new CMS naming. Both manifest entries that load it (`app.amplience.net/content/*` and the `content-form.extensions.content.amplience.net` iframe) are updated.
 
 ### Removed
 

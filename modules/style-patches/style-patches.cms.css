@@ -577,7 +577,6 @@
   .am-content-card__body {
     inset: 0;
     cursor: pointer;
-    transition: opacity 0.15s ease-in-out;
 
     &::after {
       content: "";

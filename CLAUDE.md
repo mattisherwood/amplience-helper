@@ -74,7 +74,7 @@ Each module folder is self-contained and ships its own `README.md` and `CHANGELO
 - Favicon swapper: `app.amplience.net/*` and `support.amplience.com/*`
 - Flows filter: `app.amplience.net/content-studio/*`
 - Hotkeys, theming: `app.amplience.net/content*`
-- Style patches: `app.amplience.net/*`
+- Style patches: `app.amplience.net/*` (per-area CSS under `/content/*`, `/media/*`, `/content-studio/*`) and `nextgen.amplience.net/*`
 
 **Permissions.** Only `storage` is requested. If a new module needs more, push back hard before adding — the privacy story matters and the Chrome Web Store review will scrutinise it.
 

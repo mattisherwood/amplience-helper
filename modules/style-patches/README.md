@@ -69,7 +69,8 @@ Either module can be toggled off independently without breaking the other.
 ## Files
 
 - `style-patches.js`: Settings, the gating data attribute, and flow tab URL persistence. (The switcheroo Workforce link was removed in v2.5.1, since the core product now includes it.)
-- `style-patches.home.css` / `.account.css` / `.dc.css` / `.dam.css` / `.wf.css`: Style overrides split by product area, loaded per-area from the manifest
+- `style-patches.home.css` / `.account.css` / `.cms.css` / `.dam.css` / `.wf.css`: Style overrides split by product area, loaded per-area from the manifest (`.cms.css` was `.dc.css` before v2.5.1)
+- `style-patches.nextgen.css`: Style overrides for the next-gen UI at `nextgen.amplience.net`. It's a separate React/Mantine app, so the legacy `am-*` selectors in the other files don't apply there
 
 ## Development Notes
 
