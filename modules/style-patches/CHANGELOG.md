@@ -13,6 +13,16 @@
 ### Added
 
 - `style-patches.nextgen.css`, loaded on `https://nextgen.amplience.net/*` along with `style-patches.js` (which sets the `data-amplience-style-patches` gate there too). The flow tab URL logic in the JS stays dormant on nextgen, since its flows route is `/:org/flows/:hub` rather than `/content-flows`.
+  - Sortable table headers (`th.amplience-TableThSortable-root`) get a `primary-2` hover background.
+  - Resource cards (`[data-testid="resource-card-shell"]`): overflow is hidden so the rounded corners show. The selected state uses a 1px border plus outline, so selecting a card no longer nudges the layout. The preview area (`.mantine-Card-section`) loses its inline padding.
+  - Card actions sit in an absolute overlay along the bottom of the thumbnail, with a gradient that fades in on hover. The locale badge comes first, and the badge before it moves to the right. The assignee avatar and the empty label button get white pill backgrounds.
+  - On cards without a label, the assignee avatar sits where the label would be (`margin-left: -34px`) and slides over on hover. The avatar is pushed, not the label button, because the label button has to stay in the layout (even at opacity 0) for the label modal to open.
+  - Dark-mode fixes, under `[data-mantine-color-scheme="dark"]`:
+    - `--mantine-color-azure-0`…`3` are mapped to `--app-color-surface-1`.
+    - Repository item borders use `--item-border-color`.
+    - Chips, repository control hovers and table-row hovers use `--app-color-surface-2`.
+    - Ghost buttons hover to `primary-9`.
+    - The generic `thead th` hover is cleared, and sortable headers hover to `aqua-8`.
 
 ### Renamed
 
@@ -36,7 +46,7 @@
 
 ### Fixed
 
-- Clicking Flows from Runs or Reviews needed two clicks — the first moved the URL but not the content. `restoreTabFromUrl()` runs from a `MutationObserver` callback, which is a microtask, so on a real click it fired ~200ms *before* the click reached this module's own listener, read the URL of the tab the user had just left, and clicked back to it. Now guarded two ways: each URL is reconciled at most once (`reconciledUrl`), and restore is suppressed for the whole click window (`tabClickInFlight`, raised on capture and released once the URL is written, with a 1s backstop).
+- Clicking Flows from Runs or Reviews needed two clicks — the first moved the URL but not the content. `restoreTabFromUrl()` runs from a `MutationObserver` callback, which is a microtask, so on a real click it fired ~200ms _before_ the click reached this module's own listener, read the URL of the tab the user had just left, and clicked back to it. Now guarded two ways: each URL is reconciled at most once (`reconciledUrl`), and restore is suppressed for the whole click window (`tabClickInFlight`, raised on capture and released once the URL is written, with a 1s backstop).
 - Clicking the flows-webhooks "Webhooks" tab while on the Reviews tab did nothing. `flowTabFromUrl()` let the `/content-flows/reviews` path outrank the `#webhooks` hash, so restore clicked Reviews — and that click tore the Webhooks view straight back down. The hash is now checked before the path, and any hash this module doesn't own means hands off.
 
 ### Notes

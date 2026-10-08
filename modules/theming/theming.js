@@ -13,12 +13,25 @@
 
   const EXCLUDED_HUBS = new Set(["login-prompt"])
 
+  const IS_NEXTGEN = window.location.hostname === "nextgen.amplience.net"
+
+  // Nextgen areas whose second path segment is a hub name.
+  const NEXTGEN_HUB_AREAS = new Set(["content", "media", "flows", "reviews"])
+
   /**
    * Extract the hub name from the current page URL.
-   * Pattern: #!/hubname/ in the URL hash
+   * Legacy: #!/hubname/ in the URL hash
+   * Nextgen: /:orgName/:area/:hubName/... in the path
    * @returns {string|null} The hub name or null if not found
    */
   function getHubNameFromUrl() {
+    if (IS_NEXTGEN) {
+      const [, area, hubName] = window.location.pathname
+        .split("/")
+        .filter(Boolean)
+      return NEXTGEN_HUB_AREAS.has(area) && hubName ? hubName : null
+    }
+
     const match = window.location.href.match(/\/[#!]+\/([^/]+)/)
     return match ? match[1] : null
   }
@@ -51,7 +64,56 @@
     document.documentElement.removeAttribute("data-amplience-theming")
   }
 
+  /*
+   * Nextgen dark mode goes through Mantine's own data-mantine-color-scheme
+   * attribute on <html> rather than the legacy .dark class.
+   *
+   * Mantine owns that attribute: it sets it from the user's preference on
+   * load and whenever they change it. So dark hubs override it, and anything
+   * else hands it back: nativeScheme tracks Mantine's latest value and is
+   * restored when the hub isn't dark or theming is off. The observer also
+   * re-asserts "dark" if Mantine writes after us (e.g. a late React mount).
+   * If Mantine renames the attribute, hubs just stay on the native scheme.
+   */
+  const SCHEME_ATTR = "data-mantine-color-scheme"
+  let forceDark = false
+  let nativeScheme = null
+  let lastWrittenScheme = null
+
+  function syncColorScheme() {
+    const html = document.documentElement
+    const wanted = forceDark ? "dark" : nativeScheme
+
+    if (wanted && html.getAttribute(SCHEME_ATTR) !== wanted) {
+      lastWrittenScheme = wanted
+      html.setAttribute(SCHEME_ATTR, wanted)
+    }
+  }
+
+  if (IS_NEXTGEN) {
+    nativeScheme = document.documentElement.getAttribute(SCHEME_ATTR)
+
+    new MutationObserver(() => {
+      const current = document.documentElement.getAttribute(SCHEME_ATTR)
+      if (current === lastWrittenScheme) return
+
+      // Mantine wrote it, so that's the user's own preference.
+      nativeScheme = current
+      lastWrittenScheme = null
+      syncColorScheme()
+    }).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: [SCHEME_ATTR],
+    })
+  }
+
   function applyDarkSetting(enabled) {
+    if (IS_NEXTGEN) {
+      forceDark = Boolean(enabled)
+      syncColorScheme()
+      return
+    }
+
     document.documentElement.classList.toggle("dark", enabled)
   }
 
@@ -138,21 +200,11 @@
       return
     }
 
-    // If themingHubs changed, reapply the current hub's theme
-    if (changes.themingHubs) {
-      const newHubs = changes.themingHubs.newValue || {}
-      const hubName = getHubNameFromUrl()
-      if (hubName && !isExcludedHub(hubName)) {
-        const hubTheme = newHubs[hubName]
-        if (hubTheme) {
-          applyColorSetting(hubTheme.color)
-          applyDarkSetting(hubTheme.isDark)
-        }
-      }
-    }
-
-    if (changes.themingEnabled) {
-      applyThemingSetting(Boolean(changes.themingEnabled.newValue))
+    // Re-run the full resolve rather than patching pieces: on nextgen the
+    // colour scheme lives outside our CSS gate, so turning theming off has
+    // to actively hand it back to Mantine, which applyCurrentHubTheme does.
+    if (changes.themingHubs || changes.themingEnabled) {
+      applyCurrentHubTheme()
     }
   })
 })()

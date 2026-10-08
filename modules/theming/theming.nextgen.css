@@ -1,0 +1,110 @@
+/* ============== NEXTGEN INTERFACE ============== */
+/* The nextgen UI (nextgen.amplience.net) is built on Mantine and takes its  */
+/* primary colour from the --mantine-color-primary-* tokens, so theming it   */
+/* is a matter of rebuilding that scale from the hub's single saved colour.  */
+/*                                                                           */
+/* Mantine's default scale (#0374DD at shade 7) is the base colour mixed     */
+/* with white (0-6) or black (8-9) at the percentages below, so color-mix()  */
+/* reproduces it for any hub colour. Set on body so it beats Mantine's       */
+/* :root definitions; if the tokens are renamed, the UI keeps its native     */
+/* blue.                                                                     */
+
+[data-amplience-theming="enabled"] {
+  body {
+    --nextgen-theme: rgb(var(--theme-color-rgb));
+
+    --mantine-color-primary-0: color-mix(
+      in srgb,
+      var(--nextgen-theme) 3%,
+      white
+    );
+    --mantine-color-primary-1: color-mix(
+      in srgb,
+      var(--nextgen-theme) 5%,
+      white
+    );
+    --mantine-color-primary-2: color-mix(
+      in srgb,
+      var(--nextgen-theme) 10%,
+      white
+    );
+    --mantine-color-primary-3: color-mix(
+      in srgb,
+      var(--nextgen-theme) 25%,
+      white
+    );
+    --mantine-color-primary-4: color-mix(
+      in srgb,
+      var(--nextgen-theme) 50%,
+      white
+    );
+    --mantine-color-primary-5: color-mix(
+      in srgb,
+      var(--nextgen-theme) 65%,
+      white
+    );
+    --mantine-color-primary-6: color-mix(
+      in srgb,
+      var(--nextgen-theme) 80%,
+      white
+    );
+    --mantine-color-primary-7: var(--nextgen-theme);
+    --mantine-color-primary-8: color-mix(
+      in srgb,
+      var(--nextgen-theme) 80%,
+      black
+    );
+    --mantine-color-primary-9: color-mix(
+      in srgb,
+      var(--nextgen-theme) 64%,
+      black
+    );
+
+    --mantine-color-primary-text: var(--mantine-color-primary-filled);
+    --mantine-color-primary-filled: var(--mantine-color-primary-7);
+    --mantine-color-primary-filled-hover: var(--mantine-color-primary-8);
+    --mantine-color-primary-light: rgba(var(--theme-color-rgb), 0.1);
+    --mantine-color-primary-light-hover: rgba(var(--theme-color-rgb), 0.12);
+    --mantine-color-primary-light-color: var(--mantine-color-primary-7);
+    --mantine-color-primary-outline: var(--mantine-color-primary-7);
+    --mantine-color-primary-outline-hover: rgba(var(--theme-color-rgb), 0.05);
+
+    /* Mantine issue: some components read --mantine-primary-color-filled,  */
+    /* which isn't derived from the primary scale, so point it there.       */
+    --mantine-primary-color-filled: var(--mantine-color-primary-filled);
+    --mantine-primary-color-filled-hover: var(
+      --mantine-color-primary-filled-hover
+    );
+    --mantine-primary-color-light: var(--mantine-color-primary-light);
+    --mantine-primary-color-light-hover: var(
+      --mantine-color-primary-light-hover
+    );
+    --mantine-primary-color-light-color: var(
+      --mantine-color-primary-light-color
+    );
+
+    /* Platform issue: the selected repository label (CSS-module classes     */
+    /* _controlRepository_* / _labelRepository_*, hashed suffix) uses a      */
+    /* hardcoded blue. If the class names change, it just stays blue.        */
+    [class^="_controlRepository_"][data-selected="true"],
+    [class*=" _controlRepository_"][data-selected="true"] {
+      [class^="_labelRepository_"],
+      [class*=" _labelRepository_"] {
+        color: var(--mantine-color-primary-7);
+      }
+    }
+  }
+
+  &[data-mantine-color-scheme="dark"] body {
+    --segmented-control-bg: var(--mantine-color-primary-8);
+
+    /* Platform issue: Same as above, lighter shade for dark */
+    [class^="_controlRepository_"][data-selected="true"],
+    [class*=" _controlRepository_"][data-selected="true"] {
+      [class^="_labelRepository_"],
+      [class*=" _labelRepository_"] {
+        color: var(--mantine-color-primary-3);
+      }
+    }
+  }
+}

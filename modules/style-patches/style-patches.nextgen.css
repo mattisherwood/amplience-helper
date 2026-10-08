@@ -1,11 +1,16 @@
 /* ============== NEXTGEN INTERFACE ============== */
 /* Some small tweaks to the UI */
 [data-amplience-style-patches="enabled"] {
-  /* This tidies up the thumbnails */
+  /* Hover effect for sortable table headers */
+  thead th.amplience-TableThSortable-root:hover {
+    background: var(--mantine-color-primary-2);
+  }
+
+  /* Thumbnails */
   [data-testid="resource-card-shell"] {
     position: relative;
     /* Hide the overflow so the border-radii show */
-    /* and allow to come in from far left */
+    /* and allow items to come in from far left   */
     overflow: hidden;
 
     /* Prevent select border from nudging layout or card/thumbnail contents */
@@ -56,18 +61,30 @@
           }
         }
 
-        .mantine-Avatar-root {
+        [data-testid="inline:assignee"] {
           background: var(--mantine-color-white);
           border-radius: 99px;
+          color: var(--mantine-color-black);
+          transition:
+            opacity 0.15s ease,
+            margin-left 0.15s ease-in-out;
+        }
+
+        /* We had to push the assignee avatar rather than the label button, */
+        /* as the label button has to remain on screen (even if opacity:0)  */
+        /* for the label modal to work.                                     */
+        &:not(:has(.mantine-Badge-root)) [data-testid="inline:assignee"] {
+          margin-left: -34px;
         }
       }
 
-      button,
+      /* TODO: We could do with a hover effect here */
+      /* button,
       span[role="button"] {
         &:hover {
           opacity: 0.9;
         }
-      }
+      } */
 
       /* Label buttons */
       button {
@@ -79,13 +96,10 @@
         /* Empty label button */
         &:has(> [data-testid="icon"]) {
           --amplience-icon-size-m2: 18px;
-          margin-left: -34px;
           padding: 4px;
           border-radius: 99px;
           background: var(--mantine-color-white);
-          transition:
-            opacity 0.15s ease,
-            margin-left 0.15s ease-in-out;
+          color: var(--mantine-color-black);
         }
       }
     }
@@ -102,10 +116,47 @@
           opacity: 1;
         }
 
-        /* Empty label button */
-        button:has(> [data-testid="icon"]) {
+        &:not(:has(.mantine-Badge-root)) [data-testid="inline:assignee"] {
           margin-left: 0;
         }
+      }
+    }
+  }
+
+  /* Dark fixes */
+  &[data-mantine-color-scheme="dark"] body {
+    --mantine-color-azure-0: var(--app-color-surface-1);
+    --mantine-color-azure-1: var(--app-color-surface-1);
+    --mantine-color-azure-2: var(--app-color-surface-1);
+    --mantine-color-azure-3: var(--app-color-surface-1);
+
+    [class^="_itemRepository_"],
+    [class*=" _itemRepository_"] {
+      border-color: var(--item-border-color);
+    }
+
+    [class^="_chip_"],
+    [class*=" _chip_"],
+    [class^="_controlRepository_"]:hover,
+    [class*=" _controlRepository_"]:hover {
+      background: var(--app-color-surface-2);
+    }
+
+    [data-variant="ghost"]:hover {
+      background: var(--mantine-color-primary-9);
+    }
+
+    .mantine-Table-thead tr[data-hover]:hover {
+      background: var(--app-color-surface-2) !important;
+    }
+
+    thead th {
+      &:hover {
+        background: none;
+      }
+
+      &.amplience-TableThSortable-root:hover {
+        background: var(--mantine-color-aqua-8);
       }
     }
   }

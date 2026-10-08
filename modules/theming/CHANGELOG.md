@@ -1,5 +1,24 @@
 # Theming Changelog
 
+## 2026-10-08 (extension v2.5.1)
+
+### Added
+
+- Nextgen UI support. `theming.js` and the new `theming.nextgen.css` load on `https://nextgen.amplience.net/*`. `getHubNameFromUrl()` reads the hub from the path there (`/:orgName/:area/:hubName`, where area is `content`, `media`, `flows` or `reviews`), and returns null on org-level pages so the default blue applies.
+- `theming.nextgen.css` derives the full `--mantine-color-primary-0`…`9` scale from `--theme-color-rgb` via `color-mix()` (the white/black percentages reproduce Mantine's default scale exactly), along with the `-light` / `-outline-hover` rgba tokens, the `--mantine-primary-color-filled` alias fixes, and the selected-repository label colour.
+- Dark mode on nextgen: a dark hub sets Mantine's `data-mantine-color-scheme="dark"` on `<html>` instead of the legacy `.dark` class. Light hubs, and theming being off, hand the attribute back to whatever Mantine last set (tracked by an attribute observer, which also re-asserts dark if Mantine writes later).
+
+### Changed
+
+- `chrome.storage.onChanged` now re-runs `applyCurrentHubTheme()` for both `themingHubs` and `themingEnabled` changes, so toggling theming off also resets the nextgen colour scheme.
+
+### Notes
+
+- Only the attribute is changed, not Mantine's stored preference, so anything reading `useMantineColorScheme()` in JS still sees the user's own scheme.
+- `hub-switcher-row-colors.js` isn't loaded on nextgen, because it targets the legacy hub selector.
+
+---
+
 ## 2026-05-09 (extension v2.3.10)
 
 ### Fixed

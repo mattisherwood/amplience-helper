@@ -12,6 +12,7 @@ Updated for Amplience's latest release, which renames the core apps (Dynamic Con
 - Style Patches: The app switcher and homepage app cards have been restyled to suit the new title-and-subtitle layout, with consistent hover colours across the CMS, DAM and account areas, and tidier spacing on the homepage.
 - Style Patches: The extra Workforce link we added to the app switcher has been removed, as Amplience now includes one itself.
 - Style Patches: Now also runs on the next-gen Amplience UI at nextgen.amplience.net.
+- Theming: Your hub colours now carry through to the next-gen Amplience UI at nextgen.amplience.net, across content, assets, flows and reviews. The per-hub dark mode switch works there too, using the new UI's own dark theme mechanism.
 
 ### Breaking / Behavioral Changes
 

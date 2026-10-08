@@ -113,6 +113,12 @@
         "modules/theming/hub-switcher-row-colors.js"
       ],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://nextgen.amplience.net/*"],
+      "css": ["modules/theming/theming.nextgen.css"],
+      "js": ["modules/theming/theming.js"],
+      "run_at": "document_idle"
     }
   ],
   "icons": {
