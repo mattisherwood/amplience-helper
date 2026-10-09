@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.5.2 - 2026-10-08
+
+### Summary
+
+Keyboard shortcuts start arriving in the next-gen Amplience UI.
+
+### Module Highlights
+
+- Hotkeys: Now available on nextgen.amplience.net for the equivalent actions, including `+` for add to collection.
+- Enhanced Naming: Now also runs on nextgen.amplience.net, where the "Copy" bulk action and dropdown menu items now read as "Duplicate". ("Copy" suggests a "Copy" & "Paste" behaviour and "C" has a crowded hotkey space compared to "D".)
+
+---
+
 ## v2.5.1 - 2026-10-07
 
 ### Summary

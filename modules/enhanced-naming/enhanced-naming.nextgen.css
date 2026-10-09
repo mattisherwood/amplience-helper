@@ -1,0 +1,74 @@
+/* ============== NEXTGEN INTERFACE ============== */
+/* Same approach as enhanced-naming.css: hide the native label with         */
+/* font-size: 0 and draw the replacement with a pseudo-element, so the      */
+/* app's own markup and click handlers are left untouched.                  */
+
+[data-amplience-enhanced-naming="enabled"] {
+  /* CONTENT LISTING ACTIONS BAR */
+
+  /* The "Copy" bulk action duplicates the selected items, so call it that.  */
+  /* Matched by its Tabler copy icon rather than by position, so it stays    */
+  /* on the right button if the actions are reordered. If the icon or test   */
+  /* ids change, the native "Copy" label simply shows through.               */
+  [data-testid="resource-list-actions"]
+    [data-testid="actions-bar"]
+    button:has(.tabler-icon-copy)
+    .mantine-Button-label {
+    font-size: 0;
+
+    &::before {
+      content: "Duplicate";
+      font-size: var(--amplience-typography-body-bold-font-size);
+      vertical-align: bottom;
+    }
+  }
+
+  /* Rename the "Set status" bulk action to "Tag".  */
+  /* Matched by its Tabler tag icon rather than by position, so it stays    */
+  /* on the right button if the actions are reordered. If the icon or test   */
+  /* ids change, the native "Set status" label simply shows through.        */
+  [data-testid="resource-list-actions"]
+    [data-testid="actions-bar"]
+    button:has(.tabler-icon-tag)
+    .mantine-Button-label {
+    font-size: 0;
+
+    &::before {
+      content: "Tag";
+      font-size: var(--amplience-typography-body-bold-font-size);
+      vertical-align: bottom;
+    }
+  }
+
+  /* CONTENT ITEM MENU */
+
+  /* The same "Copy" action in an item's dropdown menu. Menus render in a    */
+  /* portal outside the listing, so this can't be scoped to the actions bar; */
+  /* the menuitem role and copy icon guard against any other "copy:button".  */
+  .mantine-Menu-dropdown
+    [role="menuitem"]:has(.tabler-icon-copy)
+    .mantine-Menu-itemLabel {
+    font-size: 0;
+
+    &::before {
+      content: "Duplicate";
+      font-size: var(--amplience-typography-body-regular-font-size);
+      vertical-align: bottom;
+    }
+  }
+
+  /* The same "Set status" action in an item's dropdown menu. Menus render in a    */
+  /* portal outside the listing, so this can't be scoped to the actions bar; */
+  /* the menuitem role and tag icon guard against any other "status:button".  */
+  .mantine-Menu-dropdown
+    [role="menuitem"]:has(.tabler-icon-tag)
+    .mantine-Menu-itemLabel {
+    font-size: 0;
+
+    &::before {
+      content: "Tag";
+      font-size: var(--amplience-typography-body-regular-font-size);
+      vertical-align: bottom;
+    }
+  }
+}

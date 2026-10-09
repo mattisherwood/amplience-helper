@@ -28,6 +28,15 @@ As of v2.5.1, Amplience labels its two core apps **CMS** (formerly Dynamic Conte
 | Account switcher, `/content` link | `.switcheroo-item__subtitle`                                     | Content Management System |
 | Account switcher, `/media` link   | `.switcheroo-item__subtitle`                                     | Digital Asset Management  |
 
+On the nextgen UI (`nextgen.amplience.net`, via `enhanced-naming.nextgen.css`):
+
+The "Copy" bulk action and dropdown menu item now reads "Duplicate". ("Copy" suggests a "Copy" & "Paste" behaviour and "C" has a crowded hotkey space compared to "D".)
+
+| Where                               | Element                                                                                       | Shows     |
+| ----------------------------------- | --------------------------------------------------------------------------------------------- | --------- |
+| Content listing actions bar, "Copy" | `[data-testid="actions-bar"] button:has(.tabler-icon-copy) .mantine-Button-label`             | Duplicate |
+| Content item menu, "Copy"           | `[data-testid="copy:button"][role="menuitem"]:has(.tabler-icon-copy) .mantine-Menu-itemLabel` | Duplicate |
+
 ## How It Works
 
 The module is CSS-only. `enhanced-naming.js` just sets or clears `data-amplience-enhanced-naming="enabled"` on `<html>` in response to the toggle (live, via `chrome.storage.onChanged`), and every rule in `enhanced-naming.css` is scoped to that attribute.
@@ -38,6 +47,7 @@ Labels are swapped without touching the DOM: the native text is hidden with `fon
 
 - `enhanced-naming.js`: Reads the setting and toggles the gating data attribute
 - `enhanced-naming.css`: The label overrides, grouped by area (homepage, CMS app, DAM app, account management)
+- `enhanced-naming.nextgen.css`: Label overrides for the nextgen UI (`nextgen.amplience.net`)
 
 ## Development Notes
 
