@@ -43,6 +43,26 @@
   cursor: not-allowed;
 }
 
+.flows-migration-btn[data-busy] {
+  cursor: progress;
+}
+
+.flows-migration-btn[data-busy] .flows-migration-icon {
+  animation: flows-migration-pulse 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flows-migration-btn[data-busy] .flows-migration-icon {
+    animation: none;
+  }
+}
+
+@keyframes flows-migration-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
 .flows-migration-icon {
   width: 1rem;
   height: 1rem;

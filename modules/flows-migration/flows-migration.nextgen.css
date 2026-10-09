@@ -1,0 +1,220 @@
+/*
+ * Flows Migration - Nextgen UI (nextgen.amplience.net)
+ *
+ * Styled to match nextgen's "tertiary" (outlined) button, using Mantine and
+ * Amplience CSS variables so it follows the light/dark theme. Fallback values
+ * cover the variables disappearing. Everything is gated on the module's root
+ * attribute, so turning the module off reverts instantly.
+ */
+
+html[data-amplience-flows-migration="enabled"] {
+  .ah-flows-migration-tool {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
+  .ah-flows-migration-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--mantine-spacing-xxs, 4px);
+    height: 2.25rem;
+    padding-inline: var(--mantine-spacing-xs, 10px);
+    border: 1px solid var(--input-bd, #b4c5fc);
+    border-radius: var(--mantine-radius-sm, 8px);
+    background-color: transparent;
+    color: var(--mantine-color-ocean-7, #335668);
+    font-family: inherit;
+    font-weight: var(--amplience-typography-body-bold-font-weight, 700);
+    font-size: var(--amplience-typography-body-bold-font-size, 14px);
+    line-height: var(--amplience-typography-body-bold-line-height, 1.4);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .ah-flows-migration-btn:hover:not(:disabled) {
+    background-color: var(--mantine-color-default-hover, #ecf1fc);
+  }
+
+  .ah-flows-migration-btn:focus-visible {
+    outline: none;
+    border-color: var(--mantine-color-primary-7, #0353a4);
+  }
+
+  .ah-flows-migration-btn:disabled {
+    border-color: var(--mantine-color-disabled-color, #8096a1);
+    color: var(--mantine-color-disabled-color, #8096a1);
+    cursor: not-allowed;
+  }
+
+  .ah-flows-migration-icon {
+    width: var(--amplience-icon-size-md, 1.25rem);
+    height: var(--amplience-icon-size-md, 1.25rem);
+    stroke-width: var(--amplience-icon-stroke-md, 2);
+    flex: 0 0 auto;
+  }
+
+  /*
+   * The header gets crowded on narrow windows (nextgen collapses its own
+   * actions into a menu), so drop to icon-only; the button keeps its
+   * aria-label and title tooltip.
+   */
+  @media (max-width: 960px) {
+    .ah-flows-migration-label {
+      display: none;
+    }
+  }
+
+  /*
+   * Busy (label reads "Importing..." etc.): keeps the normal dimmed disabled
+   * look above, plus a gentle pulse on the icon. CSS-only, driven by the
+   * data-busy attribute the JS already sets.
+   */
+  .ah-flows-migration-btn[data-busy] {
+    cursor: progress;
+  }
+
+  .ah-flows-migration-btn[data-busy] .ah-flows-migration-icon {
+    animation: ah-flows-migration-pulse 1.2s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ah-flows-migration-btn[data-busy] .ah-flows-migration-icon {
+      animation: none;
+    }
+  }
+
+  /*
+   * Toasts, matching nextgen's own Mantine notifications (e.g. "Flow
+   * information copied"): bottom-right stack, white card with a light border
+   * and shadow, 32px filled status icon, bold 14px title, 12px description.
+   */
+  .ah-flows-migration-toasts {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 400; /* same as nextgen's notifications */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--mantine-spacing-xs, 10px);
+    max-width: min(440px, calc(100vw - 40px));
+    pointer-events: none;
+  }
+
+  .ah-flows-migration-toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 288px;
+    max-width: 100%;
+    min-height: 56px;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid var(--ah-toast-border, #b4c5f2);
+    border-radius: 4px;
+    background-color: var(--mantine-color-body, #fff);
+    box-shadow: 0 2px 4px 1px rgb(0 44 66 / 8%);
+    color: var(--mantine-color-text, #002c42);
+    font-family: inherit;
+    pointer-events: auto;
+    animation: ah-flows-migration-toast-in 250ms cubic-bezier(0.51, 0.3, 0, 1.21);
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease;
+  }
+
+  .ah-flows-migration-toast[data-leaving] {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  .ah-flows-migration-toast-icon {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ah-flows-migration-toast-icon svg {
+    width: var(--amplience-icon-size-lg, 2rem);
+    height: var(--amplience-icon-size-lg, 2rem);
+  }
+
+  .ah-flows-migration-toast[data-type="success"] .ah-flows-migration-toast-icon {
+    color: var(--mantine-color-success-8, #4d9c10);
+  }
+
+  .ah-flows-migration-toast[data-type="error"] .ah-flows-migration-toast-icon {
+    color: var(--mantine-color-danger-8, #c92439);
+  }
+
+  .ah-flows-migration-toast-body {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .ah-flows-migration-toast-title {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+  }
+
+  .ah-flows-migration-toast-description {
+    margin-top: 2px;
+    font-size: 12px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    user-select: text;
+  }
+
+  .ah-flows-migration-toast-close {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: var(--mantine-radius-sm, 4px);
+    background: transparent;
+    color: var(--mantine-color-ocean-6, #597684);
+    cursor: pointer;
+  }
+
+  .ah-flows-migration-toast-close:hover {
+    background-color: var(--mantine-color-default-hover, #ecf1fc);
+  }
+
+  .ah-flows-migration-toast-close svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+:root[data-mantine-color-scheme="dark"][data-amplience-flows-migration="enabled"]
+  .ah-flows-migration-btn:not(:disabled) {
+  color: var(--mantine-color-text);
+}
+
+:root[data-mantine-color-scheme="dark"][data-amplience-flows-migration="enabled"] {
+  --ah-toast-border: var(--mantine-color-default-border);
+}
+
+@keyframes ah-flows-migration-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes ah-flows-migration-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}

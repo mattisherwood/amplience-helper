@@ -1,5 +1,29 @@
 # Flows Migration Changelog
 
+## 2026-10-09 (extension v2.5.3)
+
+### Added
+
+- `flows-migration.nextgen.js` + `flows-migration.nextgen.css`, loaded on `https://nextgen.amplience.net/*`. Adds "Import Flow" just left of "Create new flow" on the flows listing (`/:org/flows/:hub`), and "Export Flow" just right of Run / Save in the flow editor (`/:org/flows/:hub/:flowId`). Runs and settings routes are ignored.
+- Buttons are inserted as siblings of `[data-testid="actions-bar"]`, not inside it, so they don't upset the bar's own overflow measuring. The right bar is confirmed by its Tabler icon (`tabler-icon-plus` on the listing, `tabler-icon-device-floppy` in the editor).
+- Nextgen URLs carry the org and hub *names*, so the hub's GraphQL ID is looked up via `viewer.organizations.cmsHubs` (cached per org/hub). It's the same ID the legacy app has in its URL, so `sourceHubId` and same-hub detection work across both UIs.
+- Styled as nextgen's outlined "tertiary" button using Mantine/Amplience CSS variables (follows dark mode), and drops to icon-only below 960px wide. CSS is gated on `html[data-amplience-flows-migration="enabled"]`.
+- Nextgen results show as toasts styled like nextgen's own notifications (bottom-right, success/error icon, title + description, close button). Success closes after 4 s (paused on hover); errors stay until closed. Import success is shown after the reload via a `sessionStorage` flag. Nextgen's Mantine notifications store isn't reachable from a content script (no window-event API in Mantine v7+), so these are our own elements in our own fixed container.
+
+### Changed
+
+- API calls, file pick/read, validation, download and the import/export pipelines moved into `flows-migration.core.js`, shared by the legacy and nextgen UIs (exposed as `globalThis.AmplienceFlowsMigration`). `flows-migration.js` now only handles legacy routing and button placement. No change in legacy behaviour other than the fixes below.
+- Progress now shows in the button label ("Exporting..." / "Importing...") instead of a status line, in both UIs. The button stays disabled (normal dimmed styling) and its icon pulses via a CSS animation on `[data-busy]` (off under `prefers-reduced-motion`). In the legacy UI, results and errors still appear under the button. The core reports through `onProgress(label | null)` and `onResult({ type, message, label })` callbacks.
+- No more "Choose a file..." message while the file picker is open, and cancelling the picker shows nothing.
+- The JWT lookup now prefers the Auth0 cache entry for the `https://api.amplience.net` audience (nextgen keeps a separate `@@user@@` entry too), falling back to the first token found as before.
+
+### Fixed
+
+- Cross-hub import no longer throws if fetching the target hub's extension instances fails; the error is now shown under the button. It also skips that fetch entirely when the flow has no extension actions.
+- `fetchInstances` errors were labelled "Export failed"; they now read "Import failed".
+
+---
+
 ## 2026-06-25 (extension v2.4.7)
 
 ### Changed

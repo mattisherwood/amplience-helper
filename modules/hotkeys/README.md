@@ -101,11 +101,19 @@ The setting key is `hotkeysEnabled` in `chrome.storage.sync`.
 
 ```
 modules/hotkeys/
-├── hotkeys.js          # Main content script with hotkey logic
+├── hotkeys.js          # Legacy app (app.amplience.net) hotkey logic
+├── hotkeys.nextgen.js  # Nextgen UI (nextgen.amplience.net), driven by its HOTKEYS table
+├── hotkeys.css         # Help overlay + filter-typing styles (both apps)
 └── README.md           # This file
 ```
 
-### Adding New Hotkeys
+### Adding New Hotkeys (nextgen)
+
+1. In `hotkeys.nextgen.js`, uncomment or add an entry in `HOTKEYS` under the right page
+2. Set `target` (click), `focus` (focus an input) or `run` (custom function). Prefer `data-testid` / `aria-label` / `role`, then `.mantine-*` classes, and never the hashed `_name_xxxx` classes
+3. That's it: the tooltip and the `?` overlay entry are generated from the same entry
+
+### Adding New Hotkeys (legacy)
 
 1. Open `hotkeys.js`
 2. Add a new event listener block following the existing pattern

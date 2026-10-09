@@ -1,5 +1,16 @@
 # Enhanced Naming Changelog
 
+## 2026-10-09 (extension v2.5.2)
+
+### Added
+
+- Nextgen UI support: `enhanced-naming.js` and the new `enhanced-naming.nextgen.css` load on `https://nextgen.amplience.net/*`.
+- The "Copy" bulk action and dropdown menu item now reads "Duplicate". ("Copy" suggests a "Copy" & "Paste" behaviour and "C" has a crowded hotkey space compared to "D".)
+  - The bulk action is targeted as `[data-testid="resource-list-actions"] [data-testid="actions-bar"] button:has(.tabler-icon-copy) .mantine-Button-label` (using the icon rather than `:nth-of-type(2)` so the label stays on the right button if the actions are reordered).
+  - The menu item is targeted as `[data-testid="copy:button"][role="menuitem"]:has(.tabler-icon-copy) .mantine-Menu-itemLabel`. Menus render in a portal, so this one isn't scoped to the listing.
+
+---
+
 ## 2026-10-07 (extension v2.5.1)
 
 ### Changed

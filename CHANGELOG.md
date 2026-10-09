@@ -1,5 +1,31 @@
 # Changelog
 
+## v2.5.3 - 2026-10-09
+
+### Summary
+
+Flow import and export now work in the next-gen Amplience UI too.
+
+### Module Highlights
+
+- Flows Migration: On nextgen.amplience.net there's now an "Import Flow" button next to "Create new flow" on the Flows page, and an "Export Flow" button in the flow editor header. Exported files work in either UI, so you can export from one and import with the other. Success and error messages appear as notifications in the corner, like nextgen's own.
+- Flows Migration: In both UIs the button now reads "Importing..." / "Exporting..." and greys out with a gently pulsing icon while it works, and the "Choose a file..." message is gone.
+
+---
+
+## v2.5.2 - 2026-10-08
+
+### Summary
+
+Keyboard shortcuts start arriving in the next-gen Amplience UI.
+
+### Module Highlights
+
+- Hotkeys: Now available on nextgen.amplience.net for the equivalent actions, including `+` for add to collection.
+- Enhanced Naming: Now also runs on nextgen.amplience.net, where the "Copy" bulk action and dropdown menu items now read as "Duplicate". ("Copy" suggests a "Copy" & "Paste" behaviour and "C" has a crowded hotkey space compared to "D".)
+
+---
+
 ## v2.5.1 - 2026-10-07
 
 ### Summary

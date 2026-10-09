@@ -14,7 +14,7 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  max-width: 80%;
+  max-width: 90%;
   max-height: calc(100vh - 80px);
   padding: 20px 40px;
   background-color: rgba(0, 0, 0, 0.8);
@@ -29,11 +29,13 @@
   .cols {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     gap: 20px;
     width: max-content;
     max-width: 100%;
 
     div {
+      flex-grow: 1;
       border: solid 1px;
       border-radius: 10px;
       overflow: hidden;
@@ -107,6 +109,7 @@
 
     div {
       width: calc(33% - (40px / 3));
+      min-width: 250px;
     }
   }
 }
