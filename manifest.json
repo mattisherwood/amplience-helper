@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Amplience Helper",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "description": "A suite of tools bundled in a browser extension to help every-day Amplience super-users create content at the speed of ideas.",
   "browser_specific_settings": {
     "gecko": {
@@ -42,7 +42,19 @@
     {
       "matches": ["https://app.amplience.net/content-studio/*"],
       "css": ["modules/flows-migration/flows-migration.css"],
-      "js": ["modules/flows-migration/flows-migration.js"],
+      "js": [
+        "modules/flows-migration/flows-migration.core.js",
+        "modules/flows-migration/flows-migration.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://nextgen.amplience.net/*"],
+      "css": ["modules/flows-migration/flows-migration.nextgen.css"],
+      "js": [
+        "modules/flows-migration/flows-migration.core.js",
+        "modules/flows-migration/flows-migration.nextgen.js"
+      ],
       "run_at": "document_idle"
     },
     {

@@ -1,6 +1,13 @@
 ;(function () {
   "use strict"
 
+  // Shared API/file logic lives in flows-migration.core.js (loaded first).
+  const core = globalThis.AmplienceFlowsMigration
+  if (!core) {
+    console.error("[Amplience Helper] flows-migration.core.js not loaded")
+    return
+  }
+
   const DEFAULT_SETTINGS = {
     flowsMigrationEnabled: true,
   }
@@ -20,24 +27,6 @@
   const MAX_INJECT_ATTEMPTS = 20
   const INJECT_RETRY_INTERVAL = 250
   const ROUTE_CHECK_INTERVAL = 300
-
-  // Extract JWT from Auth0 localStorage
-  function extractJwtFromAuth0Storage() {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)
-      if (key && key.startsWith("@@auth0spajs@@")) {
-        try {
-          const authData = JSON.parse(localStorage.getItem(key))
-          if (authData?.body?.access_token) {
-            return authData.body.access_token
-          }
-        } catch (e) {
-          // Ignore parse errors
-        }
-      }
-    }
-    return null
-  }
 
   // Parse flow ID from current URL
   function extractFlowIdFromUrl() {
@@ -141,391 +130,6 @@
     }
   }
 
-  // Fetch flow data from GraphQL
-  async function fetchFlowData(flowId) {
-    try {
-      const jwt = extractJwtFromAuth0Storage()
-      if (!jwt) {
-        return {
-          success: false,
-          error: "Authentication failed. Please refresh the page.",
-        }
-      }
-
-      const query = `
-        query contentFlow($flowId: ID!) {
-          contentFlow(id: $flowId) {
-            label
-            description
-            status
-            flow
-          }
-        }
-      `
-
-      const response = await fetch("https://api.amplience.net/graphql", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          authorization: `Bearer ${jwt}`,
-        },
-        body: JSON.stringify({
-          query,
-          variables: { flowId },
-        }),
-      })
-
-      const payload = await response.json()
-
-      if (!response.ok || payload?.errors?.length > 0) {
-        const errorMsg = payload?.errors?.[0]?.message || "Failed to fetch flow"
-        console.error("[Amplience Helper] Flow export error details:", payload)
-        return {
-          success: false,
-          error: `Export failed: ${errorMsg}`,
-        }
-      }
-
-      if (!payload?.data?.contentFlow) {
-        return {
-          success: false,
-          error: "Flow data not found",
-        }
-      }
-
-      return {
-        success: true,
-        data: payload.data.contentFlow,
-      }
-    } catch (error) {
-      console.error("[Amplience Helper] Flow export error:", error)
-      return {
-        success: false,
-        error: "Export error. Check console for details.",
-      }
-    }
-  }
-
-  async function createContentFlow(hubId, flowData) {
-    try {
-      const jwt = extractJwtFromAuth0Storage()
-      if (!jwt) {
-        return {
-          success: false,
-          error: "Authentication failed. Please refresh the page.",
-        }
-      }
-
-      const { label, description, flow, sourceHubId } = flowData
-
-      // If the flow was exported from a different hub, create mapping of old instance
-      // IDs to new instance IDs based on extension release ID. (sourceHubId may be absent
-      // on files exported before this feature was added, so if in doubt treat those as
-      // requiring remapping to stay safe).
-
-      const flowObject = JSON.parse(flow)
-      let parsedFlow = flow
-
-      const sameHub = sourceHubId && sourceHubId === hubId
-
-      if (!sameHub) {
-        // Strip hub-specific reviewers from human-review actions — unrecognised
-        // user IDs cause the Workforce UI to crash when editing the step.
-        if (flowObject.actions) {
-          flowObject.actions = flowObject.actions.map((action) => {
-            if (action.action === "human-review" && action.config?.reviewers) {
-              return { ...action, config: { ...action.config, reviewers: [] } }
-            }
-            return action
-          })
-          parsedFlow = JSON.stringify(flowObject)
-        }
-
-        // Remap extension instance IDs from source hub to target hub
-        if (flowObject.virtualActions) {
-          const extensionActions = flowObject.virtualActions.filter(
-            ({ baseAction }) => baseAction === "extension-action",
-          )
-          const oldInstances = extensionActions
-            .map(({ data }) => data.instances)
-            .flat()
-
-          const newInstances = await fetchInstances(hubId)
-
-          let mapping = {}
-          for (const oldInstance of oldInstances) {
-            mapping[oldInstance.id] =
-              newInstances.data.find(
-                ({ extensionRelease }) =>
-                  extensionRelease.id === oldInstance.releaseId,
-              )?.id || null
-          }
-
-          // Swap out old instance IDs in the flow definition with new instance IDs
-          const regexString = Object.keys(mapping).join("|")
-          parsedFlow = regexString
-            ? parsedFlow.replace(
-                new RegExp(regexString, "g"),
-                (matched) => mapping[matched],
-              )
-            : parsedFlow
-        }
-      }
-
-      const mutation = `
-        mutation createContentFlow($hubId: ID!, $label: String!, $description: String!, $flow: String!) {
-          createContentFlow(
-            input: {
-              label: $label,
-              description: $description,
-              flow: $flow,
-              cmsHubId: $hubId
-            }
-          ) {
-            id
-          }
-        }
-      `
-
-      const response = await fetch("https://api.amplience.net/graphql", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          authorization: `Bearer ${jwt}`,
-        },
-        body: JSON.stringify({
-          query: mutation,
-          variables: {
-            hubId,
-            label,
-            description,
-            flow: parsedFlow,
-          },
-        }),
-      })
-
-      const payload = await response.json()
-
-      if (!response.ok || payload?.errors?.length > 0) {
-        const errorMsg =
-          payload?.errors?.[0]?.message || "Failed to import flow"
-        console.error("[Amplience Helper] Flow import error details:", payload)
-        return {
-          success: false,
-          error: `Import failed: ${errorMsg}`,
-        }
-      }
-
-      if (!payload?.data?.createContentFlow?.id) {
-        return {
-          success: false,
-          error: "Import failed: invalid response from server.",
-        }
-      }
-
-      return {
-        success: true,
-      }
-    } catch (error) {
-      console.error("[Amplience Helper] Flow import error:", error)
-      return {
-        success: false,
-        error: "Import error. Check console for details.",
-      }
-    }
-  }
-
-  async function fetchInstances(targetHubId) {
-    try {
-      const jwt = extractJwtFromAuth0Storage()
-      if (!jwt) {
-        return {
-          success: false,
-          error: "Authentication failed. Please refresh the page.",
-        }
-      }
-
-      const query = `
-        query extensionInstances( $targetHubId: ID!) {
-          cmsHub(id: $targetHubId) {
-            extensionInstances {
-              id
-              extensionRelease {
-                id
-              }
-            }
-          }
-        }
-      `
-
-      const response = await fetch("https://api.amplience.net/graphql", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          authorization: `Bearer ${jwt}`,
-        },
-        body: JSON.stringify({
-          query,
-          variables: { targetHubId },
-        }),
-      })
-
-      const payload = await response.json()
-
-      if (!response.ok || payload?.errors?.length > 0) {
-        const errorMsg = payload?.errors?.[0]?.message || "Failed to fetch flow"
-        console.error("[Amplience Helper] Flow export error details:", payload)
-        return {
-          success: false,
-          error: `Export failed: ${errorMsg}`,
-        }
-      }
-
-      if (!payload?.data?.cmsHub?.extensionInstances) {
-        return {
-          success: false,
-          error: "Flow data not found",
-        }
-      }
-
-      return {
-        success: true,
-        data: payload.data.cmsHub.extensionInstances,
-      }
-    } catch (error) {
-      console.error("[Amplience Helper] Flow export error:", error)
-      return {
-        success: false,
-        error: "Export error. Check console for details.",
-      }
-    }
-  }
-
-  function pickJsonFile() {
-    return new Promise((resolve) => {
-      const fileInput = document.createElement("input")
-      fileInput.type = "file"
-      fileInput.accept = ".json,application/json"
-      fileInput.style.display = "none"
-      document.body.appendChild(fileInput)
-
-      let settled = false
-
-      const cleanup = () => {
-        window.removeEventListener("focus", onWindowFocus)
-        if (fileInput.parentElement) {
-          fileInput.parentElement.removeChild(fileInput)
-        }
-      }
-
-      const finish = (file) => {
-        if (settled) {
-          return
-        }
-
-        settled = true
-        cleanup()
-        resolve(file || null)
-      }
-
-      const onWindowFocus = () => {
-        // If the picker was cancelled, no change event may fire.
-        setTimeout(() => {
-          if (!settled) {
-            finish(null)
-          }
-        }, 300)
-      }
-
-      fileInput.addEventListener("change", () => {
-        const file = fileInput.files && fileInput.files[0]
-        finish(file || null)
-      })
-
-      window.addEventListener("focus", onWindowFocus)
-      fileInput.click()
-    })
-  }
-
-  function readFileAsText(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(String(reader.result || ""))
-      reader.onerror = () => reject(new Error("Could not read selected file."))
-      reader.readAsText(file)
-    })
-  }
-
-  function validateImportedFlow(data) {
-    if (!data || typeof data !== "object" || Array.isArray(data)) {
-      return {
-        success: false,
-        error: "Invalid file format. JSON object expected.",
-      }
-    }
-
-    const requiredFields = ["label", "description", "status", "flow"]
-    for (const field of requiredFields) {
-      if (!Object.prototype.hasOwnProperty.call(data, field)) {
-        return {
-          success: false,
-          error: `Invalid file format. Missing required property: ${field}`,
-        }
-      }
-    }
-
-    if (typeof data.label !== "string" || data.label.trim() === "") {
-      return {
-        success: false,
-        error: "Invalid file format. label must be a non-empty string.",
-      }
-    }
-
-    if (typeof data.description !== "string") {
-      return {
-        success: false,
-        error: "Invalid file format. description must be a string.",
-      }
-    }
-
-    if (typeof data.status !== "string") {
-      return {
-        success: false,
-        error: "Invalid file format. status must be a string.",
-      }
-    }
-
-    if (typeof data.flow !== "string" || data.flow.trim() === "") {
-      return {
-        success: false,
-        error: "Invalid file format. flow must be a non-empty string.",
-      }
-    }
-
-    return {
-      success: true,
-      data,
-    }
-  }
-
-  // Trigger download of JSON file
-  function downloadFlowAsJson(flowId, flowData, sourceHubId) {
-    const exportData = sourceHubId ? { ...flowData, sourceHubId } : flowData
-    const jsonContent = JSON.stringify(exportData, null, 2)
-    const blob = new Blob([jsonContent], { type: "application/json" })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `flow-${flowId}.json`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }
-
   // Update button status text
   function setButtonStatus(button, statusEl, message, isError = false) {
     if (statusEl) {
@@ -543,92 +147,48 @@
     }
   }
 
+  // Swap the button's label for a short progress label while busy
+  // ("Exporting..." / "Importing..."), and back again with null.
+  function setButtonProgress(button, label) {
+    const labelEl = button.querySelector("span")
+    if (!labelEl) return
+    if (!labelEl.dataset.idleLabel) {
+      labelEl.dataset.idleLabel = labelEl.textContent
+    }
+    labelEl.textContent = label || labelEl.dataset.idleLabel
+    button.toggleAttribute("data-busy", Boolean(label))
+  }
+
   // Handle export button click
   async function handleExportClick(button, statusEl, flowId) {
     button.disabled = true
-    setButtonStatus(button, statusEl, "Exporting...", false)
-
-    const result = await fetchFlowData(flowId)
-
-    if (result.success) {
-      const sourceHubId = extractHubIdFromUrl()
-      downloadFlowAsJson(flowId, result.data, sourceHubId)
-      setButtonStatus(button, statusEl, "Exported", false)
-      button.disabled = false
-    } else {
-      setButtonStatus(button, statusEl, result.error, true)
-      button.disabled = false
-    }
+    setButtonStatus(button, statusEl, "", false)
+    await core.runExport({
+      flowId,
+      getHubId: async () => extractHubIdFromUrl(),
+      onProgress: (label) => setButtonProgress(button, label),
+      onResult: ({ type, message }) =>
+        setButtonStatus(button, statusEl, message, type === "error"),
+    })
+    button.disabled = false
   }
 
   async function handleImportClick(button, statusEl) {
     button.disabled = true
-    setButtonStatus(button, statusEl, "Choose a file...", false)
+    setButtonStatus(button, statusEl, "", false)
+    const result = await core.runImport({
+      getHubId: async () => extractHubIdFromUrl(),
+      onProgress: (label) => setButtonProgress(button, label),
+      onResult: ({ type, message }) =>
+        setButtonStatus(button, statusEl, message, type === "error"),
+    })
 
-    const selectedFile = await pickJsonFile()
-
-    if (!selectedFile) {
-      setButtonStatus(button, statusEl, "", false)
-      button.disabled = false
+    if (result.success) {
+      window.location.reload()
       return
     }
 
-    setButtonStatus(button, statusEl, "Importing...", false)
-
-    try {
-      const fileText = await readFileAsText(selectedFile)
-      let parsed
-
-      try {
-        parsed = JSON.parse(fileText)
-      } catch (error) {
-        setButtonStatus(
-          button,
-          statusEl,
-          "Invalid file format. Must be valid JSON.",
-          true,
-        )
-        button.disabled = false
-        return
-      }
-
-      const validationResult = validateImportedFlow(parsed)
-      if (!validationResult.success) {
-        setButtonStatus(button, statusEl, validationResult.error, true)
-        button.disabled = false
-        return
-      }
-
-      const hubId = extractHubIdFromUrl()
-      if (!hubId) {
-        setButtonStatus(
-          button,
-          statusEl,
-          "Could not determine hub ID from URL.",
-          true,
-        )
-        button.disabled = false
-        return
-      }
-
-      const createResult = await createContentFlow(hubId, validationResult.data)
-      if (!createResult.success) {
-        setButtonStatus(button, statusEl, createResult.error, true)
-        button.disabled = false
-        return
-      }
-
-      setButtonStatus(button, statusEl, "Imported", false)
-      window.location.reload()
-    } catch (error) {
-      setButtonStatus(
-        button,
-        statusEl,
-        "Import failed. Please try again.",
-        true,
-      )
-      button.disabled = false
-    }
+    button.disabled = false
   }
 
   // Inject export button into the page

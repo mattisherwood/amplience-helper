@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.5.3 - 2026-10-09
+
+### Summary
+
+Flow import and export now work in the next-gen Amplience UI too.
+
+### Module Highlights
+
+- Flows Migration: On nextgen.amplience.net there's now an "Import Flow" button next to "Create new flow" on the Flows page, and an "Export Flow" button in the flow editor header. Exported files work in either UI, so you can export from one and import with the other. Success and error messages appear as notifications in the corner, like nextgen's own.
+- Flows Migration: In both UIs the button now reads "Importing..." / "Exporting..." and greys out with a gently pulsing icon while it works, and the "Choose a file..." message is gone.
+
+---
+
 ## v2.5.2 - 2026-10-08
 
 ### Summary
