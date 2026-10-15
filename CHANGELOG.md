@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.5.4 - 2026-10-15
+
+### Summary
+
+More hotkeys on the next-gen Assets page, a smarter cheatsheet, and a demo-friendly option to show hotkeys on screen as you use them.
+
+### Module Highlights
+
+- Hotkeys: Many more shortcuts on the next-gen Assets page: publish, add to collection, open, filters, find, list/grid view, paging, select all and deselect all.
+- Hotkeys: The `?` cheatsheet in the next-gen UI now shows the shortcuts for the page you're on straight after the global ones.
+- Hotkeys: New "Show hotkeys on screen" option on the options page (under Enable Hotkeys, off by default). When on, the key(s) for each hotkey you use pop up at the bottom of the screen for a couple of seconds, so an audience can follow along during demos. Works in both the classic and next-gen UIs.
+
+---
+
 ## v2.5.3 - 2026-10-09
 
 ### Summary

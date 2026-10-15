@@ -59,6 +59,14 @@
             font-size: 14px;
         }
 
+        .sub-option {
+            margin: 12px 0 0 28px;
+        }
+
+        .sub-option .option {
+            font-size: 14px;
+        }
+
         .status {
             margin-top: 16px;
             min-height: 20px;
@@ -212,6 +220,17 @@
         <p class="description">
             Adds keyboard shortcuts to Amplience content pages (Press `?` in DC for a list of available shortcuts)
         </p>
+
+        <div class="sub-option" id="hotkeysKeycastOption" hidden>
+            <label class="option" for="hotkeysKeycastEnabled">
+                <input type="checkbox" id="hotkeysKeycastEnabled" />
+                Show hotkeys on screen
+            </label>
+
+            <p class="description">
+                Briefly shows the key(s) pressed at the bottom of the screen each time a hotkey fires. Handy when demoing, so your audience can follow along.
+            </p>
+        </div>
     </div>
 
     <div class="fieldset">

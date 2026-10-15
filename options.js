@@ -7,6 +7,7 @@
     flowsMigrationEnabled: true,
     flowsWebhooksEnabled: true,
     hotkeysEnabled: true,
+    hotkeysKeycastEnabled: false,
     stylesEnabled: true,
     enhancedNamingEnabled: true,
     skipSplashScreenEnabled: false,
@@ -26,6 +27,10 @@
   )
   const flowsWebhooksCheckbox = document.getElementById("flowsWebhooksEnabled")
   const hotkeysCheckbox = document.getElementById("hotkeysEnabled")
+  const hotkeysKeycastCheckbox = document.getElementById(
+    "hotkeysKeycastEnabled",
+  )
+  const hotkeysKeycastOption = document.getElementById("hotkeysKeycastOption")
   const stylesCheckbox = document.getElementById("stylesEnabled")
   const enhancedNamingCheckbox = document.getElementById(
     "enhancedNamingEnabled",
@@ -152,6 +157,8 @@
       flowsMigrationCheckbox.checked = settings.flowsMigrationEnabled
       flowsWebhooksCheckbox.checked = settings.flowsWebhooksEnabled
       hotkeysCheckbox.checked = settings.hotkeysEnabled
+      hotkeysKeycastCheckbox.checked = settings.hotkeysKeycastEnabled
+      hotkeysKeycastOption.hidden = !settings.hotkeysEnabled
       stylesCheckbox.checked = settings.stylesEnabled
       enhancedNamingCheckbox.checked = settings.enhancedNamingEnabled
       skipSplashScreenCheckbox.checked = settings.skipSplashScreenEnabled
@@ -170,6 +177,7 @@
         flowsMigrationEnabled: flowsMigrationCheckbox.checked,
         flowsWebhooksEnabled: flowsWebhooksCheckbox.checked,
         hotkeysEnabled: hotkeysCheckbox.checked,
+        hotkeysKeycastEnabled: hotkeysKeycastCheckbox.checked,
         stylesEnabled: stylesCheckbox.checked,
         enhancedNamingEnabled: enhancedNamingCheckbox.checked,
         skipSplashScreenEnabled: skipSplashScreenCheckbox.checked,
@@ -210,6 +218,13 @@
 
     if (changes.hotkeysEnabled) {
       hotkeysCheckbox.checked = Boolean(changes.hotkeysEnabled.newValue)
+      hotkeysKeycastOption.hidden = !changes.hotkeysEnabled.newValue
+    }
+
+    if (changes.hotkeysKeycastEnabled) {
+      hotkeysKeycastCheckbox.checked = Boolean(
+        changes.hotkeysKeycastEnabled.newValue,
+      )
     }
 
     if (changes.stylesEnabled) {
@@ -243,7 +258,11 @@
   contentFlowsCheckbox.addEventListener("change", saveSettings)
   flowsMigrationCheckbox.addEventListener("change", saveSettings)
   flowsWebhooksCheckbox.addEventListener("change", saveSettings)
-  hotkeysCheckbox.addEventListener("change", saveSettings)
+  hotkeysCheckbox.addEventListener("change", () => {
+    hotkeysKeycastOption.hidden = !hotkeysCheckbox.checked
+    saveSettings()
+  })
+  hotkeysKeycastCheckbox.addEventListener("change", saveSettings)
   stylesCheckbox.addEventListener("change", saveSettings)
   enhancedNamingCheckbox.addEventListener("change", saveSettings)
   skipSplashScreenCheckbox.addEventListener("change", saveSettings)

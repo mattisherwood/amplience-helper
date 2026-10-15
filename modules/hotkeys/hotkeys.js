@@ -54,6 +54,17 @@ const handleKeydown = (event) => {
     return
   }
 
+  // Every hotkey that acts calls preventDefault(), so a newly prevented event
+  // means one fired, and the keycast overlay (if enabled) can show its keys.
+  const wasPrevented = event.defaultPrevented
+  runHotkeys(event)
+  if (!wasPrevented && event.defaultPrevented) {
+    window.AmplienceHotkeysKeycast?.show(event)
+  }
+}
+
+const runHotkeys = (event) => {
+
   // Skip all other hotkeys other than return or Ctrl+Cmd keys if user is typing in an input field
   if (
     isTypingInInput() &&
@@ -369,6 +380,7 @@ const applyListingHotkeys = (event) => {
           const actionButton = actionsCell.querySelector("button")
           if (actionButton) {
             actionButton.click(event)
+            event.preventDefault()
 
             setTimeout(() => {
               clickButton('[am-id="am-context-menu__btn--rename"]', event)
@@ -399,6 +411,7 @@ const applyListingHotkeys = (event) => {
         const link = actionsCell.querySelector("a")
         if (link) {
           link.click()
+          event.preventDefault()
         }
       }
     }
