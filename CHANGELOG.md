@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.5.5 - 2026-11-02
+
+### Summary
+
+The extension applied to unifiedapp URL as well as the nextgen URL. A flow-view toggle for next-gen flow runs, plus smarter flow tagging that ignores numbers and colour codes.
+
+### Module Highlights
+
+- Hotkeys: When viewing a single flow run in the next-gen UI, `V` shows/hides the flow view.
+- All next-gen features (Hotkeys, Theming, Style Patches, Enhanced Naming, Flows Migration) now also work at `unifiedapp.amplience.net`, the new UI's new address. `nextgen.amplience.net` keeps working too.
+- Flows Filter: Numbers like `#1` and colour codes like `#fff` or `#0f0f0f` in a flow's title or description are no longer picked up as tags.
+- Enhanced Naming fix: "Copy asset ID(s)" on the next-gen Assets page keeps its name. Only the content "Copy" action is renamed "Duplicate".
+- Enhanced Naming: "Copy asset ID(s)" on the next-gen Assets page now has a clipboard icon, as it's closer to the 'Copy Content ID' action than the "Duplicate" action.
+
 ## v2.5.4 - 2026-10-15
 
 ### Summary

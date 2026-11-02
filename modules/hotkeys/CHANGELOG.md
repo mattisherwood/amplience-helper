@@ -1,5 +1,15 @@
 # Hotkeys Changelog
 
+## 2026-11-02 (extension v2.5.5)
+
+### Changed
+
+- `hotkeys.keycast.js` + `hotkeys.nextgen.js` also load on `https://unifiedapp.amplience.net/*`, where the new UI now lives.
+
+### Added
+
+- New `flowRun` page (`/:org/flows/:hub/:flowId/run/:runId`, "While Viewing a Flow Run"), which previously only got the global hotkeys: `V` toggles the Flow view panel (`[data-testid="icon-bar-tab-view flow"]`).
+
 ## 2026-10-15 (extension v2.5.4)
 
 ### Added

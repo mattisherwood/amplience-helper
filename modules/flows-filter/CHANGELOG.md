@@ -1,5 +1,13 @@
 # Flows Filter Changelog
 
+## 2026-10-22 (extension v2.5.5)
+
+### Changed
+
+- `#` words that are plain numbers (`#1`, `#36`) or 3/6-digit hex colour codes (`#fff`, `#0f0f0f`) are no longer treated as tags. They stay visible in the title/description and don't appear as tag chips or filter buttons. Exclusion lives in `isNotATag()`; 4/8-digit hex is intentionally not excluded because too many real words match (`#cafe`, `#face`).
+
+---
+
 ## 2026-08-14 (extension v2.4.12)
 
 ### Fixed

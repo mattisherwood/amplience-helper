@@ -1,5 +1,22 @@
 # Enhanced Naming Changelog
 
+## 2026-11-02 (extension v2.5.5)
+
+### Changed
+
+- `enhanced-naming.js` and `enhanced-naming.nextgen.css` also load on `https://unifiedapp.amplience.net/*`, where the new UI now lives.
+
+### Added
+
+- In the Assets area, "Copy asset ID" / "Copy asset IDs" now show Tabler's `clipboard-copy` icon instead of the `copy` icon, as the button function's behaviour is more in-line with 'Copy Content ID' button (which uses `clipboard-copy`) than it is with the 'Duplicate' button (which uses `copy`).
+  - CSS only: the native `<svg>`'s paths are hidden and the new shape is painted in `currentColor` via `mask`. Targeted by the exact `copy-asset-id:button` test id (single-asset menu), and by `:has([data-testid="assets-sidebar"], [data-testid="asset-create-button"])` for the bulk menu.
+
+### Fixed
+
+- "Copy asset ID" / "Copy asset IDs" in the media (Assets) menus no longer gets relabelled "Duplicate". The v2.5.2 menu rule had ended up matching any menu item with `.tabler-icon-copy`, which the media menus also use.
+  - Single-item menu: back to the exact `[data-testid="copy:button"]` match (media's item is `copy-asset-id:button`).
+  - Bulk "more actions" menu (no test ids): `:has([data-testid="content-items-sidebar"], [data-testid="content-items-create:button"]) .mantine-Menu-dropdown [role="menuitem"]:not([data-testid]):has(.tabler-icon-copy)`, i.e. only while the content listing's sidebar or create button is on the page. (Sibling items like "Set locale" vary with the selection, so they can't be relied on.)
+
 ## 2026-10-09 (extension v2.5.2)
 
 ### Added

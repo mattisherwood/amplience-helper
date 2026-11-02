@@ -115,6 +115,10 @@
       line-height: 1.5;
     }
 
+    .primary-app__subtitle {
+      opacity: 0.8;
+    }
+
     .primary-app__description {
       margin-block: auto;
     }

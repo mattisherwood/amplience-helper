@@ -38,7 +38,7 @@ Options page only, under **Enable Hotkeys** (hidden while hotkeys are off): **Sh
 
 On a Mac, **Ctrl** also means **Cmd** (either works). Press `?` in either UI for the same list as an on-screen cheatsheet.
 
-### Next-gen UI (nextgen.amplience.net)
+### Next-gen UI (nextgen.amplience.net / unifiedapp.amplience.net)
 
 Generated from the `HOTKEYS` table in `hotkeys.nextgen.js`, which also drives the `?` cheatsheet and the button tooltips. When you change that table, update these tables to match.
 
@@ -186,6 +186,12 @@ Generated from the `HOTKEYS` table in `hotkeys.nextgen.js`, which also drives th
 | -------- | ------- |
 | Ctrl + S | Save    |
 
+#### While Viewing a Flow Run
+
+|     | Interface                 |
+| --- | ------------------------- |
+| V   | Show/hide Flow view panel |
+
 #### While Listing Flow Runs
 
 |          | Interface         |
@@ -291,7 +297,7 @@ Generated from the `HOTKEYS` table in `hotkeys.nextgen.js`, which also drives th
 modules/hotkeys/
 ├── hotkeys.js          # Legacy app (app.amplience.net) hotkey logic
 ├── hotkeys.keycast.js  # "Show hotkeys on screen" overlay (both apps)
-├── hotkeys.nextgen.js  # Nextgen UI (nextgen.amplience.net), driven by its HOTKEYS table
+├── hotkeys.nextgen.js  # Nextgen UI (nextgen./unifiedapp.amplience.net), driven by its HOTKEYS table
 ├── hotkeys.css         # Help overlay, keycast + filter-typing styles (both apps)
 └── README.md           # This file
 ```

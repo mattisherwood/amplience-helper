@@ -28,14 +28,22 @@ As of v2.5.1, Amplience labels its two core apps **CMS** (formerly Dynamic Conte
 | Account switcher, `/content` link | `.switcheroo-item__subtitle`                                     | Content Management System |
 | Account switcher, `/media` link   | `.switcheroo-item__subtitle`                                     | Digital Asset Management  |
 
-On the nextgen UI (`nextgen.amplience.net`, via `enhanced-naming.nextgen.css`):
+On the nextgen UI (`nextgen.amplience.net` / `unifiedapp.amplience.net`, via `enhanced-naming.nextgen.css`):
 
 The "Copy" bulk action and dropdown menu item now reads "Duplicate". ("Copy" suggests a "Copy" & "Paste" behaviour and "C" has a crowded hotkey space compared to "D".)
 
-| Where                               | Element                                                                                       | Shows     |
-| ----------------------------------- | --------------------------------------------------------------------------------------------- | --------- |
-| Content listing actions bar, "Copy" | `[data-testid="actions-bar"] button:has(.tabler-icon-copy) .mantine-Button-label`             | Duplicate |
-| Content item menu, "Copy"           | `[data-testid="copy:button"][role="menuitem"]:has(.tabler-icon-copy) .mantine-Menu-itemLabel` | Duplicate |
+| Where                                    | Element                                                                                                                                                                                               | Shows     |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| Content listing actions bar, "Copy"      | `[data-testid="actions-bar"] button:has(.tabler-icon-copy) .mantine-Button-label`                                                                                                                     | Duplicate |
+| Content item menu, "Copy"                | `[data-testid="copy:button"][role="menuitem"]:has(.tabler-icon-copy) .mantine-Menu-itemLabel`                                                                                                         | Duplicate |
+| Content bulk "more actions" menu, "Copy" | `:has([data-testid="content-items-sidebar"], [data-testid="content-items-create:button"]) .mantine-Menu-dropdown [role="menuitem"]:not([data-testid]):has(.tabler-icon-copy) .mantine-Menu-itemLabel` | Duplicate |
+
+In the Assets area, "Copy asset ID" / "Copy asset IDs" now show Tabler's `clipboard-copy` icon instead of the `copy` icon, as the button function's behaviour is more in-line with 'Copy Content ID' button (which uses `clipboard-copy`) than it is with the 'Duplicate' button (which uses `copy`).
+
+| Where                              | Element                                                                                                                                                      | Shows                 |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
+| Asset menu, "Copy asset ID"        | `[data-testid="copy-asset-id:button"][role="menuitem"] svg.tabler-icon-copy`                                                                                 | `clipboard-copy` icon |
+| Assets bulk menu, "Copy asset IDs" | `:has([data-testid="assets-sidebar"], [data-testid="asset-create-button"]) .mantine-Menu-dropdown [role="menuitem"]:not([data-testid]) svg.tabler-icon-copy` | `clipboard-copy` icon |
 
 ## How It Works
 
@@ -47,7 +55,7 @@ Labels are swapped without touching the DOM: the native text is hidden with `fon
 
 - `enhanced-naming.js`: Reads the setting and toggles the gating data attribute
 - `enhanced-naming.css`: The label overrides, grouped by area (homepage, CMS app, DAM app, account management)
-- `enhanced-naming.nextgen.css`: Label overrides for the nextgen UI (`nextgen.amplience.net`)
+- `enhanced-naming.nextgen.css`: Label overrides for the nextgen UI (`nextgen.amplience.net` / `unifiedapp.amplience.net`)
 
 ## Development Notes
 

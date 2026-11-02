@@ -1,4 +1,4 @@
-// Amplience Hotkeys - Nextgen UI (nextgen.amplience.net)
+// Amplience Hotkeys - Nextgen UI (nextgen.amplience.net / unifiedapp.amplience.net)
 //
 // Separate from hotkeys.js on purpose: that file is built around the legacy
 // AngularJS app (am-* components, md-dialog, the old masthead), whereas the
@@ -54,11 +54,12 @@
    *   /:org/flows/:hub                          -> flows
    *   /:org/flows/:hub/runs                     -> flowRuns
    *   /:org/flows/:hub/:flowId                  -> flowEditor
+   *   /:org/flows/:hub/:flowId/run/:runId       -> flowRun
    *   /:org/reviews/:hub                        -> reviews
    * Anything else only gets the global hotkeys.
    */
   function currentPage() {
-    const [, area, , section, id] = window.location.pathname
+    const [, area, , section, id, runId, ...rest] = window.location.pathname
       .split("/")
       .filter(Boolean)
 
@@ -67,13 +68,14 @@
     if (area === "media") return section ? null : "assets"
 
     // Flows listing is the bare hub route and runs has its own. Any other
-    // single segment is a flow id (the editor); settings and deeper routes
-    // get global hotkeys only.
+    // single segment is a flow id (the editor), and :flowId/run/:runId is a
+    // single run. Settings and other deeper routes get global hotkeys only.
     if (area === "flows") {
       if (!section) return "flows"
       if (section === "runs") return id ? null : "flowRuns"
-      if (section === "settings" || id) return null
-      return "flowEditor"
+      if (section === "settings") return null
+      if (id === "run" && runId && !rest.length) return "flowRun"
+      return id ? null : "flowEditor"
     }
 
     // Reviews listing is the bare hub route.
@@ -596,6 +598,15 @@
       },
     ],
 
+    flowRun: [
+      {
+        key: "v",
+        group: "Interface",
+        label: "Show/hide Flow view panel",
+        target: '[data-testid="icon-bar-tab-view flow"]',
+      },
+    ],
+
     flowRuns: [
       {
         key: "f",
@@ -622,6 +633,7 @@
     assets: "While Managing Assets",
     flows: "While Listing Flows",
     flowRuns: "While Listing Flow Runs",
+    flowRun: "While Viewing a Flow Run",
     flowEditor: "While Editing Flows",
     reviews: "While Listing Reviews",
   }

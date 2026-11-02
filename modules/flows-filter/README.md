@@ -17,7 +17,7 @@ The setting key is `flowFilter` in `chrome.storage.sync`.
 
 - Injects a flow filter UI into the flows panel
 - Supports text filtering with debounce
-- Supports quick tag filtering controls
+- Supports quick tag filtering controls (`#word` in the title or description; plain numbers like `#1` and 3/6-digit hex colours like `#fff` / `#0f0f0f` are ignored)
 - Supports a **My flows** mode\* based on initials parsed from naming convention
 - Moves flows with `(Archived)` in their title into a collapsible **View Archived** section at the bottom of the list
 - Provides **grid and list view toggles** for switching between flow layout modes (list view available at 1050px+ screen width)\*

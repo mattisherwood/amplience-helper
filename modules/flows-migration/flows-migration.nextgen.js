@@ -1,4 +1,4 @@
-// Flows Migration - Nextgen UI (nextgen.amplience.net)
+// Flows Migration - Nextgen UI (nextgen.amplience.net / unifiedapp.amplience.net)
 //
 // Separate from flows-migration.js on purpose (same reasoning as
 // hotkeys.nextgen.js): that file targets the legacy Workforce app's DOM and

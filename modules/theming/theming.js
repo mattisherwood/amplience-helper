@@ -13,7 +13,10 @@
 
   const EXCLUDED_HUBS = new Set(["login-prompt"])
 
-  const IS_NEXTGEN = window.location.hostname === "nextgen.amplience.net"
+  // The new UI is served from both hosts (nextgen.* is the original preview
+  // host; unifiedapp.* is where it now lives). Treat them identically.
+  const NEXTGEN_HOSTS = ["nextgen.amplience.net", "unifiedapp.amplience.net"]
+  const IS_NEXTGEN = NEXTGEN_HOSTS.includes(window.location.hostname)
 
   // Nextgen areas whose second path segment is a hub name.
   const NEXTGEN_HUB_AREAS = new Set(["content", "media", "flows", "reviews"])

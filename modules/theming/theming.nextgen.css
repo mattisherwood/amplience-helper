@@ -1,4 +1,5 @@
 /* ============== NEXTGEN INTERFACE ============== */
+/* (Served at both nextgen.amplience.net and unifiedapp.amplience.net.)      */
 /* The nextgen UI (nextgen.amplience.net) is built on Mantine and takes its  */
 /* primary colour from the --mantine-color-primary-* tokens, so theming it   */
 /* is a matter of rebuilding that scale from the hub's single saved colour.  */
