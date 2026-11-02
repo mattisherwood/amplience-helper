@@ -1,5 +1,11 @@
 # Theming Changelog
 
+## 2026-11-02 (extension v2.5.5)
+
+### Changed
+
+- Content scripts also load on `https://unifiedapp.amplience.net/*`, and `IS_NEXTGEN` now matches either host (via a `NEXTGEN_HOSTS` list) so the Mantine theming path runs there too.
+
 ## 2026-10-08 (extension v2.5.1)
 
 ### Added

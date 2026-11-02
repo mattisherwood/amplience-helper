@@ -1,5 +1,11 @@
 # Flows Migration Changelog
 
+## 2026-11-02 (extension v2.5.5)
+
+### Changed
+
+- `flows-migration.core.js`, `flows-migration.nextgen.js` and `.nextgen.css` also load on `https://unifiedapp.amplience.net/*`, where the new UI now lives.
+
 ## 2026-10-09 (extension v2.5.3)
 
 ### Added

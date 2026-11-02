@@ -42,11 +42,25 @@
 
   /* CONTENT ITEM MENU */
 
-  /* The same "Copy" action in an item's dropdown menu. Menus render in a    */
-  /* portal outside the listing, so this can't be scoped to the actions bar; */
-  /* the menuitem role and copy icon guard against any other "copy:button".  */
+  /* The same "Copy" action in menus. Menus render in a portal outside the   */
+  /* listing, so they can't be scoped to the actions bar, and the media      */
+  /* menus use the same copy icon for "Copy asset ID(s)". So:                */
+  /* - Single-item menu: matched by its exact test id. Media's item is       */
+  /*   "copy-asset-id:button", which an exact match won't catch.             */
+  /* - Bulk "more actions" menu: items have no test ids and its neighbours   */
+  /*   are context-sensitive, so gate on the page instead: only when the     */
+  /*   content listing's sidebar or create button is present (the media      */
+  /*   listing has "assets-sidebar" / "asset-create-button" instead).        */
+  /* If these hooks disappear, the native "Copy" label simply shows through. */
   .mantine-Menu-dropdown
-    [role="menuitem"]:has(.tabler-icon-copy)
+    [data-testid="copy:button"][role="menuitem"]:has(.tabler-icon-copy)
+    .mantine-Menu-itemLabel,
+  &:has(
+      [data-testid="content-items-sidebar"],
+      [data-testid="content-items-create:button"]
+    )
+    .mantine-Menu-dropdown
+    [role="menuitem"]:not([data-testid]):has(.tabler-icon-copy)
     .mantine-Menu-itemLabel {
     font-size: 0;
 
@@ -69,6 +83,37 @@
       content: "Tag";
       font-size: var(--amplience-typography-body-regular-font-size);
       vertical-align: bottom;
+    }
+  }
+
+  /* ASSETS MENUS */
+
+  /* "Copy asset ID(s)" shares the copy icon with the content "Duplicate"    */
+  /* action, so swap it for Tabler's clipboard-copy icon (already used       */
+  /* elsewhere in the app for copying content-type IDs). The native <svg> is  */
+  /* kept, so its size, colour and hover/disabled states still apply: its    */
+  /* paths are hidden and the new shape is painted in currentColor through a */
+  /* mask. Matched the same way as the "Duplicate" rules above:              */
+  /* - Single-asset menu: exact "copy-asset-id:button" test id.              */
+  /* - Bulk "more actions" menu (no test ids): only while the assets         */
+  /*   listing's sidebar or upload/create button is on the page.             */
+  /* If these hooks disappear, the native copy icon simply shows through.    */
+  .mantine-Menu-dropdown
+    [data-testid="copy-asset-id:button"][role="menuitem"]
+    svg.tabler-icon-copy,
+  &:has(
+      [data-testid="assets-sidebar"],
+      [data-testid="asset-create-button"]
+    )
+    .mantine-Menu-dropdown
+    [role="menuitem"]:not([data-testid])
+    svg.tabler-icon-copy {
+    background-color: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h3m9 -9v-5a2 2 0 0 0 -2 -2h-2'/%3E%3Cpath d='M13 17v-1a1 1 0 0 1 1 -1h1m3 0h1a1 1 0 0 1 1 1v1m0 3v1a1 1 0 0 1 -1 1h-1m-3 0h-1a1 1 0 0 1 -1 -1v-1'/%3E%3Cpath d='M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+
+    path {
+      display: none;
     }
   }
 }

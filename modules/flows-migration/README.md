@@ -35,7 +35,8 @@ The setting key is `flowsMigrationEnabled` in `chrome.storage.sync`.
 This module targets Workforce flows in both UIs:
 
 - Legacy: `https://app.amplience.net/content-studio/<hubId>/content-flows` (import) and `.../content-flows/<flowId>` (export)
-- Nextgen: `https://nextgen.amplience.net/<orgName>/flows/<hubName>` (import) and `.../flows/<hubName>/<flowId>` (export)
+- Nextgen: `https://nextgen.amplience.net/<orgName>` (or `unifiedapp.amplience.net`)
+  - e.g. `https://nextgen.amplience.net/<orgName>/flows/<hubName>` (import) and `.../flows/<hubName>/<flowId>` (export)
 
 Export files are interchangeable between the two: same shape, same `flow-<flowId>.json` filename, and `sourceHubId` is the hub's GraphQL ID in both.
 
@@ -45,7 +46,7 @@ Export files are interchangeable between the two: same shape, same `flow-<flowId
 | --- | --- | --- |
 | `flows-migration.core.js` | both | GraphQL calls, auth, file pick/read, validation, download, and the `runExport` / `runImport` pipelines. Exposed as `globalThis.AmplienceFlowsMigration`; must be listed first in each manifest entry. |
 | `flows-migration.js` + `.css` | `app.amplience.net/content-studio/*` | Legacy routing and button placement. |
-| `flows-migration.nextgen.js` + `.nextgen.css` | `nextgen.amplience.net/*` | Nextgen routing, hub-name lookup and button placement. |
+| `flows-migration.nextgen.js` + `.nextgen.css` | `nextgen.amplience.net/*`, `unifiedapp.amplience.net/*` | Nextgen routing, hub-name lookup and button placement. |
 
 The UI files are kept separate (as with `hotkeys.nextgen.js`) so the legacy one can be deleted once the old app is retired.
 
@@ -137,7 +138,7 @@ Pages are detected from the URL, not the DOM:
 - `/:orgName/flows/:hubName/:flowId` — flow editor → Export Flow
 - `/:orgName/flows/:hubName/runs[/...]` and `.../settings/...` — ignored
 
-The manifest matches all of `nextgen.amplience.net/*` rather than just flows routes, because moving from (say) Content to Flows is a client-side navigation, and a content script only injects on a real page load.
+The manifest matches all of `nextgen.amplience.net/*` (and `unifiedapp.amplience.net/*`) rather than just flows routes, because moving from (say) Content to Flows is a client-side navigation, and a content script only injects on a real page load.
 
 #### Hub ID lookup
 

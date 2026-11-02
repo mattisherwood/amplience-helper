@@ -1,5 +1,12 @@
 # Style Patches Changelog
 
+## 2026-11-02 (extension v2.5.5)
+
+### Changed
+
+- `style-patches.nextgen.css` also loads on `https://unifiedapp.amplience.net/*`, where the new UI now lives.
+- Slightly less visual emphasis on the primary app subtitle
+
 ## 2026-10-07 (extension v2.5.1)
 
 ### Changed

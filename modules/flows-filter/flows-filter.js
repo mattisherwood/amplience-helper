@@ -448,6 +448,23 @@
 
     const selectedTags = new Set()
 
+    // Anything written as `#word` is treated as a tag, except things that are
+    // clearly not meant as one: plain numbers (#1, #36) and 3- or 6-digit hex
+    // colour codes (#fff, #0f0f0f). Those stay in the title/description as-is.
+    // 4- and 8-digit hex codes are deliberately not excluded, as too many real
+    // words fit that shape (#cafe, #face, #deadbeef).
+    const TAG_PATTERN = /#([\w-]+)/g
+    const NUMBER_PATTERN = /^\d+$/
+    const HEX_COLOUR_PATTERN = /^(?:[0-9a-f]{3}|[0-9a-f]{6})$/i
+
+    function isNotATag(tag) {
+      return NUMBER_PATTERN.test(tag) || HEX_COLOUR_PATTERN.test(tag)
+    }
+
+    function stripTag(match, tag) {
+      return isNotATag(tag) ? match : ""
+    }
+
     function parseFlowData(flowElement) {
       const paragraphs = flowElement.querySelectorAll("p")
       const titleParagraph = paragraphs[0]
@@ -462,19 +479,20 @@
       const authorMatch = text.match(/\[([^\]]{1,3})\]/)
       const author = authorMatch ? authorMatch[1] : ""
       const tags = [
-        ...text.matchAll(/#([\w-]+)/g),
-        ...descriptionText.matchAll(/#([\w-]+)/g),
+        ...text.matchAll(TAG_PATTERN),
+        ...descriptionText.matchAll(TAG_PATTERN),
       ]
         .map((m) => m[1])
+        .filter((tag) => !isNotATag(tag))
         .filter((tag, index, allTags) => allTags.indexOf(tag) === index)
       const title = text
         .replace(/\s*\[[^\]]{1,3}\]\s*/, " ")
-        .replace(/#[\w-]+/g, "")
+        .replace(TAG_PATTERN, stripTag)
         .replace(/\s*\(Archived\)\s*/gi, " ")
         .replace(/\s{2,}/g, " ")
         .trim()
       const description = descriptionText
-        .replace(/#[\w-]+/g, "")
+        .replace(TAG_PATTERN, stripTag)
         .replace(/\s{2,}/g, " ")
         .trim()
 

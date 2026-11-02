@@ -113,3 +113,50 @@
     }
   }
 }
+
+/*
+ * Keycast overlay (hotkeys.keycast.js): shows the keys of each hotkey as it
+ * fires, for demos. Scale + fade in/out over 0.2s.
+ */
+html[data-amplience-hotkeys-keycast="enabled"] #amplience-hotkeys-keycast {
+  position: fixed;
+  left: 50%;
+  bottom: 8px;
+  z-index: 2147483647; /* Above the ? help overlay and app modals */
+  padding: 10px 14px;
+  background-color: rgba(20, 20, 20, 0.88);
+  border: solid 1px rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: pre;
+  word-spacing: 0.1em;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) scale(0.8);
+  transform-origin: center bottom;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-amplience-hotkeys-keycast="enabled"] #amplience-hotkeys-keycast {
+    transform: translateX(-50%);
+    transition: opacity 0.2s ease;
+  }
+}

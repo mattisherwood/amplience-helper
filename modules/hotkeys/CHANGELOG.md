@@ -1,5 +1,37 @@
 # Hotkeys Changelog
 
+## 2026-11-02 (extension v2.5.5)
+
+### Changed
+
+- `hotkeys.keycast.js` + `hotkeys.nextgen.js` also load on `https://unifiedapp.amplience.net/*`, where the new UI now lives.
+
+### Added
+
+- New `flowRun` page (`/:org/flows/:hub/:flowId/run/:runId`, "While Viewing a Flow Run"), which previously only got the global hotkeys: `V` toggles the Flow view panel (`[data-testid="icon-bar-tab-view flow"]`).
+
+## 2026-10-15 (extension v2.5.4)
+
+### Added
+
+- Asset listing hotkeys (nextgen) extended beyond `Ctrl/Cmd + U` (Upload): `P` publish, `+` add to collection, `Enter` open, `F` filters, `Ctrl/Cmd + F` find, `V` list/grid view, `→` / `←` pagination, `Ctrl/Cmd + A` select all and `Esc` deselect all. Most reuse the content listing's selectors; Open targets `.tabler-icon-photo-share` and select-all targets `[data-testid="checkbox"]`.
+
+- "Show hotkeys on screen" demo option (`hotkeysKeycastEnabled`, default off), on the options page only, nested under Enable Hotkeys. New `hotkeys.keycast.js` is loaded ahead of both `hotkeys.js` and `hotkeys.nextgen.js` and shows the pressed keys (e.g. `⌘ A`) in a small dark tile bottom-centre for 2s, with a 0.2s scale + fade in/out (opacity only under `prefers-reduced-motion`). Styles in `hotkeys.css`, gated on `html[data-amplience-hotkeys-keycast="enabled"]`.
+
+### Changed
+
+- Nextgen `?` cheatsheet now orders its columns as Global, then the current page (from `currentPage()`), then the remaining pages in `HOTKEYS` order.
+- README hotkey tables now cover the nextgen UI (generated from `HOTKEYS`) as well as the classic UI. Classic tables corrected against `hotkeys.js`: added `F1`, `F2`, `Enter` and the schema/content-type pages; listing `U` is Unarchive only; removed editor `U`, which isn't implemented.
+- Legacy `handleKeydown` is now a thin wrapper around `runHotkeys`, and detects a fired hotkey by the event becoming `defaultPrevented`.
+- Legacy listing `Enter` (open selected item) and `F2` (rename) now call `event.preventDefault()` synchronously, so they register as fired hotkeys. F2's previous call ran inside a `setTimeout`, after the event had already finished.
+
+- Esc shows in the keycast on every press, from a capture-phase `window` listener in `hotkeys.keycast.js` that only observes the event. That covers modals and dropdowns the apps close natively. The keycast is only active while Hotkeys is on too.
+
+### Notes
+
+- Mac detection is case-insensitive, because `navigator.userAgentData.platform` reports `macOS`.
+- The keycast only appears when a hotkey actually acted (e.g. `E` with nothing selected won't show).
+
 ## 2026-10-08 (extension v2.5.2)
 
 ### Added
@@ -9,7 +41,7 @@
 - Flows listing (`/:org/flows/:hub`) and flow runs listing (`/:org/flows/:hub/runs`) hotkeys: `Ctrl/Cmd + F` focuses each page's search field. `focus` targets now accept either the field itself or a wrapper around it.
 - Flow editor (`/:org/flows/:hub/:flowId`) hotkeys: `Ctrl/Cmd + S` saves the flow. A new `preventDefault: true` entry option blocks the browser's own Save dialog even when the save button is missing or disabled.
 - Reviews listing (`/:org/reviews/:hub`) hotkeys: `F` toggles the filters, and `Ctrl/Cmd + F` focuses the search field.
-- Asset listing hotkeys, starting with `U` (Upload, `[data-testid="asset-upload-button"]`).
+- Asset listing hotkeys, starting with `Ctrl/Cmd + U` (Upload, `[data-testid="asset-upload-button"]`).
 - One `HOTKEYS` table drives the keydown handler, the "Label (Key)" button tooltips and the `?` help overlay. Tooltips are tracked with a `data-amplience-hotkey` marker and removed when the module is disabled.
 - Active so far: `?` (help), plus `C` (create) and `V` (toggle list/grid) on the listing. The rest of the legacy set is in the table, commented out with `target: "TODO"`, to be enabled one at a time. Not ported: number-key navigation, and Esc for closing modals (Mantine handles that natively).
 - Page hotkeys are suppressed while a Mantine modal is visibly open (a rendered `.mantine-Modal-content`; some modals stay mounted while closed). While typing in a text field (text-type inputs, textareas, selects and contenteditable), only Ctrl/Cmd combos fire. Focus on checkboxes, radios, buttons and other non-text inputs doesn't pause hotkeys, so V keeps working after it focuses the view toggle's radio.

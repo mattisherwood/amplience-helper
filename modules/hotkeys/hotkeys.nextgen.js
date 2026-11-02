@@ -1,4 +1,4 @@
-// Amplience Hotkeys - Nextgen UI (nextgen.amplience.net)
+// Amplience Hotkeys - Nextgen UI (nextgen.amplience.net / unifiedapp.amplience.net)
 //
 // Separate from hotkeys.js on purpose: that file is built around the legacy
 // AngularJS app (am-* components, md-dialog, the old masthead), whereas the
@@ -54,11 +54,12 @@
    *   /:org/flows/:hub                          -> flows
    *   /:org/flows/:hub/runs                     -> flowRuns
    *   /:org/flows/:hub/:flowId                  -> flowEditor
+   *   /:org/flows/:hub/:flowId/run/:runId       -> flowRun
    *   /:org/reviews/:hub                        -> reviews
    * Anything else only gets the global hotkeys.
    */
   function currentPage() {
-    const [, area, , section, id] = window.location.pathname
+    const [, area, , section, id, runId, ...rest] = window.location.pathname
       .split("/")
       .filter(Boolean)
 
@@ -67,13 +68,14 @@
     if (area === "media") return section ? null : "assets"
 
     // Flows listing is the bare hub route and runs has its own. Any other
-    // single segment is a flow id (the editor); settings and deeper routes
-    // get global hotkeys only.
+    // single segment is a flow id (the editor), and :flowId/run/:runId is a
+    // single run. Settings and other deeper routes get global hotkeys only.
     if (area === "flows") {
       if (!section) return "flows"
       if (section === "runs") return id ? null : "flowRuns"
-      if (section === "settings" || id) return null
-      return "flowEditor"
+      if (section === "settings") return null
+      if (id === "run" && runId && !rest.length) return "flowRun"
+      return id ? null : "flowEditor"
     }
 
     // Reviews listing is the bare hub route.
@@ -390,12 +392,81 @@
 
     assets: [
       {
+        key: "p",
+        group: "Actions",
+        label: "Publish selected item(s)",
+        target:
+          '[data-testid="resource-list-actions"] [data-testid="actions-bar"] button:has(.tabler-icon-cloud-upload)',
+      },
+      {
         key: "u",
         ctrl: true,
         shift: false,
         group: "Actions",
         label: "Upload",
         target: '[data-testid="asset-upload-button"]',
+      },
+      {
+        key: "+",
+        group: "Actions",
+        label: "Add selected item(s) to collection",
+        target:
+          '[data-testid="resource-list-actions"] [data-testid="actions-bar"] button:has(.tabler-icon-folder-plus)',
+      },
+      {
+        key: "Enter",
+        group: "Actions",
+        label: "Open selected item(s)",
+        target:
+          '[data-testid="resource-list-actions"] [data-testid="actions-bar"] button:has(.tabler-icon-photo-share)',
+      },
+
+      {
+        key: "f",
+        group: "Interface",
+        label: "Show/hide Filters",
+        target: '[data-testid="filtered-search:filters-trigger"]',
+      },
+      {
+        key: "f",
+        ctrl: true,
+        group: "Interface",
+        label: "Find",
+        focus: '[data-testid="filtered-search:search"] input',
+      },
+      {
+        key: "v",
+        group: "Interface",
+        label: "Toggle View (list / grid)",
+        target:
+          '.mantine-SegmentedControl-control:not([data-active="true"]) .mantine-SegmentedControl-label',
+      },
+      {
+        key: "ArrowRight",
+        group: "Interface",
+        label: "Next page",
+        target: '[data-testid="pagination:next"]',
+      },
+      {
+        key: "ArrowLeft",
+        group: "Interface",
+        label: "Previous page",
+        target: '[data-testid="pagination:previous"]',
+      },
+
+      {
+        key: "a",
+        ctrl: true,
+        group: "Selection",
+        label: "Select all items",
+        target:
+          '[data-variant="filled"]:not([data-checked="true"]) [data-testid="checkbox"]',
+      },
+      {
+        key: "Escape",
+        group: "Selection",
+        label: "Deselect all items",
+        target: '[class^="_clear_"],[class*=" _clear_"]',
       },
     ],
 
@@ -432,6 +503,21 @@
         label: "Previous page",
         target: '[data-testid="pagination:previous"]',
       },
+
+      {
+        key: "a",
+        ctrl: true,
+        group: "Selection",
+        label: "Select all types",
+        target:
+          '[data-variant="filled"]:not([data-checked="true"]) [aria-label="Select all rows"]',
+      },
+      {
+        key: "Escape",
+        group: "Selection",
+        label: "Deselect all types",
+        target: '[class^="_selectionClear_"],[class*=" _selectionClear_"]',
+      },
     ],
 
     contentTypeEditor: [
@@ -458,6 +544,21 @@
         group: "Interface",
         label: "Find",
         focus: '[data-testid="reviews:search:search"] input',
+      },
+
+      {
+        key: "a",
+        ctrl: true,
+        group: "Selection",
+        label: "Select all reviews",
+        target:
+          '[data-variant="filled"]:not([data-checked="true"]) [aria-label="Select all rows"]',
+      },
+      {
+        key: "Escape",
+        group: "Selection",
+        label: "Deselect all reviews",
+        target: '[class^="_clear_"],[class*=" _clear_"]',
       },
     ],
 
@@ -497,6 +598,15 @@
       },
     ],
 
+    flowRun: [
+      {
+        key: "v",
+        group: "Interface",
+        label: "Show/hide Flow view panel",
+        target: '[data-testid="icon-bar-tab-view flow"]',
+      },
+    ],
+
     flowRuns: [
       {
         key: "f",
@@ -523,6 +633,7 @@
     assets: "While Managing Assets",
     flows: "While Listing Flows",
     flowRuns: "While Listing Flow Runs",
+    flowRun: "While Viewing a Flow Run",
     flowEditor: "While Editing Flows",
     reviews: "While Listing Reviews",
   }
@@ -669,9 +780,12 @@
       if (!matches(hotkey, event)) continue
 
       log(`Matched "${hotkey.label}"`)
-      if (perform(hotkey, event) || hotkey.preventDefault) {
+      const performed = perform(hotkey, event)
+      if (performed || hotkey.preventDefault) {
         event.preventDefault()
       }
+      // Demo keycast overlay (hotkeys.keycast.js), only when the hotkey acted
+      if (performed) window.AmplienceHotkeysKeycast?.show(event)
       return
     }
 
@@ -744,7 +858,13 @@
     const overlay = document.createElement("div")
     overlay.id = "hotkey-help-overlay"
 
-    const columns = Object.keys(HOTKEYS)
+    // Global first, then the page you're on, then the rest in table order.
+    const here = currentPage()
+    const order = ["global", here, ...Object.keys(HOTKEYS)].filter(
+      (key, i, all) => key && HOTKEYS[key] && all.indexOf(key) === i,
+    )
+
+    const columns = order
       .filter((page) => HOTKEYS[page].length)
       .map((page) => {
         const groups = {}

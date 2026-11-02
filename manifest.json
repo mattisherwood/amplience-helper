@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Amplience Helper",
-  "version": "2.5.3",
+  "version": "2.5.5",
   "description": "A suite of tools bundled in a browser extension to help every-day Amplience super-users create content at the speed of ideas.",
   "browser_specific_settings": {
     "gecko": {
@@ -49,7 +49,10 @@
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://nextgen.amplience.net/*"],
+      "matches": [
+        "https://nextgen.amplience.net/*",
+        "https://unifiedapp.amplience.net/*"
+      ],
       "css": ["modules/flows-migration/flows-migration.nextgen.css"],
       "js": [
         "modules/flows-migration/flows-migration.core.js",
@@ -66,13 +69,22 @@
     {
       "matches": ["https://app.amplience.net/content*"],
       "css": ["modules/hotkeys/hotkeys.css"],
-      "js": ["modules/hotkeys/hotkeys.js"],
+      "js": [
+        "modules/hotkeys/hotkeys.keycast.js",
+        "modules/hotkeys/hotkeys.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://nextgen.amplience.net/*"],
+      "matches": [
+        "https://nextgen.amplience.net/*",
+        "https://unifiedapp.amplience.net/*"
+      ],
       "css": ["modules/hotkeys/hotkeys.css"],
-      "js": ["modules/hotkeys/hotkeys.nextgen.js"],
+      "js": [
+        "modules/hotkeys/hotkeys.keycast.js",
+        "modules/hotkeys/hotkeys.nextgen.js"
+      ],
       "run_at": "document_idle"
     },
     {
@@ -100,7 +112,10 @@
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://nextgen.amplience.net/*"],
+      "matches": [
+        "https://nextgen.amplience.net/*",
+        "https://unifiedapp.amplience.net/*"
+      ],
       "css": ["modules/style-patches/style-patches.nextgen.css"],
       "js": ["modules/style-patches/style-patches.js"],
       "run_at": "document_idle"
@@ -119,7 +134,10 @@
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://nextgen.amplience.net/*"],
+      "matches": [
+        "https://nextgen.amplience.net/*",
+        "https://unifiedapp.amplience.net/*"
+      ],
       "css": ["modules/enhanced-naming/enhanced-naming.nextgen.css"],
       "js": ["modules/enhanced-naming/enhanced-naming.js"],
       "run_at": "document_idle"
@@ -139,7 +157,10 @@
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://nextgen.amplience.net/*"],
+      "matches": [
+        "https://nextgen.amplience.net/*",
+        "https://unifiedapp.amplience.net/*"
+      ],
       "css": ["modules/theming/theming.nextgen.css"],
       "js": ["modules/theming/theming.js"],
       "run_at": "document_idle"

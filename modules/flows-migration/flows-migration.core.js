@@ -2,7 +2,8 @@
 //
 // API calls, file handling and the import/export pipelines used by both the
 // legacy Workforce UI (flows-migration.js, app.amplience.net/content-studio)
-// and the nextgen UI (flows-migration.nextgen.js, nextgen.amplience.net).
+// and the nextgen UI (flows-migration.nextgen.js, nextgen.amplience.net and
+// unifiedapp.amplience.net).
 // Nothing in here touches the page DOM beyond a hidden file input and a
 // download link, so it's the same on both platforms. The UI files only decide
 // where the buttons go and how to work out the hub/flow IDs from the URL.
