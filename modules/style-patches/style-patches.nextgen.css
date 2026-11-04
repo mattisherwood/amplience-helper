@@ -1,6 +1,31 @@
 /* ============== NEXTGEN INTERFACE ============== */
 /* Some small tweaks to the UI */
 [data-amplience-style-patches="enabled"] {
+  /* Flow editor icon bar: "Runs" tab icon                                */
+  /* Natively uses `history`, the same icon as Version History, which     */
+  /* confuses users now and will clash once flow version history ships.   */
+  /* Swaps the path data (CSS `d`) to `player-track-next`, the icon the   */
+  /* app uses for Runs everywhere else (e.g. "View all runs"), so size,   */
+  /* stroke width, colour and hover/active states stay fully native.      */
+  /* Targets: the icon bar's Runs button (stable data-testid) while it    */
+  /* still renders the Tabler `history` icon (two paths). If the testid   */
+  /* or icon changes - incl. the core product fixing this itself - the    */
+  /* rule stops matching and the native icon shows.                       */
+  [data-testid="icon-bar-tab-runs"] svg.tabler-icon-history {
+    path:nth-of-type(1) {
+      d: path("M3 5v14l8 -7l-8 -7");
+    }
+
+    path:nth-of-type(2) {
+      d: path("M14 5v14l8 -7l-8 -7");
+    }
+
+    /* Guard against a future history icon with extra paths */
+    path:nth-of-type(n + 3) {
+      display: none;
+    }
+  }
+
   /* Hover effect for sortable table headers */
   thead th.amplience-TableThSortable-root:hover {
     background: var(--mantine-color-primary-2);

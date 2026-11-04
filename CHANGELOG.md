@@ -4,6 +4,18 @@
 
 ### Summary
 
+In the new UI's flow editor, the Runs button now has the Runs icon instead of the Version History one.
+
+### Module Highlights
+
+- Style Patches: In the new UI's flow editor, the "Runs" button in the right-hand icon bar now uses the same double-arrow icon as "View all runs" and the Runs tab, instead of the clock icon that means Version History. Turn off Style Patches to get the original icon back.
+
+---
+
+## v2.6.0 - 2026-11-04
+
+### Summary
+
 You can now create, edit and delete webhook URLs from the Webhooks tab, in both the classic and new UIs.
 
 ### Module Highlights
@@ -13,6 +25,7 @@ You can now create, edit and delete webhook URLs from the Webhooks tab, in both 
 - Flows Webhooks: Delete a webhook URL from the edit dialog, after a confirmation.
 - Flows Webhooks: In the new UI's flow editor, the Webhook Trigger's dropdown now shows webhook URLs you've just created or renamed, without reloading the page.
 - Flows Webhooks: In the new UI's flow editor, an "Open Webhooks tab" button under a Webhook Trigger's Webhook field takes you to the Webhooks tab with that hook highlighted. Your flow stays open in its own tab.
+- Style Patches: In the new UI's flow editor, the "Runs" button in the right-hand icon bar now uses the same double-arrow icon that is being used elsewhere across the app to represent "Runs", instead of the clock icon that means "Version History" elsewhere in the app. (Currently in CMS area, plus it would soon clash once flows version history arrives)
 
 ---
 
