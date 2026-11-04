@@ -11,6 +11,8 @@
 - The row that was just created or edited flashes briefly once the list refreshes.
 - New UI: an **Open Webhooks tab** button under the Webhook Trigger's Webhook field in the flow editor, where the classic editor has "Open Webhook Library". It switches to the Webhooks tab, leaving the flow open in the workbench, and flashes the hook the trigger uses. The field is found by its `schemalocation` (`…/properties/amp:webhookId`).
 - Core: `highlight(id)` on the panel controller.
+- New UI: the flow editor's Webhook Trigger dropdown now refreshes its list instead of keeping the one fetched at page load. That covers after a create/edit/delete here, when a Webhook Trigger's pane opens, and when the dropdown is focused. `flows-webhooks.bridge.js`, a `"world": "MAIN"` content script, invalidates the app's RTK Query `WebhookListeners` tag on a DOM event from the host. No new permissions.
+- Core: `createPanel({ onChanged })`, called after a successful create, update or delete.
 - `createWebhook`, `updateWebhook` and `deleteWebhook` in the core, plus `iconSvg` and `copyToClipboard` exported for the dialog.
 
 ### Changed

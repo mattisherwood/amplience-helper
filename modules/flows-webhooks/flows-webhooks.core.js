@@ -586,6 +586,12 @@
               highlightId = action === "delete" ? null : result && result.id
               cache = null
               load(true)
+
+              // Let the host tell the rest of the app (the new UI's flow
+              // editor keeps its own copy of the list).
+              if (typeof opts.onChanged === "function") {
+                opts.onChanged(action, result)
+              }
             },
           })
         })

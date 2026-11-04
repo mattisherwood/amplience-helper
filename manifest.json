@@ -87,6 +87,15 @@
       "run_at": "document_idle"
     },
     {
+      "matches": [
+        "https://nextgen.amplience.net/*",
+        "https://unifiedapp.amplience.net/*"
+      ],
+      "js": ["modules/flows-webhooks/flows-webhooks.bridge.js"],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    },
+    {
       "matches": ["https://app.amplience.net/content*"],
       "css": ["modules/hotkeys/hotkeys.css"],
       "js": [

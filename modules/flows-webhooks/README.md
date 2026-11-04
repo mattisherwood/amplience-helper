@@ -137,14 +137,15 @@ If you change the phase of `handleNativeTabClick` here, or make `deactivateView(
 
 ### Files
 
-| File                         | Loaded on | Job                                                                                               |
-| ---------------------------- | --------- | ------------------------------------------------------------------------------------------------- |
-| `flows-webhooks.core.js`     | both      | GraphQL, hub ID lookup, URL masking, the whole panel. Exposes `globalThis.AmplienceFlowsWebhooks` |
-| `flows-webhooks.dialog.js`   | both      | Create / edit / delete dialog. Adds `openEditor()` / `closeEditor()` to the core namespace        |
-| `flows-webhooks.js`          | classic   | Tab injection, routing and panel swap for `/content-studio/<hubId>/content-flows`                 |
-| `flows-webhooks.nextgen.js`  | new UI    | The same for the `/:org/flows/:hub` workbench                                                     |
-| `flows-webhooks.css`         | both      | Panel and list styles, plus the classic panel swap                                                |
-| `flows-webhooks.nextgen.css` | new UI    | Page-header layout and a second, structural panel-swap rule                                       |
+| File                         | Loaded on          | Job                                                                                                                             |
+| ---------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `flows-webhooks.core.js`     | both               | GraphQL, hub ID lookup, URL masking, the whole panel. Exposes `globalThis.AmplienceFlowsWebhooks`                               |
+| `flows-webhooks.dialog.js`   | both               | Create / edit / delete dialog. Adds `openEditor()` / `closeEditor()` to the core namespace                                      |
+| `flows-webhooks.js`          | classic            | Tab injection, routing and panel swap for `/content-studio/<hubId>/content-flows`                                               |
+| `flows-webhooks.nextgen.js`  | new UI             | The same for the `/:org/flows/:hub` workbench                                                                                   |
+| `flows-webhooks.css`         | both               | Panel and list styles, plus the classic panel swap                                                                              |
+| `flows-webhooks.bridge.js`   | new UI, page world | Asks the app to refetch its own webhook list (see [Keeping the flow editor's list fresh](#keeping-the-flow-editors-list-fresh)) |
+| `flows-webhooks.nextgen.css` | new UI             | Page-header layout and a second, structural panel-swap rule                                                                     |
 
 Same split as [flows-migration](../flows-migration/README.md): the core never touches the page beyond the panel element it builds, so once the classic app is retired `flows-webhooks.js` can be deleted on its own.
 
@@ -327,10 +328,32 @@ It also flashes the hook the field has selected, via `panel.highlight(id)` in th
 - **The selected hook:** Mantine's Select keeps the value in a hidden input beside the field. Listener IDs are GraphQL global IDs starting `V2ViaG9va0xpc3RlbmVy` (base64 for `WebhookListener`), which is how that input is picked out. If it isn't found, the tab still opens, just without the highlight.
 - **Re-renders:** the button and field point at each other (`awhField` / `awhShortcut` expandos, visible only to the content script). The sync removes buttons whose field has gone and adds one to any field without a live button, so a re-rendered form never ends up with zero or two.
 
-| Target          | Selector                                                         | If it disappears                  |
-| --------------- | ---------------------------------------------------------------- | --------------------------------- |
-| Webhook field   | `input[schemalocation$="/properties/amp:webhookId"]` → closest `.mantine-InputWrapper-root` | No button                         |
-| Selected hook   | sibling `input[type="hidden"]` whose value starts `V2ViaG9va0xpc3RlbmVy` | Tab opens without the highlight   |
+| Target        | Selector                                                                                    | If it disappears                |
+| ------------- | ------------------------------------------------------------------------------------------- | ------------------------------- |
+| Webhook field | `input[schemalocation$="/properties/amp:webhookId"]` → closest `.mantine-InputWrapper-root` | No button                       |
+| Selected hook | sibling `input[type="hidden"]` whose value starts `V2ViaG9va0xpc3RlbmVy`                    | Tab opens without the highlight |
+
+### Keeping the flow editor's list fresh
+
+The Webhook Trigger's dropdown only ever fetched its list on page load. A hook created or renamed on the Webhooks tab (or anywhere else) didn't show up there until a full refresh. That was true before this module too.
+
+**Why** (verified 2026-11-04, from the app's bundle): the list comes from an RTK Query endpoint, `getWebhookListeners`, on the app's `graphQLApi` slice. That API is created with `refetchOnFocus: false` and no polling, and opening the pane or the dropdown makes no request. The endpoint provides the `WebhookListeners` tag, though, and invalidating a tag makes RTK Query refetch every mounted query that uses it. Two queries are mounted while a flow is open; both refetch, and the dropdown re-renders with the new list. The selected hook stays selected and the flow isn't marked as changed. All three were checked by feeding the app a doctored response containing an extra hook, which appeared in the dropdown with no server writes.
+
+**How:** the app's Redux store isn't reachable from the extension's isolated world, so `flows-webhooks.bridge.js` runs in the page's own world (`"world": "MAIN"` in the manifest — no extra permission). It listens for a DOM event, `amplience-helper:refresh-webhook-listeners`, finds the store and dispatches `{ type: "graphQLApi/invalidateTags", payload: ["WebhookListeners"] }` — the action `api.util.invalidateTags` creates. The store is found by walking React's fiber tree from `#root` (`__reactContainer$…`) to the first fiber whose props hold a store containing `graphQLApi` (react-redux's `<Provider>`, three fibers down), and is then cached. The event carries no data and the bridge returns none, so a page script firing it can do no more than cause a refetch.
+
+`flows-webhooks.nextgen.js` fires the event:
+
+- straight after a create, edit or delete on the Webhooks tab (forced)
+- when a Webhook Trigger's config pane opens, i.e. when its field appears
+- when the dropdown is focused, i.e. about to open — a fallback for a pane that's been open a while; a refetch landing while it's open updates the options in place
+
+RTK Query keeps serving the cached list while a refetch is in flight and swaps the new one in when it lands. Refreshing as the pane opens therefore usually has the list fresh before the dropdown is opened, rather than having options shift under the cursor. The passive triggers are throttled to one per 2 s. If the store or slice can't be found, nothing happens and the dropdown behaves as Amplience ships it.
+
+| Assumption                            | Where                 | If it changes                             |
+| ------------------------------------- | --------------------- | ----------------------------------------- |
+| RTK Query `reducerPath: "graphQLApi"` | bridge `REDUCER_PATH` | Store not matched — no refresh            |
+| Tag type `WebhookListeners`           | bridge `TAG`          | Invalidation matches nothing — no refresh |
+| React root on `#root`                 | bridge `findStore`    | Store not found — no refresh              |
 
 ## Troubleshooting
 

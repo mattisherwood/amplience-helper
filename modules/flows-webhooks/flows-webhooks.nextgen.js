@@ -103,7 +103,8 @@
    * 2026-11-04). That's far steadier than the label text or hashed classes.
    * If it stops matching, the button just doesn't appear.
    */
-  const WEBHOOK_FIELD_INPUT = 'input[schemalocation$="/properties/amp:webhookId"]'
+  const WEBHOOK_FIELD_INPUT =
+    'input[schemalocation$="/properties/amp:webhookId"]'
   const SHORTCUT_CLASS = "awh-webhook-shortcut"
   // The Select keeps the chosen listener's GraphQL ID in a hidden input
   // beside the field. Those IDs start "V2ViaG9va0xpc3RlbmVy" - base64 for
@@ -136,6 +137,9 @@
       }
 
       return core.resolveCmsHubId(route.orgName, route.hubName)
+    },
+    onChanged: function () {
+      refreshAppWebhookList(true)
     },
   })
 
@@ -326,13 +330,60 @@
     }
   }
 
+  /* ------------------------------------- app's webhook list freshness ---- */
+
+  /*
+   * The flow editor's Webhook dropdown only fetches its list on page load
+   * (see flows-webhooks.bridge.js for why). This asks the bridge, which runs
+   * in the page's world, to make the app refetch it:
+   *   - straight after we create, edit or delete a hook (forced)
+   *   - when a Webhook Trigger's config pane opens (its field appears)
+   *   - when the dropdown is focused, i.e. about to open - a fallback for a
+   *     pane that's been open a while
+   * The app keeps showing its current list while a refetch runs and swaps
+   * the new one in when it lands, so refreshing on pane open means the list
+   * is usually already fresh by the time the dropdown opens, rather than
+   * changing under the cursor. The passive triggers are throttled, so clicking
+   * about doesn't stack up requests. A refetch keeps the selected hook and
+   * doesn't mark the flow as changed.
+   */
+  const REFRESH_EVENT = "amplience-helper:refresh-webhook-listeners"
+  const REFRESH_THROTTLE = 2000
+  let lastRefresh = 0
+
+  function refreshAppWebhookList(force) {
+    const now = Date.now()
+
+    if (!force && now - lastRefresh < REFRESH_THROTTLE) {
+      return
+    }
+
+    lastRefresh = now
+    document.dispatchEvent(new CustomEvent(REFRESH_EVENT))
+  }
+
+  function handleFieldFocus(event) {
+    const target = event.target
+
+    if (
+      enabled &&
+      target &&
+      typeof target.matches === "function" &&
+      target.matches(WEBHOOK_FIELD_INPUT)
+    ) {
+      refreshAppWebhookList(false)
+    }
+  }
+
   /* ------------------------------------------- webhook field shortcut ---- */
 
   function getWebhookFields() {
     return Array.prototype.map.call(
       document.querySelectorAll(WEBHOOK_FIELD_INPUT),
       function (input) {
-        return input.closest(".mantine-InputWrapper-root") || input.parentElement
+        return (
+          input.closest(".mantine-InputWrapper-root") || input.parentElement
+        )
       },
     )
   }
@@ -393,11 +444,19 @@
       },
     )
 
+    let opened = false
+
     getWebhookFields().forEach(function (field) {
       if (!field.awhShortcut || !field.awhShortcut.isConnected) {
         field.after(buildShortcut(field))
+        opened = true
       }
     })
+
+    // A field without a button is a config pane that has just opened.
+    if (opened) {
+      refreshAppWebhookList(false)
+    }
   }
 
   function shortcutsNeedSync() {
@@ -927,6 +986,7 @@
     window.addEventListener("popstate", scheduleSync)
     window.addEventListener("hashchange", scheduleSync)
     document.addEventListener("click", handleNativeTabClick, true)
+    document.addEventListener("focusin", handleFieldFocus, true)
   }
 
   function applySetting(nextEnabled) {
