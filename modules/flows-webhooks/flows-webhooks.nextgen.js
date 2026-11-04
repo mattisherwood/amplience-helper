@@ -10,6 +10,9 @@
 //
 // Adds:
 //   - a "Webhooks" tab to the flows workbench, pinned after Flows and Runs
+//   - an "Open Webhooks tab" button under the Webhook field of a flow's
+//     Webhook Trigger, like the classic editor's "Open Webhook Library" - a
+//     shortcut to the tab, which leaves the flow open in the workbench
 //   - a "Webhooks" link under Settings > Automation (after AI models and
 //     Skills) that opens that tab. There's no settings page of its own - the
 //     tab is the one place the list lives.
@@ -92,6 +95,20 @@
   const AUTOMATION_LINKS =
     'a[href*="/flows/"][href$="/settings/ai-models"], a[href*="/flows/"][href$="/settings/skills"]'
   const SETTINGS_LINK_ID = "flows-webhooks-settings-link"
+
+  /*
+   * The Webhook Trigger's config form is generated from the action's JSON
+   * schema, and each input carries a `schemalocation` pointing back at its
+   * property - for this field, .../properties/amp:webhookId (verified
+   * 2026-11-04). That's far steadier than the label text or hashed classes.
+   * If it stops matching, the button just doesn't appear.
+   */
+  const WEBHOOK_FIELD_INPUT = 'input[schemalocation$="/properties/amp:webhookId"]'
+  const SHORTCUT_CLASS = "awh-webhook-shortcut"
+  // The Select keeps the chosen listener's GraphQL ID in a hidden input
+  // beside the field. Those IDs start "V2ViaG9va0xpc3RlbmVy" - base64 for
+  // "WebhookListener" - which is how we tell it from any other hidden input.
+  const LISTENER_ID_PREFIX = "V2ViaG9va0xpc3RlbmVy"
   // If the in-app navigation hasn't rendered the flows workbench by now, fall
   // back to loading the URL properly.
   const SETTINGS_NAV_FALLBACK = 3000
@@ -301,11 +318,112 @@
     }
 
     panel.element.remove()
+    removeFieldShortcuts()
 
     // An open create/edit dialog belongs to the panel; don't leave it behind.
     if (core.closeEditor) {
       core.closeEditor()
     }
+  }
+
+  /* ------------------------------------------- webhook field shortcut ---- */
+
+  function getWebhookFields() {
+    return Array.prototype.map.call(
+      document.querySelectorAll(WEBHOOK_FIELD_INPUT),
+      function (input) {
+        return input.closest(".mantine-InputWrapper-root") || input.parentElement
+      },
+    )
+  }
+
+  // The hook currently chosen in the field, so the tab can point at it.
+  function selectedListenerId(field) {
+    const scope = field.parentElement || field
+    const hidden = Array.prototype.find.call(
+      scope.querySelectorAll('input[type="hidden"]'),
+      function (input) {
+        return input.value.indexOf(LISTENER_ID_PREFIX) === 0
+      },
+    )
+
+    return hidden ? hidden.value : null
+  }
+
+  function buildShortcut(field) {
+    const button = document.createElement("button")
+    button.type = "button"
+    button.className = "awh-button awh-button-default " + SHORTCUT_CLASS
+    button.innerHTML = core.tabIconSvg({ size: 16, strokeWidth: 2 })
+    button.appendChild(document.createTextNode("Open Webhooks tab"))
+    button.title = "See, copy and manage this hub's webhook URLs"
+
+    button.addEventListener("click", function (event) {
+      event.preventDefault()
+      event.stopPropagation()
+
+      const id = selectedListenerId(field)
+      showWebhooks()
+
+      if (id) {
+        panel.highlight(id)
+      }
+    })
+
+    // Remember which field it belongs to, so a re-rendered form doesn't
+    // leave it stranded or get a second one.
+    button.awhField = field
+    field.awhShortcut = button
+    return button
+  }
+
+  /*
+   * Placed straight after the field. The field sits in the form's
+   * SimpleGrid, so the button becomes a grid item and picks up the form's
+   * own spacing, just below the Webhook select - where the classic editor
+   * has its "Open Webhook Library" button.
+   */
+  function syncFieldShortcuts() {
+    Array.prototype.forEach.call(
+      document.querySelectorAll("." + SHORTCUT_CLASS),
+      function (button) {
+        if (!button.awhField || !button.awhField.isConnected) {
+          button.remove()
+        }
+      },
+    )
+
+    getWebhookFields().forEach(function (field) {
+      if (!field.awhShortcut || !field.awhShortcut.isConnected) {
+        field.after(buildShortcut(field))
+      }
+    })
+  }
+
+  function shortcutsNeedSync() {
+    return (
+      getWebhookFields().some(function (field) {
+        return !field.awhShortcut || !field.awhShortcut.isConnected
+      }) ||
+      Array.prototype.some.call(
+        document.querySelectorAll("." + SHORTCUT_CLASS),
+        function (button) {
+          return !button.awhField || !button.awhField.isConnected
+        },
+      )
+    )
+  }
+
+  function removeFieldShortcuts() {
+    Array.prototype.forEach.call(
+      document.querySelectorAll("." + SHORTCUT_CLASS),
+      function (button) {
+        if (button.awhField) {
+          button.awhField.awhShortcut = null
+        }
+        button.remove()
+      },
+    )
   }
 
   /* ---------------------------------------------------- settings link ---- */
@@ -662,6 +780,10 @@
       return
     }
 
+    // Only a workbench route has a flow editor, so only here can there be a
+    // Webhook Trigger field to add the shortcut to.
+    syncFieldShortcuts()
+
     const list = getTabList()
     const template =
       document.querySelector(RUNS_TAB) || document.querySelector(LIBRARY_TAB)
@@ -719,6 +841,10 @@
     }
 
     if (!tabPresent || !panel.element.isConnected) {
+      return true
+    }
+
+    if (shortcutsNeedSync()) {
       return true
     }
 

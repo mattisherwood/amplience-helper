@@ -874,21 +874,31 @@
       body.appendChild(columns)
       body.appendChild(list)
 
-      // Point at the row that was just created or edited.
+      // Point at the row that was just created or edited (or asked for via
+      // highlight() before the list had loaded).
       if (highlightId) {
-        const target = list.querySelector(
-          '.awh-row[data-id="' + CSS.escape(highlightId) + '"]',
-        )
+        flashRow(highlightId)
         highlightId = null
-
-        if (target) {
-          target.setAttribute("data-highlight", "true")
-          target.scrollIntoView({ block: "nearest" })
-          setTimeout(function () {
-            target.removeAttribute("data-highlight")
-          }, 2400)
-        }
       }
+    }
+
+    // Briefly marks a row and scrolls it into view. False if it isn't in the
+    // list on screen.
+    function flashRow(id) {
+      const target = body.querySelector(
+        '.awh-row[data-id="' + CSS.escape(id) + '"]',
+      )
+
+      if (!target) {
+        return false
+      }
+
+      target.setAttribute("data-highlight", "true")
+      target.scrollIntoView({ block: "nearest" })
+      setTimeout(function () {
+        target.removeAttribute("data-highlight")
+      }, 2400)
+      return true
     }
 
     function showError(error) {
@@ -981,6 +991,14 @@
       resetCache: function () {
         cache = null
         renderedHubId = null
+      },
+      // Flash a webhook's row - now if the list is showing, otherwise once
+      // it renders. Used by the new UI's "Open Webhooks tab" shortcut to
+      // point at the hook the flow uses.
+      highlight: function (id) {
+        if (id && !flashRow(id)) {
+          highlightId = id
+        }
       },
     }
   }

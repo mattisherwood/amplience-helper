@@ -71,4 +71,11 @@
     padding: 0 calc(1.25rem * var(--mantine-scale, 1))
       calc(1.25rem * var(--mantine-scale, 1));
   }
+
+  /* "Open Webhooks tab" under a Webhook Trigger's Webhook field. It's a grid
+     item in the action's form, so keep it button-width rather than
+     stretched. */
+  .awh-webhook-shortcut {
+    justify-self: start;
+  }
 }

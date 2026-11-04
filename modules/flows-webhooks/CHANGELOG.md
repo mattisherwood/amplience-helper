@@ -9,6 +9,8 @@
 - Schema validated as a JSON object before saving, with a Format JSON button and Tab-to-indent.
 - Delete with an inline confirmation that names the hook.
 - The row that was just created or edited flashes briefly once the list refreshes.
+- New UI: an **Open Webhooks tab** button under the Webhook Trigger's Webhook field in the flow editor, where the classic editor has "Open Webhook Library". It switches to the Webhooks tab, leaving the flow open in the workbench, and flashes the hook the trigger uses. The field is found by its `schemalocation` (`…/properties/amp:webhookId`).
+- Core: `highlight(id)` on the panel controller.
 - `createWebhook`, `updateWebhook` and `deleteWebhook` in the core, plus `iconSvg` and `copyToClipboard` exported for the dialog.
 
 ### Changed

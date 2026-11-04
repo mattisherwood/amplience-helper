@@ -18,6 +18,7 @@ The setting key is `flowsWebhooksEnabled` in `chrome.storage.sync`. It defaults 
 - Classic app: injects a fourth tab, **Webhooks**, alongside Flows / Runs / Reviews on the flow listing page
 - New UI: pins a **Webhooks** tab after Flows and Runs in the flows workbench, where it stays while a flow is open (see [New UI](#new-ui))
 - New UI: adds a **Webhooks** link to Settings > Automation that opens that tab (see [Settings link](#settings-link))
+- New UI: adds an **Open Webhooks tab** button under a Webhook Trigger's Webhook field in the flow editor (see [Webhook Trigger shortcut](#webhook-trigger-shortcut))
 - Lists every webhook listener in the hub, sorted by label
 - Shows each hook's security type as a badge (`None`, `Hmac`, …) under a **Security** column heading
 - Expands each row to show the hook's payload schema, pretty-printed
@@ -315,6 +316,21 @@ The Settings side nav gets a **Webhooks** link under Automation, after AI models
 | Target           | Selector                                                                | If it disappears |
 | ---------------- | ----------------------------------------------------------------------- | ---------------- |
 | Automation links | `a[href*="/flows/"][href$="/settings/ai-models" \| "/settings/skills"]` | No link is added |
+
+### Webhook Trigger shortcut
+
+The classic flow editor has an "Open Webhook Library" button under the Webhook Trigger's **Webhook** field; the new UI dropped it. This puts an **Open Webhooks tab** button in the same place. It's only a shortcut: it calls the same `showWebhooks()` as the tab, so `#webhooks` is pushed onto the flow's own route, the flow stays open (and mounted, unsaved changes included) in the workbench, and Back — or clicking the flow's tab — returns to it.
+
+It also flashes the hook the field has selected, via `panel.highlight(id)` in the core (immediately if the list is already showing, otherwise when it renders).
+
+- **Finding the field:** the action's config form is generated from its JSON schema, and each input carries a `schemalocation` attribute pointing at its property. The Webhook select's ends `/properties/amp:webhookId`, which is matched instead of the label or hashed classes. The button goes straight after the field's `.mantine-InputWrapper-root`. That makes it an item in the form's SimpleGrid, so it gets the form's own 16px gap; `justify-self: start` keeps it button-width.
+- **The selected hook:** Mantine's Select keeps the value in a hidden input beside the field. Listener IDs are GraphQL global IDs starting `V2ViaG9va0xpc3RlbmVy` (base64 for `WebhookListener`), which is how that input is picked out. If it isn't found, the tab still opens, just without the highlight.
+- **Re-renders:** the button and field point at each other (`awhField` / `awhShortcut` expandos, visible only to the content script). The sync removes buttons whose field has gone and adds one to any field without a live button, so a re-rendered form never ends up with zero or two.
+
+| Target          | Selector                                                         | If it disappears                  |
+| --------------- | ---------------------------------------------------------------- | --------------------------------- |
+| Webhook field   | `input[schemalocation$="/properties/amp:webhookId"]` → closest `.mantine-InputWrapper-root` | No button                         |
+| Selected hook   | sibling `input[type="hidden"]` whose value starts `V2ViaG9va0xpc3RlbmVy` | Tab opens without the highlight   |
 
 ## Troubleshooting
 
