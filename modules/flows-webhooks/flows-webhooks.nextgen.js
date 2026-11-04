@@ -301,6 +301,11 @@
     }
 
     panel.element.remove()
+
+    // An open create/edit dialog belongs to the panel; don't leave it behind.
+    if (core.closeEditor) {
+      core.closeEditor()
+    }
   }
 
   /* ---------------------------------------------------- settings link ---- */

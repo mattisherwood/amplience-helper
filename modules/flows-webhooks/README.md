@@ -23,14 +23,44 @@ The setting key is `flowsWebhooksEnabled` in `chrome.storage.sync`. It defaults 
 - Expands each row to show the hook's payload schema, pretty-printed
 - Copies the full URL to the clipboard in one click
 - Refetches on demand via a refresh button (circular-arrow icon, top right, which spins while a fetch is running — honouring `prefers-reduced-motion`)
+- Creates, edits and deletes webhook URLs in a dialog (see [Create, edit and delete](#create-edit-and-delete))
 
-## What It Doesn't Do (Yet)
+## Create, edit and delete
 
-This first iteration is read-only meaning that, while you can do the above things, the following features will only be added in a later version:
+**Create webhook URL** (top right, next to refresh) and the **pencil** on each row open the same dialog, with the fields Amplience's own webhook library has:
 
-- Edit/update a webhook from here
-- Add a new webhook from here
-- Delete/remove a webhook from here
+| Field                 | Notes                                                                                                                                                                                                                |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Label                 | Required.                                                                                                                                                                                                            |
+| Enable authentication | Off by default, as in Amplience's form. Off shows a warning that anyone with the URL can trigger the flows using it.                                                                                                 |
+| Secret                | Required when turning authentication on. **Generate** (32 random bytes as hex) is always there; show/hide and copy appear once the field has a value. When editing an HMAC hook it's blank and optional — see below. |
+| Authentication header | Default `X-Hub-Signature-256`.                                                                                                                                                                                       |
+| HMAC algorithm        | SHA1, SHA256 (default), SHA384, SHA512.                                                                                                                                                                              |
+| Encoding              | HEX or BASE64 (default).                                                                                                                                                                                             |
+| Schema                | Required JSON Schema, validated as a JSON object before saving. Monospace editor; Tab indents (Shift+Tab leaves the field); **Format JSON** pretty-prints.                                                           |
+
+Editing only sends what changed. **Delete** (edit only) swaps the footer for a confirmation that names the hook and warns that flows it triggers will stop receiving requests.
+
+The layout follows the new UI rather than the classic library's nested accordions: one white card with a scrolling body and fixed footer, the HMAC settings in a soft grouped card, Mantine-variable colours and the new UI's 36px / 8px-radius buttons. The same dialog appears in the classic app.
+
+### Secrets
+
+The API never returns an HMAC secret. So when editing an HMAC hook the secret field is blank with "Leave blank to keep the current secret", and the update leaves `secret` out of the input — which keeps the existing one. Verified on 2026-11-04 by changing a test hook's header and encoding without a secret and getting a 202 from a request signed with the original secret. Typing or generating a secret replaces it.
+
+Secrets are never logged, and are dropped with the dialog when it closes.
+
+### Signature format
+
+Verified on 2026-11-04 against a throwaway hook (SHA256):
+
+- With the header `X-Hub-Signature-256`, Amplience expects GitHub's format, `sha256=<signature>`, in either encoding. The bare signature gets a 401.
+- With any other header, it expects the bare signature. `sha256=<signature>` gets a 401.
+
+The header field's hint says so, since it isn't obvious from Amplience's own form.
+
+### Not exposed
+
+`digestPrefix` (optional on both create and update) isn't in Amplience's form, so it isn't in this one either. Updates never send it, so an existing prefix is preserved.
 
 ### Row layout
 
@@ -109,12 +139,15 @@ If you change the phase of `handleNativeTabClick` here, or make `deactivateView(
 | File                         | Loaded on | Job                                                                                               |
 | ---------------------------- | --------- | ------------------------------------------------------------------------------------------------- |
 | `flows-webhooks.core.js`     | both      | GraphQL, hub ID lookup, URL masking, the whole panel. Exposes `globalThis.AmplienceFlowsWebhooks` |
+| `flows-webhooks.dialog.js`   | both      | Create / edit / delete dialog. Adds `openEditor()` / `closeEditor()` to the core namespace        |
 | `flows-webhooks.js`          | classic   | Tab injection, routing and panel swap for `/content-studio/<hubId>/content-flows`                 |
 | `flows-webhooks.nextgen.js`  | new UI    | The same for the `/:org/flows/:hub` workbench                                                     |
 | `flows-webhooks.css`         | both      | Panel and list styles, plus the classic panel swap                                                |
 | `flows-webhooks.nextgen.css` | new UI    | Page-header layout and a second, structural panel-swap rule                                       |
 
 Same split as [flows-migration](../flows-migration/README.md): the core never touches the page beyond the panel element it builds, so once the classic app is retired `flows-webhooks.js` can be deleted on its own.
+
+Load order is core → dialog → host. The panel only shows its create and edit buttons if `openEditor` exists when it's built, so if the dialog file fails to load the panel quietly stays read-only.
 
 `createPanel()` builds the panel once and returns `{ element, load(force), remask(), resetCache() }`. Hosts re-attach the same `element` whenever React drops it, so the fetched list and any expanded schema survive a re-render. `load()` takes the hub ID from a `getHubId()` the host passes in — read straight from the URL in the classic app, looked up by name in the new UI.
 
@@ -131,6 +164,11 @@ query getWebhooks($hubId: ID!) {
           schema
           security {
             __typename
+            ... on WebhookListenerSecurityHMAC {
+              header
+              algorithm
+              encoding
+            }
           }
           url
         }
@@ -145,7 +183,19 @@ query getWebhooks($hubId: ID!) {
 Notes on the response:
 
 - `schema` comes back as a **JSON string**, not an object. It's `JSON.parse`d and re-stringified with 2-space indent for display, and shown verbatim if it doesn't parse. An empty schema (`{}`) disables the row's expander rather than showing an empty block.
-- `security.__typename` is e.g. `WebhookListenerSecurityNone`. The badge strips the `WebhookListenerSecurity` prefix and splits camelCase, so that renders as `None`. **No secret is fetched** — the query asks only for the type name.
+- `security.__typename` is e.g. `WebhookListenerSecurityNone`. The badge strips the `WebhookListenerSecurity` prefix and splits camelCase, so that renders as `None`. For HMAC hooks the query also fetches `header`, `algorithm` and `encoding` to prefill the edit dialog. **No secret is fetched** — the API doesn't return one.
+
+### Mutations
+
+Checked by introspection on 2026-11-04:
+
+```graphql
+createWebhookListener(input: { cmsHubId, label, schema, security }): WebhookListener!
+updateWebhookListener(input: { id, label?, schema?, security? }): WebhookListener!
+deleteWebhookListener(input: { id }): Boolean!
+```
+
+`security` is one of `{ hmac: { secret, header, algorithm, encoding, digestPrefix? } }` or `{ none: { dangerouslyAllowUnauthenticated: true } }`. On update every `hmac` field is optional. These run as the signed-in user with their own permissions — the same calls Amplience's webhook library makes. Create, update (label and schema; None→HMAC; header and encoding without a secret; HMAC→None) and delete were all run against a throwaway hook on Quadratic Lite, which was then deleted.
 
 Results are cached in memory per hub for the session; **Refresh** clears the cache. If the user moves hub while a fetch is in flight, its result is discarded and the new hub is loaded.
 

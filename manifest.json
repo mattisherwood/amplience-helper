@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Amplience Helper",
-  "version": "2.5.6",
+  "version": "2.6.0",
   "description": "A suite of tools bundled in a browser extension to help every-day Amplience super-users create content at the speed of ideas.",
   "browser_specific_settings": {
     "gecko": {
@@ -65,6 +65,7 @@
       "css": ["modules/flows-webhooks/flows-webhooks.css"],
       "js": [
         "modules/flows-webhooks/flows-webhooks.core.js",
+        "modules/flows-webhooks/flows-webhooks.dialog.js",
         "modules/flows-webhooks/flows-webhooks.js"
       ],
       "run_at": "document_idle"
@@ -80,6 +81,7 @@
       ],
       "js": [
         "modules/flows-webhooks/flows-webhooks.core.js",
+        "modules/flows-webhooks/flows-webhooks.dialog.js",
         "modules/flows-webhooks/flows-webhooks.nextgen.js"
       ],
       "run_at": "document_idle"

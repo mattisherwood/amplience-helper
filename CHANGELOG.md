@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.6.0 - 2026-11-04
+
+### Summary
+
+You can now create, edit and delete webhook URLs from the Webhooks tab, in both the classic and new UIs.
+
+### Module Highlights
+
+- Flows Webhooks: A "Create webhook URL" button on the Webhooks tab, and a pencil on each row to edit one. Same fields as Amplience's own webhook library — label, authentication (HMAC secret, header, algorithm, encoding) and schema — in a dialog styled like the new UI.
+- Flows Webhooks: Generate a secure secret in one click, and copy it. When you edit a hook that already has a secret, leave the field blank to keep it.
+- Flows Webhooks: Delete a webhook URL from the edit dialog, after a confirmation.
+
+---
+
 ## v2.5.6 - 2026-11-04
 
 ### Summary

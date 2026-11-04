@@ -74,7 +74,7 @@ Each module folder is self-contained and ships its own `README.md` and `CHANGELO
 - Favicon swapper: `app.amplience.net/*` and `support.amplience.com/*`
 - Flows filter: `app.amplience.net/content-studio/*`
 - Flows migration: `app.amplience.net/content-studio/*` (`flows-migration.js`) and `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*` (`flows-migration.nextgen.js`), both after the shared `flows-migration.core.js`
-- Flows webhooks: `app.amplience.net/content-studio/*` (`flows-webhooks.js`) and `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*` (`flows-webhooks.nextgen.js` + `flows-webhooks.nextgen.css`), both after the shared `flows-webhooks.core.js` and `flows-webhooks.css`
+- Flows webhooks: `app.amplience.net/content-studio/*` (`flows-webhooks.js`) and `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*` (`flows-webhooks.nextgen.js` + `flows-webhooks.nextgen.css`), both after the shared `flows-webhooks.core.js` + `flows-webhooks.dialog.js` and `flows-webhooks.css`
 - Hotkeys: `app.amplience.net/content*` (`hotkeys.js`) and `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*` (`hotkeys.nextgen.js`)
 - Theming: `app.amplience.net/content*` and `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*`
 - Style patches: `app.amplience.net/*` (per-area CSS under `/content/*`, `/media/*`, `/content-studio/*`) and `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*`

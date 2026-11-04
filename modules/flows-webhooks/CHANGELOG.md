@@ -1,5 +1,29 @@
 # Flows Webhooks Changelog
 
+## 2026-11-04 (extension v2.6.0)
+
+### Added
+
+- Create, edit and delete webhook URLs. **Create webhook URL** in the panel header and a pencil on each row open a dialog (`flows-webhooks.dialog.js`, a native `<dialog>`) with Amplience's own fields: label, enable authentication, HMAC secret / header / algorithm / encoding, and the payload schema. It works in both UIs.
+- Secret field with show/hide, copy and generate. Show/hide and copy only appear once the field has a value, as in the classic form, and emptying it re-masks it. Editing an HMAC hook leaves the secret blank, and saving without one keeps the existing secret.
+- Schema validated as a JSON object before saving, with a Format JSON button and Tab-to-indent.
+- Delete with an inline confirmation that names the hook.
+- The row that was just created or edited flashes briefly once the list refreshes.
+- `createWebhook`, `updateWebhook` and `deleteWebhook` in the core, plus `iconSvg` and `copyToClipboard` exported for the dialog.
+
+### Changed
+
+- The list query also fetches `header`, `algorithm` and `encoding` for HMAC hooks, to prefill the edit form.
+- With editing available, the "Security" heading moves left by one more button and gap (`.awh-body[data-editable="true"]`).
+- The empty-hub message points at the Create button rather than the flow editor's library.
+
+### Notes
+
+- Edits send only the fields that changed. The `secret` is left out unless one was typed or generated.
+- The dialog stops keydown propagation, so the Hotkeys module (which listens on `document`) can't act behind it — e.g. W closing a workbench tab while the auth switch has focus.
+- Verified on a throwaway hook: with the header `X-Hub-Signature-256` Amplience expects `sha256=<signature>`; with any other header, the bare signature. The header hint says so.
+- `digestPrefix` isn't in Amplience's form, so it isn't exposed; updates never touch it.
+
 ## 2026-11-04 (extension v2.5.6)
 
 ### Added

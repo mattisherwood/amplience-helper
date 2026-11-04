@@ -142,6 +142,11 @@
     "          schema",
     "          security {",
     "            __typename",
+    "            ... on WebhookListenerSecurityHMAC {",
+    "              header",
+    "              algorithm",
+    "              encoding",
+    "            }",
     "          }",
     "          url",
     "        }",
@@ -170,6 +175,68 @@
       .sort(function (a, b) {
         return String(a.label || "").localeCompare(String(b.label || ""))
       })
+  }
+
+  /*
+   * Writes (verified by introspection 2026-11-04):
+   *
+   *   createWebhookListener(input: { cmsHubId, label, schema, security })
+   *   updateWebhookListener(input: { id, label?, schema?, security? })
+   *   deleteWebhookListener(input: { id }): Boolean
+   *
+   * `security` is a one-of input: { hmac: { secret, header, algorithm,
+   * encoding, digestPrefix? } } or { none: { dangerouslyAllowUnauthenticated:
+   * true } }. On update every hmac field is optional, so leaving `secret` out
+   * keeps the current one - which matters, because the API never returns it.
+   * algorithm is SHA1 | SHA256 | SHA384 | SHA512; encoding is HEX | BASE64.
+   *
+   * These run as the signed-in user, with their own permissions - the same
+   * calls Amplience's webhook library makes.
+   */
+  const CREATE_MUTATION = [
+    "mutation createWebhookListener($input: CreateWebhookListenerInput!) {",
+    "  createWebhookListener(input: $input) {",
+    "    id",
+    "    label",
+    "    url",
+    "  }",
+    "}",
+  ].join("\n")
+
+  const UPDATE_MUTATION = [
+    "mutation updateWebhookListener($input: UpdateWebhookListenerInput!) {",
+    "  updateWebhookListener(input: $input) {",
+    "    id",
+    "    label",
+    "    url",
+    "  }",
+    "}",
+  ].join("\n")
+
+  const DELETE_MUTATION = [
+    "mutation deleteWebhookListener($input: DeleteWebhookListenerInput!) {",
+    "  deleteWebhookListener(input: $input)",
+    "}",
+  ].join("\n")
+
+  async function createWebhook(input) {
+    const data = await graphql(CREATE_MUTATION, { input: input })
+    return data.createWebhookListener
+  }
+
+  async function updateWebhook(input) {
+    const data = await graphql(UPDATE_MUTATION, { input: input })
+    return data.updateWebhookListener
+  }
+
+  async function deleteWebhook(id) {
+    const data = await graphql(DELETE_MUTATION, { input: { id: id } })
+
+    if (!data.deleteWebhookListener) {
+      throw new Error("Amplience didn't confirm the delete.")
+    }
+
+    return true
   }
 
   /*
@@ -383,6 +450,18 @@
     refresh:
       '<path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path>' +
       '<path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path>',
+    pencil:
+      '<path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>' +
+      '<path d="M13.5 6.5l4 4"></path>',
+    plus: '<path d="M12 5l0 14"></path><path d="M5 12l14 0"></path>',
+    x: '<path d="M18 6l-12 12"></path><path d="M6 6l12 12"></path>',
+    trash:
+      '<path d="M4 7l16 0"></path><path d="M10 11l0 6"></path><path d="M14 11l0 6"></path>' +
+      '<path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>' +
+      '<path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>',
+    alert:
+      '<path d="M12 9v4"></path><path d="M12 16v.01"></path>' +
+      '<path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"></path>',
   }
 
   function iconSvg(name) {
@@ -473,15 +552,66 @@
     // header as it always has. Only wrap when there is something to group.
     header.appendChild(opts.title ? heading : summary)
 
+    const actions = document.createElement("div")
+    actions.className = "awh-header-actions"
+
     const refresh = iconButton("awh-refresh", "refresh", "Refresh")
     refresh.addEventListener("click", function () {
       cache = null
       load(true)
     })
-    header.appendChild(refresh)
+    actions.appendChild(refresh)
+
+    /*
+     * Create / edit / delete live in flows-webhooks.dialog.js, which adds
+     * openEditor() to this namespace. It loads after this file and before
+     * the host that builds the panel, so it's in place by now; if it's
+     * missing, the panel is simply read-only, as it was before.
+     */
+    const editable =
+      typeof globalThis.AmplienceFlowsWebhooks === "object" &&
+      typeof globalThis.AmplienceFlowsWebhooks.openEditor === "function"
+    let highlightId = null // row to flash after a create/update
+
+    function openEditor(webhook) {
+      Promise.resolve()
+        .then(function () {
+          return opts.getHubId()
+        })
+        .then(function (hubId) {
+          globalThis.AmplienceFlowsWebhooks.openEditor({
+            hubId: hubId,
+            webhook: webhook || null,
+            onSaved: function (action, result) {
+              highlightId = action === "delete" ? null : result && result.id
+              cache = null
+              load(true)
+            },
+          })
+        })
+        .catch(showError)
+    }
+
+    if (editable) {
+      const create = document.createElement("button")
+      create.type = "button"
+      create.className = "awh-button awh-button-primary awh-create"
+      create.innerHTML = iconSvg("plus")
+      create.appendChild(document.createTextNode("Create webhook URL"))
+      create.addEventListener("click", function () {
+        openEditor(null)
+      })
+      actions.appendChild(create)
+    }
+
+    header.appendChild(actions)
 
     const body = document.createElement("div")
     body.className = "awh-body"
+
+    if (editable) {
+      body.setAttribute("data-editable", "true")
+    }
 
     panel.appendChild(header)
     panel.appendChild(body)
@@ -589,6 +719,7 @@
       const row = document.createElement("div")
       row.className = "awh-row"
       row.setAttribute("data-url", url)
+      row.setAttribute("data-id", webhook.id || "")
 
       const main = document.createElement("div")
       main.className = "awh-row-main"
@@ -664,6 +795,14 @@
       badge.title = "Security: " + security
       main.appendChild(badge)
 
+      if (editable) {
+        const edit = iconButton("awh-edit", "pencil", "Edit webhook URL")
+        edit.addEventListener("click", function () {
+          openEditor(webhook)
+        })
+        main.appendChild(edit)
+      }
+
       // Last in the row, so the expander sits at the far right and the label
       // and URL line up with the row's left edge (and the schema under it).
       main.appendChild(expand)
@@ -703,7 +842,9 @@
         setSummary("No webhook URLs in this hub")
         renderMessage(
           "awh-empty",
-          "This hub has no webhook URLs yet. Create one from the webhook library inside any flow.",
+          editable
+            ? "This hub has no webhook URLs yet. Use Create webhook URL to add one."
+            : "This hub has no webhook URLs yet. Create one from the webhook library inside any flow.",
           false,
         )
         return
@@ -732,6 +873,22 @@
 
       body.appendChild(columns)
       body.appendChild(list)
+
+      // Point at the row that was just created or edited.
+      if (highlightId) {
+        const target = list.querySelector(
+          '.awh-row[data-id="' + CSS.escape(highlightId) + '"]',
+        )
+        highlightId = null
+
+        if (target) {
+          target.setAttribute("data-highlight", "true")
+          target.scrollIntoView({ block: "nearest" })
+          setTimeout(function () {
+            target.removeAttribute("data-highlight")
+          }, 2400)
+        }
+      }
     }
 
     function showError(error) {
@@ -831,7 +988,12 @@
   globalThis.AmplienceFlowsWebhooks = {
     log: log,
     tabIconSvg: tabIconSvg,
+    iconSvg: iconSvg,
+    copyToClipboard: copyToClipboard,
     resolveCmsHubId: resolveCmsHubId,
+    createWebhook: createWebhook,
+    updateWebhook: updateWebhook,
+    deleteWebhook: deleteWebhook,
     createPanel: createPanel,
   }
 })()
