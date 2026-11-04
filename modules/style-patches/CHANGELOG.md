@@ -1,5 +1,17 @@
 # Style Patches Changelog
 
+## 2026-11-04 (extension v2.6.0)
+
+### Changed
+
+- New UI flow editor (`style-patches.nextgen.css`): the icon bar's **Runs** tab (`[data-testid="icon-bar-tab-runs"]`) now shows `player-track-next` instead of `history`. Natively it reused the Version History icon, which has users expecting it to open flow version history, and will clash outright once that feature ships. `player-track-next` is the icon the app already uses for Runs elsewhere (e.g. the "View all runs" button).
+  - Pure CSS: the two `<path>`s of the Tabler `history` SVG get new path data via the CSS `d` property, so size, stroke width, colour and hover/active states stay native. Any third path is hidden in case the history icon grows one.
+  - Scoped to `svg.tabler-icon-history`, so if Amplience changes the testid or fixes the icon itself, the rule stops matching and the native icon shows.
+
+### Notes
+
+- New UI only. The classic flow editor has no icon bar (it uses Build/Test tabs), so nothing changes there.
+
 ## 2026-11-02 (extension v2.5.5)
 
 ### Changed

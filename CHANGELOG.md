@@ -1,5 +1,50 @@
 # Changelog
 
+## v2.6.0 - 2026-11-04
+
+### Summary
+
+In the new UI's flow editor, the Runs button now has the Runs icon instead of the Version History one.
+
+### Module Highlights
+
+- Style Patches: In the new UI's flow editor, the "Runs" button in the right-hand icon bar now uses the same double-arrow icon as "View all runs" and the Runs tab, instead of the clock icon that means Version History. Turn off Style Patches to get the original icon back.
+
+---
+
+## v2.6.0 - 2026-11-04
+
+### Summary
+
+You can now create, edit and delete webhook URLs from the Webhooks tab, in both the classic and new UIs.
+
+### Module Highlights
+
+- Flows Webhooks: A "Create webhook URL" button on the Webhooks tab, and a pencil on each row to edit one. Same fields as Amplience's own webhook library — label, authentication (HMAC secret, header, algorithm, encoding) and schema — in a dialog styled like the new UI.
+- Flows Webhooks: Generate a secure secret in one click, and copy it. When you edit a hook that already has a secret, leave the field blank to keep it.
+- Flows Webhooks: Delete a webhook URL from the edit dialog, after a confirmation.
+- Flows Webhooks: In the new UI's flow editor, the Webhook Trigger's dropdown now shows webhook URLs you've just created or renamed, without reloading the page.
+- Flows Webhooks: In the new UI's flow editor, an "Open Webhooks tab" button under a Webhook Trigger's Webhook field takes you to the Webhooks tab with that hook highlighted. Your flow stays open in its own tab.
+- Style Patches: In the new UI's flow editor, the "Runs" button in the right-hand icon bar now uses the same double-arrow icon that is being used elsewhere across the app to represent "Runs", instead of the clock icon that means "Version History" elsewhere in the app. (Currently in CMS area, plus it would soon clash once flows version history arrives)
+
+---
+
+## v2.5.6 - 2026-11-04
+
+### Summary
+
+The Webhooks tab now works in the new Amplience UI too.
+
+### Module Highlights
+
+- Flows Webhooks: In the new UI (unifiedapp.amplience.net, and nextgen.amplience.net) there's now a "Webhooks" tab next to Flows and Runs. It stays in the tab bar while a flow is open, so you can grab a webhook URL without leaving the flow you're building - and without losing unsaved changes to it.
+- Flows Webhooks: In the new UI, the browser's Back button returns you to Webhooks after you click away to Runs or a flow.
+- Flows Webhooks: In the new UI's Settings there's now a "Webhooks" link under Automation, after AI models and Skills. It takes you straight to the Webhooks tab on the Flows page.
+- Flows Webhooks: The "show payload schema" arrow has moved to the right-hand end of each row, in both UIs.
+- Flows Webhooks fix: The list no longer fails with "Missing permission read on Hub ..." when the browser is holding an expired Amplience sign-in alongside the current one.
+
+---
+
 ## v2.5.5 - 2026-11-02
 
 ### Summary

@@ -1,0 +1,81 @@
+/*
+ * Flows Webhooks - new UI layout
+ *
+ * Loaded after flows-webhooks.css, which carries the panel and list styles
+ * shared with the classic app. This file only fits the panel into the new
+ * UI's workbench: page-header spacing, the title, and filling the Tabs root
+ * the way native panels do. Measured against the Flows page header on
+ * 2026-11-04 (20px padding, 21px / 600 title).
+ */
+
+[data-amplience-flows-webhooks="enabled"] {
+  /*
+   * Belt and braces for hiding the native panels. The shared stylesheet
+   * targets [data-testid="tabs"] > .mantine-Tabs-panel; this one targets
+   * whichever element we actually appended our panel to, so the two can't
+   * both show even if that testid goes away.
+   */
+  &[data-amplience-webhooks-view="active"]
+    *:has(> #flows-webhooks-panel)
+    > [role="tabpanel"]:not(#flows-webhooks-panel) {
+    display: none !important;
+  }
+
+  /* Native panels are flex: 1 with their own scroll inside a column-flex
+     Tabs root; match that so the list scrolls under a fixed header height. */
+  #flows-webhooks-panel {
+    margin-top: 0;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: auto;
+  }
+
+  #flows-webhooks-panel .awh-header {
+    min-height: calc(3.0625rem * var(--mantine-scale, 1));
+    margin-bottom: 0;
+    padding: calc(1.25rem * var(--mantine-scale, 1));
+  }
+
+  #flows-webhooks-panel .awh-heading {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+    min-width: 0;
+  }
+
+  #flows-webhooks-panel .awh-title {
+    margin: 0;
+    font-size: calc(1.3125rem * var(--mantine-scale, 1));
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--mantine-color-text, #002c42);
+  }
+
+  /* Secondary to the title here, where the classic panel has no title and
+     the summary is the heading. */
+  #flows-webhooks-panel .awh-summary {
+    font-size: var(--mantine-font-size-sm, 0.875rem);
+    font-weight: 400;
+    color: var(--mantine-color-gray-7, #597684);
+  }
+
+  /* Native header actions are 36px tall. */
+  #flows-webhooks-panel .awh-refresh {
+    width: calc(2.25rem * var(--mantine-scale, 1));
+    height: calc(2.25rem * var(--mantine-scale, 1));
+  }
+
+  #flows-webhooks-panel .awh-body {
+    padding: 0 calc(1.25rem * var(--mantine-scale, 1))
+      calc(1.25rem * var(--mantine-scale, 1));
+  }
+
+  /* "Open Webhooks tab" under a Webhook Trigger's Webhook field. It's a grid
+     item in the action's form, so keep it button-width rather than
+     stretched. */
+  .awh-webhook-shortcut {
+    justify-self: start;
+  }
+}

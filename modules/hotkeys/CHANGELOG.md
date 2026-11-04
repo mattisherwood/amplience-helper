@@ -1,5 +1,12 @@
 # Hotkeys Changelog
 
+## 2026-11-04 (extension v2.6.0)
+
+### Changed
+
+- `hotkeys.nextgen.js` no longer logs to the console on every keydown. The temporary `DEBUG` flag and its `console.log` calls (script loaded, page / modal state, keydown, matched / unmatched, clicking, Esc blur, setting changes) were left over from confirming the new UI's selectors, and are gone now those are stable.
+- The two messages that point at a broken selector — a hotkey whose target no longer matches anything, or is disabled — remain, as `console.debug` (DevTools' Verbose level, hidden by default) with the `[Amplience Helper] hotkeys:` prefix used by the other modules.
+
 ## 2026-11-02 (extension v2.5.5)
 
 ### Changed

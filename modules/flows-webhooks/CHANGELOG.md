@@ -1,5 +1,59 @@
 # Flows Webhooks Changelog
 
+## 2026-11-04 (extension v2.6.0)
+
+### Added
+
+- Create, edit and delete webhook URLs. **Create webhook URL** in the panel header and a pencil on each row open a dialog (`flows-webhooks.dialog.js`, a native `<dialog>`) with Amplience's own fields: label, enable authentication, HMAC secret / header / algorithm / encoding, and the payload schema. It works in both UIs.
+- Secret field with show/hide, copy and generate. Show/hide and copy only appear once the field has a value, as in the classic form, and emptying it re-masks it. Editing an HMAC hook leaves the secret blank, and saving without one keeps the existing secret.
+- Schema validated as a JSON object before saving, with a Format JSON button and Tab-to-indent.
+- Delete with an inline confirmation that names the hook.
+- The row that was just created or edited flashes briefly once the list refreshes.
+- New UI: an **Open Webhooks tab** button under the Webhook Trigger's Webhook field in the flow editor, where the classic editor has "Open Webhook Library". It switches to the Webhooks tab, leaving the flow open in the workbench, and flashes the hook the trigger uses. The field is found by its `schemalocation` (`…/properties/amp:webhookId`).
+- Core: `highlight(id)` on the panel controller.
+- New UI: the flow editor's Webhook Trigger dropdown now refreshes its list instead of keeping the one fetched at page load. That covers after a create/edit/delete here, when a Webhook Trigger's pane opens, and when the dropdown is focused. `flows-webhooks.bridge.js`, a `"world": "MAIN"` content script, invalidates the app's RTK Query `WebhookListeners` tag on a DOM event from the host. No new permissions.
+- Core: `createPanel({ onChanged })`, called after a successful create, update or delete.
+- `createWebhook`, `updateWebhook` and `deleteWebhook` in the core, plus `iconSvg` and `copyToClipboard` exported for the dialog.
+
+### Changed
+
+- The list query also fetches `header`, `algorithm` and `encoding` for HMAC hooks, to prefill the edit form.
+- With editing available, the "Security" heading moves left by one more button and gap (`.awh-body[data-editable="true"]`).
+- The empty-hub message points at the Create button rather than the flow editor's library.
+
+### Notes
+
+- Edits send only the fields that changed. The `secret` is left out unless one was typed or generated.
+- The dialog stops keydown propagation, so the Hotkeys module (which listens on `document`) can't act behind it — e.g. W closing a workbench tab while the auth switch has focus.
+- Verified on a throwaway hook: with the header `X-Hub-Signature-256` Amplience expects `sha256=<signature>`; with any other header, the bare signature. The header hint says so.
+- `digestPrefix` isn't in Amplience's form, so it isn't exposed; updates never touch it.
+
+## 2026-11-04 (extension v2.5.6)
+
+### Added
+
+- New UI support (`nextgen.amplience.net` and `unifiedapp.amplience.net`) via `flows-webhooks.nextgen.js` + `flows-webhooks.nextgen.css`. A **Webhooks** tab is pinned after Flows and Runs in the flows workbench, and stays there while a flow is open.
+- The new UI's panel has a page-style header (title, count, refresh) matching the native Flows/Runs pages.
+- New UI: a **Webhooks** link in the Settings side nav, under Automation after AI models and Skills. It's a link to `/:org/flows/:hub#webhooks`, not a settings page — the tab stays the one place the list lives. Navigates in-app (pushState + popstate), with a full page load as fallback.
+
+### Changed
+
+- The payload-schema expander moved from the start of each row to the end (far right, after the security badge), and now points down/up like an accordion. The "Security" heading is offset by the expander's width plus the row gap, via shared `--awh-*` custom properties on `.awh-body`. The opened schema now aligns with the row's left padding instead of being indented past the old expander.
+- Split into a shared core and two hosts, like flows-migration. `flows-webhooks.core.js` holds the GraphQL calls, hub ID lookup, URL masking and the whole panel; `flows-webhooks.js` (classic) and `flows-webhooks.nextgen.js` (new UI) only decide where the tab and panel go and when the panel shows. `flows-webhooks.css` is shared; the new UI also loads `flows-webhooks.nextgen.css` for layout.
+- The panel is now one element kept for the life of the page, re-attached when React re-renders rather than rebuilt. An expanded schema survives leaving and returning to the tab, and the list is only re-rendered when the hub changes or on refresh.
+- The cache is keyed by hub ID inside the core, so the classic host no longer tracks `lastHubId` itself. A fetch that lands after the user has moved hub is discarded and the new hub is loaded.
+
+### Fixed
+
+- Token selection: the Auth0 helper took the first cached token it found. A profile holding an expired `offline_access` entry ahead of the live one got `Missing permission read on Hub …` from the API (verified 2026-11-04 on the classic app). It now skips expired entries, prefers the `api.amplience.net` audience, and takes the one that expires last.
+
+### Notes
+
+- New UI tabs are routes (`/flows/:hub`, `/runs`, `/:flowId`) and anything unknown after the hub is read as a flow ID, so the tab can't have a path of its own. It's driven by `#webhooks` on whichever workbench route is current.
+- The hash is added with `history.pushState(history.state, …)` rather than `location.hash =`, which would fire a popstate React Router handles as a navigation.
+- Clicking another route's tab leaves the `#webhooks` entry in history (Back returns to Webhooks). Clicking the tab of the route you're already on does nothing in the app, so the host drops the hash itself.
+- In the new UI the hub is a name in the URL, so the GraphQL hub ID is looked up from `viewer.organizations` once per org/hub and cached.
+
 ## 2026-09-03 (extension v2.5.0)
 
 ### Added

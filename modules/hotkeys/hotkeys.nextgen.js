@@ -19,12 +19,12 @@
     hotkeysEnabled: true,
   }
 
-  // Set to false (or remove the log() calls) once the targets are confirmed.
-  const DEBUG = true
-  const log = (...args) => {
-    if (DEBUG) console.log("[Amplience Helper · hotkeys]", ...args)
-  }
-  log("Script loaded on", window.location.pathname)
+  // Only for a hotkey that can't act because its target is missing or
+  // disabled - the sign that Amplience's DOM has changed under a selector.
+  // console.debug sits at DevTools' "Verbose" level, hidden by default, as
+  // in the other modules.
+  const debug = (...args) =>
+    console.debug("[Amplience Helper] hotkeys:", ...args)
 
   /*
    * Page-level hotkeys are skipped while a Mantine modal is open, so they
@@ -717,15 +717,14 @@
     const selector = hotkey.target || hotkey.focus
     const el = document.querySelector(selector)
     if (!el) {
-      log(`"${hotkey.label}": no element matches`, selector)
+      debug(`"${hotkey.label}": no element matches`, selector)
       return false
     }
     if (isDisabled(el)) {
-      log(`"${hotkey.label}": target is disabled`, el)
+      debug(`"${hotkey.label}": target is disabled`, el)
       return false
     }
 
-    log(`"${hotkey.label}": ${hotkey.focus ? "focusing" : "clicking"}`, el)
     if (hotkey.focus) el.focus()
     else el.click()
     return true
@@ -738,15 +737,6 @@
     const modalOpen = isModalOpen()
     const pageHotkeys = page && !modalOpen ? HOTKEYS[page] : []
 
-    log(
-      "Page:",
-      page,
-      "| modal open:",
-      modalOpen,
-      "| page hotkeys:",
-      pageHotkeys.length,
-    )
-
     return [...pageHotkeys, ...HOTKEYS.global]
   }
 
@@ -755,11 +745,6 @@
 
     // While typing, only Ctrl/Cmd combos fire, so plain letters still type.
     const typing = isTypingInInput()
-    log(
-      `Keydown "${event.key}"`,
-      "| typing in:",
-      typing ? document.activeElement : false,
-    )
 
     // Esc in a text field drops focus, so the page hotkeys work again
     // without reaching for the mouse. Skipped while the field has an open
@@ -769,7 +754,6 @@
     if (typing && event.key === "Escape") {
       const el = document.activeElement
       if (el.getAttribute("aria-expanded") !== "true") {
-        log("Esc: blurring", el)
         el.blur()
       }
       return
@@ -779,7 +763,6 @@
       if (typing && !hotkey.ctrl) continue
       if (!matches(hotkey, event)) continue
 
-      log(`Matched "${hotkey.label}"`)
       const performed = perform(hotkey, event)
       if (performed || hotkey.preventDefault) {
         event.preventDefault()
@@ -788,8 +771,6 @@
       if (performed) window.AmplienceHotkeysKeycast?.show(event)
       return
     }
-
-    log(`No hotkey matched "${event.key}"`)
   }
 
   /* --------------------------------------------------------- tooltips ---- */
@@ -909,7 +890,6 @@
 
   function applyHotkeysSetting(value) {
     value = Boolean(value)
-    log("Hotkeys setting:", value)
     if (value === enabled) return
     enabled = value
 

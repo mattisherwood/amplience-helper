@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Amplience Helper",
-  "version": "2.5.5",
+  "version": "2.6.0",
   "description": "A suite of tools bundled in a browser extension to help every-day Amplience super-users create content at the speed of ideas.",
   "browser_specific_settings": {
     "gecko": {
@@ -63,8 +63,37 @@
     {
       "matches": ["https://app.amplience.net/content-studio/*"],
       "css": ["modules/flows-webhooks/flows-webhooks.css"],
-      "js": ["modules/flows-webhooks/flows-webhooks.js"],
+      "js": [
+        "modules/flows-webhooks/flows-webhooks.core.js",
+        "modules/flows-webhooks/flows-webhooks.dialog.js",
+        "modules/flows-webhooks/flows-webhooks.js"
+      ],
       "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://nextgen.amplience.net/*",
+        "https://unifiedapp.amplience.net/*"
+      ],
+      "css": [
+        "modules/flows-webhooks/flows-webhooks.css",
+        "modules/flows-webhooks/flows-webhooks.nextgen.css"
+      ],
+      "js": [
+        "modules/flows-webhooks/flows-webhooks.core.js",
+        "modules/flows-webhooks/flows-webhooks.dialog.js",
+        "modules/flows-webhooks/flows-webhooks.nextgen.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://nextgen.amplience.net/*",
+        "https://unifiedapp.amplience.net/*"
+      ],
+      "js": ["modules/flows-webhooks/flows-webhooks.bridge.js"],
+      "run_at": "document_idle",
+      "world": "MAIN"
     },
     {
       "matches": ["https://app.amplience.net/content*"],
