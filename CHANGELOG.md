@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.5.6 - 2026-11-04
+
+### Summary
+
+The Webhooks tab now works in the new Amplience UI too.
+
+### Module Highlights
+
+- Flows Webhooks: In the new UI (unifiedapp.amplience.net, and nextgen.amplience.net) there's now a "Webhooks" tab next to Flows and Runs. It stays in the tab bar while a flow is open, so you can grab a webhook URL without leaving the flow you're building - and without losing unsaved changes to it.
+- Flows Webhooks: In the new UI, the browser's Back button returns you to Webhooks after you click away to Runs or a flow.
+- Flows Webhooks: In the new UI's Settings there's now a "Webhooks" link under Automation, after AI models and Skills. It takes you straight to the Webhooks tab on the Flows page.
+- Flows Webhooks: The "show payload schema" arrow has moved to the right-hand end of each row, in both UIs.
+- Flows Webhooks fix: The list no longer fails with "Missing permission read on Hub ..." when the browser is holding an expired Amplience sign-in alongside the current one.
+
+---
+
 ## v2.5.5 - 2026-11-02
 
 ### Summary
