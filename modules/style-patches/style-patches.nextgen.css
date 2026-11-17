@@ -35,7 +35,12 @@
   /* `_tabWrapper_*` (each tab's wrapper), `_tabMain_*` (icon + title row), */
   /* `_tabIcon_*` and `_tabTitle_*` (the label). If the hashes' prefixes    */
   /* change, nothing matches and the full labels show.                      */
-  &[data-amplience-pinned-tabs-icons="enabled"] [class*="_pinnedTabs_"] {
+  /* Only while the neighbouring `_tabTrack_*` has a tab in it (an open     */
+  /* flow) - with nothing to make room for, the full labels stay. Checks    */
+  /* for a child element rather than :empty, which whitespace would defeat. */
+  &[data-amplience-pinned-tabs-icons="enabled"]
+    [class*="_tabList_"]:has([class*="_tabTrack_"] > *)
+    [class*="_pinnedTabs_"] {
     /* Let the wrappers shrink to the icon rather than the label's width */
     [class*="_tabWrapper_"] {
       min-width: 0;

@@ -1,5 +1,11 @@
 # Style Patches Changelog
 
+## 2026-11-17 (extension v2.6.2)
+
+### Changed
+
+- Pinned tabs are icon-only only while the workbench's `_tabTrack_*` has a tab in it (`:has([class*="_tabTrack_"] > *)`); otherwise the full labels show.
+
 ## 2026-11-17 (extension v2.6.1)
 
 ### Added
