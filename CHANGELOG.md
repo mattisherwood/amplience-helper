@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.6.2 - 2026-11-17
+
+### Summary
+
+The pinned workbench tabs only shrink to icons when there are open flows to make room for.
+
+### Module Highlights
+
+- Style Patches: With no flows open, the Flows, Runs and Webhook listeners tabs keep their full names.
+
+---
+
 ## v2.6.1 - 2026-11-17
 
 ### Summary
