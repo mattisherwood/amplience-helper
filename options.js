@@ -9,6 +9,7 @@
     hotkeysEnabled: true,
     hotkeysKeycastEnabled: false,
     stylesEnabled: true,
+    pinnedTabsIconsEnabled: true,
     enhancedNamingEnabled: true,
     skipSplashScreenEnabled: false,
     themingEnabled: true,
@@ -32,6 +33,10 @@
   )
   const hotkeysKeycastOption = document.getElementById("hotkeysKeycastOption")
   const stylesCheckbox = document.getElementById("stylesEnabled")
+  const pinnedTabsIconsCheckbox = document.getElementById(
+    "pinnedTabsIconsEnabled",
+  )
+  const pinnedTabsIconsOption = document.getElementById("pinnedTabsIconsOption")
   const enhancedNamingCheckbox = document.getElementById(
     "enhancedNamingEnabled",
   )
@@ -160,6 +165,8 @@
       hotkeysKeycastCheckbox.checked = settings.hotkeysKeycastEnabled
       hotkeysKeycastOption.hidden = !settings.hotkeysEnabled
       stylesCheckbox.checked = settings.stylesEnabled
+      pinnedTabsIconsCheckbox.checked = settings.pinnedTabsIconsEnabled
+      pinnedTabsIconsOption.hidden = !settings.stylesEnabled
       enhancedNamingCheckbox.checked = settings.enhancedNamingEnabled
       skipSplashScreenCheckbox.checked = settings.skipSplashScreenEnabled
       themingCheckbox.checked = settings.themingEnabled
@@ -179,6 +186,7 @@
         hotkeysEnabled: hotkeysCheckbox.checked,
         hotkeysKeycastEnabled: hotkeysKeycastCheckbox.checked,
         stylesEnabled: stylesCheckbox.checked,
+        pinnedTabsIconsEnabled: pinnedTabsIconsCheckbox.checked,
         enhancedNamingEnabled: enhancedNamingCheckbox.checked,
         skipSplashScreenEnabled: skipSplashScreenCheckbox.checked,
         themingEnabled: themingCheckbox.checked,
@@ -229,6 +237,13 @@
 
     if (changes.stylesEnabled) {
       stylesCheckbox.checked = Boolean(changes.stylesEnabled.newValue)
+      pinnedTabsIconsOption.hidden = !changes.stylesEnabled.newValue
+    }
+
+    if (changes.pinnedTabsIconsEnabled) {
+      pinnedTabsIconsCheckbox.checked = Boolean(
+        changes.pinnedTabsIconsEnabled.newValue,
+      )
     }
 
     if (changes.enhancedNamingEnabled) {
@@ -263,7 +278,11 @@
     saveSettings()
   })
   hotkeysKeycastCheckbox.addEventListener("change", saveSettings)
-  stylesCheckbox.addEventListener("change", saveSettings)
+  stylesCheckbox.addEventListener("change", () => {
+    pinnedTabsIconsOption.hidden = !stylesCheckbox.checked
+    saveSettings()
+  })
+  pinnedTabsIconsCheckbox.addEventListener("change", saveSettings)
   enhancedNamingCheckbox.addEventListener("change", saveSettings)
   skipSplashScreenCheckbox.addEventListener("change", saveSettings)
   themingCheckbox.addEventListener("change", () => {

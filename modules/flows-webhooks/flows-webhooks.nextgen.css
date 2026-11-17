@@ -72,10 +72,44 @@
       calc(1.25rem * var(--mantine-scale, 1));
   }
 
-  /* "Open Webhooks tab" under a Webhook Trigger's Webhook field. It's a grid
-     item in the action's form, so keep it button-width rather than
-     stretched. */
+  /* "Manage webhook listeners" in a Webhook Trigger field's description.
+     It carries the native inline link's Mantine Anchor classes for colour,
+     weight and hover underline; this just strips the button chrome. In the
+     fallback (no native link, placed under the field as a grid item) it
+     stays content-width. */
   .awh-webhook-shortcut {
     justify-self: start;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--mantine-color-anchor, #0374dd);
+    font-weight: 600;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  /* The native link (and its trailing ".") it replaces. They're hidden with
+     the `hidden` attribute; this makes sure Mantine's own display rules
+     can't override it. */
+  .awh-webhook-shortcut ~ a[href$="/settings/webhook-listeners"][hidden],
+  .awh-webhook-shortcut ~ [hidden] {
+    display: none !important;
+  }
+
+  .awh-webhook-shortcut:hover {
+    text-decoration: underline;
+  }
+
+  .awh-webhook-shortcut:focus-visible {
+    outline: 2px solid var(--mantine-primary-color-filled, #0374dd);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* The core's own Settings link that ours replaces. Hidden with the hidden
+     attribute; this keeps the side nav's own display rules from undoing it. */
+  [data-amplience-replaced][hidden] {
+    display: none !important;
   }
 }

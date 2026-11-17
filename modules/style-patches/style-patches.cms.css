@@ -755,4 +755,41 @@
   md-tabs[md-border-bottom]:not(.md-dynamic-height) md-tabs-content-wrapper {
     top: 44px;
   }
+
+  /* ====================================================== 
+  /* DEVELOPMENT OVERVIEW */
+
+  .am-dev-landing-page__container {
+    gap: 20px 80px;
+    padding-inline: 40px;
+  }
+
+  am-dev-landing-page-section {
+    min-width: 240px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .am-dev-landing-page__section
+    > .am-dev-landing-page__container
+    > .am-dev-landing-page__container {
+    display: contents;
+  }
+
+  .am-dev-landing-page__section--grey {
+    > .am-dev-landing-page__container {
+      gap: 20px;
+      justify-content: space-around;
+      padding: 20px 80px;
+    }
+
+    am-dev-landing-page-section {
+      width: 20%;
+      min-width: 180px;
+
+      > .am-dev-landing-page-section__container {
+        margin: 0;
+      }
+    }
+  }
 }

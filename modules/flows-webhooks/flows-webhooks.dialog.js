@@ -2,7 +2,7 @@
 //
 // Shared by both UIs, like flows-webhooks.core.js. Adds openEditor() and
 // closeEditor() to globalThis.AmplienceFlowsWebhooks; the panel shows its
-// "Create webhook URL" and per-row edit buttons only when openEditor exists,
+// "Create webhook listener" button and clickable rows only when openEditor exists,
 // so if this file fails to load the panel quietly stays read-only.
 //
 // Same fields as the webhook library in Amplience's flow editor - label,
@@ -74,7 +74,6 @@
         node.setAttribute(key, value)
       }
     })
-
     ;(children || []).forEach(function (child) {
       if (child) {
         node.appendChild(
@@ -269,25 +268,68 @@
       closeEditor()
     })
 
-    form.appendChild(
-      el("div", { className: "awh-dialog-header" }, [
-        el("h2", {
-          className: "awh-dialog-title",
-          id: titleId,
-          text: editing ? "Edit webhook URL" : "Create webhook URL",
-        }),
-        close,
-      ]),
-    )
-
-    /* label */
+    /*
+     * The title is the label itself: an input styled as the dialog heading,
+     * which shows an edit background on hover and turns into a text box when
+     * clicked or tabbed to. Wrapped as a field (data-field="label") so the
+     * usual validation puts its error just under it.
+     */
     const label = el("input", {
-      className: "awh-input",
+      className: "awh-dialog-title awh-title-input",
+      id: titleId,
       name: "label",
       type: "text",
       autocomplete: "off",
+      spellcheck: "false",
       value: initial.label,
+      placeholder: "Name this webhook listener",
+      "aria-label": "Label",
+      title: "Click to rename",
     })
+    const labelErrorId = nextId("label-error")
+    label.setAttribute("aria-describedby", labelErrorId)
+
+    // Save / Create sits in the header beside the close button (which also
+    // does Cancel's job). Only enabled when there's something valid to save -
+    // see syncSubmit().
+    const submit = el("button", {
+      type: "submit",
+      className: "awh-button awh-button-primary awh-submit",
+      disabled: true,
+    })
+    submit.innerHTML = core.iconSvg("deviceFloppy")
+    submit.appendChild(
+      el("span", {
+        className: "awh-button-label",
+        text: editing ? "Save" : "Create",
+      }),
+    )
+
+    // "More actions" menu - editing only, as a new listener has no URL to
+    // copy and nothing to delete yet. Built further down.
+    const menu = editing ? buildMenu() : null
+
+    form.appendChild(
+      el("div", { className: "awh-dialog-header" }, [
+        el(
+          "div",
+          { className: "awh-field awh-title-field", "data-field": "label" },
+          [
+            label,
+            el("p", {
+              className: "awh-field-error",
+              id: labelErrorId,
+              role: "alert",
+            }),
+          ],
+        ),
+        el("div", { className: "awh-dialog-header-actions" }, [
+          submit,
+          menu ? menu.element : null,
+          close,
+        ]),
+      ]),
+    )
 
     /* authentication switch */
     const auth = el("input", {
@@ -354,6 +396,7 @@
 
     generate.addEventListener("click", function () {
       secret.value = generateSecret()
+      syncSubmit()
       secret.type = "text"
       setIcon(toggleSecret, "eyeOff", "Hide secret")
       setFieldError(form, "secret", "")
@@ -433,6 +476,7 @@
       el("legend", {
         className: "awh-fieldset-legend",
         text: "HMAC authentication",
+        hint: "Configure HMAC authentication to secure your webhook URL. This ensures that incoming requests are verified using a shared secret.",
       }),
       field({
         name: "secret",
@@ -501,6 +545,7 @@
           schema.selectionEnd,
           "end",
         )
+        syncSubmit()
       }
     })
 
@@ -518,6 +563,7 @@
       setFieldError(form, "schema", problem)
       if (!problem) {
         schema.value = prettySchema(schema.value)
+        syncSubmit()
       }
     })
 
@@ -537,13 +583,6 @@
 
     form.appendChild(
       el("div", { className: "awh-dialog-body" }, [
-        field({
-          name: "label",
-          label: "Label",
-          required: true,
-          hint: "A name to identify this webhook URL by.",
-          control: label,
-        }),
         authRow,
         openNote,
         hmac,
@@ -558,43 +597,7 @@
       hidden: true,
     })
 
-    const cancel = el("button", {
-      type: "button",
-      className: "awh-button awh-button-default",
-      text: "Cancel",
-    })
-    cancel.addEventListener("click", function () {
-      closeEditor()
-    })
-
-    const submit = el("button", {
-      type: "submit",
-      className: "awh-button awh-button-primary",
-      text: editing ? "Save" : "Create",
-    })
-
-    const footer = el("div", { className: "awh-dialog-footer" })
-
-    if (editing) {
-      const remove = el("button", {
-        type: "button",
-        className: "awh-button awh-button-danger-subtle awh-delete",
-      })
-      remove.innerHTML = core.iconSvg("trash")
-      remove.appendChild(document.createTextNode("Delete"))
-      remove.addEventListener("click", function () {
-        footer.hidden = true
-        confirm.hidden = false
-        keep.focus()
-      })
-      footer.appendChild(remove)
-    }
-
-    footer.appendChild(el("span", { className: "awh-spacer" }))
-    footer.appendChild(cancel)
-    footer.appendChild(submit)
-
-    /* delete confirmation - replaces the footer */
+    /* delete confirmation - shown along the bottom once Delete is picked */
     const keep = el("button", {
       type: "button",
       className: "awh-button awh-button-default",
@@ -603,7 +606,7 @@
     const confirmDelete = el("button", {
       type: "button",
       className: "awh-button awh-button-danger",
-      text: "Delete webhook URL",
+      text: "Delete webhook listener",
     })
     const confirm = el(
       "div",
@@ -619,12 +622,166 @@
 
     keep.addEventListener("click", function () {
       confirm.hidden = true
-      footer.hidden = false
+      menu.button.focus()
     })
 
     form.appendChild(formError)
-    form.appendChild(footer)
-    form.appendChild(confirm)
+
+    if (editing) {
+      form.appendChild(confirm)
+    }
+
+    /*
+     * The header's "⋮" menu: Copy webhook URL, then a Danger zone with
+     * Delete. A plain disclosure: the button toggles it, arrow keys move
+     * between items, and Escape, Tab-ing away, a click elsewhere in the
+     * dialog or picking an item closes it. Escape is stopped here so it
+     * closes only the menu, not the dialog.
+     */
+    function buildMenu() {
+      const menuId = nextId("menu")
+
+      const button = el("button", {
+        type: "button",
+        className: "awh-menu-button",
+        "aria-label": "More actions",
+        "aria-haspopup": "menu",
+        "aria-expanded": "false",
+        "aria-controls": menuId,
+        "data-tooltip": "More actions",
+      })
+      button.innerHTML = core.iconSvg("dotsVertical")
+
+      function item(icon, text, className) {
+        const node = el("button", {
+          type: "button",
+          role: "menuitem",
+          tabindex: "-1",
+          className: "awh-menu-item" + (className ? " " + className : ""),
+        })
+        node.innerHTML = core.iconSvg(icon)
+        node.appendChild(el("span", { text: text }))
+        return node
+      }
+
+      const copyUrl = item("copy", "Copy webhook URL")
+      copyUrl.disabled = !webhook.url
+      const del = item("trash", "Delete", "awh-menu-item-danger")
+
+      const list = el(
+        "div",
+        { className: "awh-menu", role: "menu", id: menuId, hidden: true },
+        [
+          copyUrl,
+          el("div", { className: "awh-menu-divider", role: "separator" }),
+          el("div", {
+            className: "awh-menu-label",
+            role: "presentation",
+            text: "Danger zone",
+          }),
+          del,
+        ],
+      )
+
+      const wrap = el("div", { className: "awh-menu-wrap" }, [button, list])
+
+      function items() {
+        return Array.prototype.filter.call(
+          list.querySelectorAll('[role="menuitem"]'),
+          function (node) {
+            return !node.disabled
+          },
+        )
+      }
+
+      function open() {
+        list.hidden = false
+        button.setAttribute("aria-expanded", "true")
+        const first = items()[0]
+        if (first) {
+          first.focus()
+        }
+      }
+
+      function shut(refocus) {
+        if (list.hidden) {
+          return
+        }
+        list.hidden = true
+        button.setAttribute("aria-expanded", "false")
+        if (refocus) {
+          button.focus()
+        }
+      }
+
+      button.addEventListener("click", function () {
+        if (list.hidden) {
+          open()
+        } else {
+          shut(false)
+        }
+      })
+
+      wrap.addEventListener("keydown", function (event) {
+        if (list.hidden) {
+          return
+        }
+
+        if (event.key === "Escape") {
+          // Without preventDefault the dialog would treat it as Cancel.
+          event.preventDefault()
+          event.stopPropagation()
+          shut(true)
+          return
+        }
+
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault()
+          const all = items()
+          const at = all.indexOf(document.activeElement)
+          const step = event.key === "ArrowDown" ? 1 : -1
+          const next = all[(at + step + all.length) % all.length]
+          if (next) {
+            next.focus()
+          }
+        }
+      })
+
+      wrap.addEventListener("focusout", function (event) {
+        if (!wrap.contains(event.relatedTarget)) {
+          shut(false)
+        }
+      })
+
+      // A click anywhere else in the (modal) dialog closes it.
+      dialog.addEventListener("pointerdown", function (event) {
+        if (!wrap.contains(event.target)) {
+          shut(false)
+        }
+      })
+
+      copyUrl.addEventListener("click", async function () {
+        const copied = await core.copyToClipboard(webhook.url)
+        const text = copyUrl.querySelector("span")
+        copyUrl.innerHTML = core.iconSvg(copied ? "check" : "copy")
+        copyUrl.appendChild(text)
+        text.textContent = copied ? "Copied" : "Copy failed"
+        setTimeout(function () {
+          shut(true)
+          copyUrl.innerHTML = core.iconSvg("copy")
+          copyUrl.appendChild(text)
+          text.textContent = "Copy webhook URL"
+        }, 900)
+      })
+
+      del.addEventListener("click", function () {
+        shut(false)
+        confirm.hidden = false
+        keep.focus()
+      })
+
+      return { element: wrap, button: button }
+    }
     dialog.appendChild(form)
 
     /* behaviour */
@@ -638,6 +795,28 @@
       }
     })
 
+    /*
+     * Save / Create is enabled only when the required fields - a title and a
+     * schema - are filled in and, when editing, something has changed. The
+     * finer checks (valid JSON, secret, header) still run on submit, so their
+     * messages appear next to the field rather than as a mystery disabled
+     * button. Programmatic changes (generate secret, Format JSON) call this
+     * directly, as they fire no input event.
+     */
+    function syncSubmit() {
+      if (current && current.busy) {
+        return
+      }
+
+      const filled = Boolean(label.value.trim() && schema.value.trim())
+      const changed = !editing || Object.keys(updateInput()).length > 1
+
+      submit.disabled = !(filled && changed)
+    }
+
+    form.addEventListener("input", syncSubmit)
+    form.addEventListener("change", syncSubmit)
+
     function setBusy(busy, button, text) {
       current.busy = busy
       dialog.setAttribute("aria-busy", busy ? "true" : "false")
@@ -649,12 +828,16 @@
         },
       )
 
-      if (button) {
+      // Only the text changes, so an icon beside it stays put.
+      const target =
+        button && (button.querySelector(".awh-button-label") || button)
+
+      if (target) {
         if (busy) {
-          button.setAttribute("data-label", button.textContent)
-          button.textContent = text
+          button.setAttribute("data-label", target.textContent)
+          target.textContent = text
         } else if (button.hasAttribute("data-label")) {
-          button.textContent = button.getAttribute("data-label")
+          target.textContent = button.getAttribute("data-label")
           button.removeAttribute("data-label")
         }
       }
@@ -793,6 +976,7 @@
       } catch (error) {
         core.log(action + " failed", error && error.message)
         setBusy(false, submit)
+        syncSubmit()
         showFormError(error)
       }
     })
@@ -812,6 +996,7 @@
       } catch (error) {
         core.log("delete failed", error && error.message)
         setBusy(false, confirmDelete)
+        syncSubmit()
         showFormError(error)
       }
     })
@@ -837,7 +1022,16 @@
     current = { dialog: dialog, busy: false }
     document.body.appendChild(dialog)
     dialog.showModal()
-    label.focus()
+
+    // A new listener needs a name first, so start in the title. When editing,
+    // the title only becomes a text box once clicked, so focus the dialog
+    // itself rather than letting showModal() focus the title.
+    if (editing) {
+      dialog.tabIndex = -1
+      dialog.focus()
+    } else {
+      label.focus()
+    }
   }
 
   // `force` closes even mid-request (used when the module is switched off or

@@ -203,11 +203,11 @@
     <div class="fieldset">
         <label class="option" for="flowsWebhooksEnabled">
             <input type="checkbox" id="flowsWebhooksEnabled" />
-            Enable Flows Webhooks Panel
+            Enable Webhook Listeners Panel
         </label>
 
         <p class="description">
-            Adds a "Webhooks" tab to the flows list, showing every webhook URL in the hub with its payload schema. In the new UI the tab sits next to Flows and Runs, so it's there inside an open flow too, and Settings gets a "Webhooks" link under Automation that opens it. URLs stay masked until you reveal them, and each one can be copied in a click. You can also create, edit and delete webhook URLs from the tab.
+            Adds a "Webhook listeners" tab to the flows list, showing every webhook listener in the hub, with a search to filter them. Click a listener to edit it. In the new UI the tab sits next to Flows and Runs, so it's there inside an open flow too, and the "Webhook listeners" link in settings links to it. URLs stay masked until you reveal them, and each one can be copied in a click. You can also create, edit and delete webhook listeners from the tab.
         </p>
     </div>
 
@@ -242,6 +242,17 @@
         <p class="description">
             Applies various UI improvements to Amplience pages, including responsive and readability CSS enhancements, and keeping the flow tab (Flows/Runs/Reviews) in the URL so a refresh doesn't move you to a different tab
         </p>
+
+        <div class="sub-option" id="pinnedTabsIconsOption" hidden>
+            <label class="option" for="pinnedTabsIconsEnabled">
+                <input type="checkbox" id="pinnedTabsIconsEnabled" />
+                Show pinned tabs as icons
+            </label>
+
+            <p class="description">
+                In the new UI, shows the Flows, Runs and Webhook listeners tabs at the start of the workbench as just their icons, leaving more room for open flows. Hover over one (or tab to it) to slide its name open.
+            </p>
+        </div>
     </div>
 
     <div class="fieldset">

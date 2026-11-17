@@ -3,6 +3,7 @@
 
   const DEFAULT_SETTINGS = {
     stylesEnabled: true,
+    pinnedTabsIconsEnabled: true,
   }
 
   let patchObserver = null
@@ -176,7 +177,7 @@
     }
 
     // Only Amplience's own three tabs. A tab injected by another module - the
-    // flows-webhooks "Webhooks" tab, which owns #webhooks - has no
+    // flows-webhooks "Webhook listeners" tab, which owns #webhooks - has no
     // `-tab-<value>` id and is deliberately left alone.
     const value = flowTabValueFromElement(tab)
 
@@ -321,15 +322,39 @@
     stopPatchObserver()
   }
 
-  chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
-    applyStylesSetting(settings.stylesEnabled)
-  })
-
-  chrome.storage.onChanged.addListener((changes, area) => {
-    if (area !== "sync" || !changes.stylesEnabled) {
+  // Sub-option of Style Patches: icon-only pinned workbench tabs (new UI).
+  // Its CSS sits inside the style-patches scope, so it only takes effect
+  // while Style Patches is on too.
+  function applyPinnedTabsIconsSetting(enabled) {
+    if (enabled) {
+      document.documentElement.setAttribute(
+        "data-amplience-pinned-tabs-icons",
+        "enabled",
+      )
       return
     }
 
-    applyStylesSetting(Boolean(changes.stylesEnabled.newValue))
+    document.documentElement.removeAttribute("data-amplience-pinned-tabs-icons")
+  }
+
+  chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+    applyStylesSetting(settings.stylesEnabled)
+    applyPinnedTabsIconsSetting(settings.pinnedTabsIconsEnabled)
+  })
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "sync") {
+      return
+    }
+
+    if (changes.stylesEnabled) {
+      applyStylesSetting(Boolean(changes.stylesEnabled.newValue))
+    }
+
+    if (changes.pinnedTabsIconsEnabled) {
+      applyPinnedTabsIconsSetting(
+        Boolean(changes.pinnedTabsIconsEnabled.newValue),
+      )
+    }
   })
 })()
