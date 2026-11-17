@@ -2,37 +2,37 @@
 
 # Flows Webhooks Module
 
-Adds a **Webhooks** tab to the Workforce flows list, showing every webhook URL in the current hub. Works in both the classic app (`app.amplience.net`) and the new UI (`unifiedapp.amplience.net`, previously `nextgen.amplience.net`). Amplience only exposes these from the webhook library inside a flow edit screen, and truncates the URLs there, so getting a hook URL out of the platform normally means opening a flow you didn't want to edit.
+Adds a **Webhook listeners** tab to the Workforce flows list, showing every webhook listener in the current hub, with a search box at the top that filters the list by label or URL. Works in both the classic app (`app.amplience.net`) and the new UI (`unifiedapp.amplience.net`, previously `nextgen.amplience.net`). Amplience only exposes these from the webhook library inside a flow edit screen, and truncates the URLs there, so getting a hook URL out of the platform normally means opening a flow you didn't want to edit.
 
 ## Enable Or Disable
 
 Use either:
 
-- Extension popup: toggle **Enable Flows Webhooks**
-- Extension options page: toggle **Enable Flows Webhooks**
+- Extension popup: toggle **Enable Webhook Listeners Panel**
+- Extension options page: toggle **Enable Webhook Listeners Panel**
 
 The setting key is `flowsWebhooksEnabled` in `chrome.storage.sync`. It defaults to `false`.
 
 ## What It Does
 
-- Classic app: injects a fourth tab, **Webhooks**, alongside Flows / Runs / Reviews on the flow listing page
-- New UI: pins a **Webhooks** tab after Flows and Runs in the flows workbench, where it stays while a flow is open (see [New UI](#new-ui))
-- New UI: adds a **Webhooks** link to Settings > Automation that opens that tab (see [Settings link](#settings-link))
-- New UI: adds an **Open Webhooks tab** button under a Webhook Trigger's Webhook field in the flow editor (see [Webhook Trigger shortcut](#webhook-trigger-shortcut))
+- Classic app: injects a fourth tab, **Webhook listeners**, alongside Flows / Runs / Reviews on the flow listing page
+- New UI: pins a **Webhook listeners** tab after Flows and Runs in the flows workbench, where it stays while a flow is open (see [New UI](#new-ui))
+- New UI: replaces the core's **Webhook listeners** link in Settings > Automation with one that opens that tab (see [Settings link](#settings-link))
+- New UI: replaces the "Settings > Webhook listeners" link in a Webhook Trigger field's description with an inline **Manage webhook listeners** button that opens the tab (see [Webhook Trigger shortcut](#webhook-trigger-shortcut))
 - Lists every webhook listener in the hub, sorted by label
-- Shows each hook's security type as a badge (`None`, `Hmac`, …) under a **Security** column heading
-- Expands each row to show the hook's payload schema, pretty-printed
+- Shows each hook's security type as a badge (`No auth`, `Hmac`, …)
+- Click anywhere on a row (apart from the URL's reveal and copy buttons) to open it in the edit dialog, where the payload schema lives
 - Copies the full URL to the clipboard in one click
 - Refetches on demand via a refresh button (circular-arrow icon, top right, which spins while a fetch is running — honouring `prefers-reduced-motion`)
-- Creates, edits and deletes webhook URLs in a dialog (see [Create, edit and delete](#create-edit-and-delete))
+- Creates, edits and deletes webhook listeners in a dialog (see [Create, edit and delete](#create-edit-and-delete))
 
 ## Create, edit and delete
 
-**Create webhook URL** (top right, next to refresh) and the **pencil** on each row open the same dialog, with the fields Amplience's own webhook library has:
+**Create webhook listener** (top right, next to refresh) and clicking a row open the same dialog, with the fields Amplience's own webhook library has:
 
 | Field                 | Notes                                                                                                                                                                                                                |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Label                 | Required.                                                                                                                                                                                                            |
+| Label                 | Required. Shown as the dialog title, which turns into a text box when clicked.                                                                                                                                                                                                            |
 | Enable authentication | Off by default, as in Amplience's form. Off shows a warning that anyone with the URL can trigger the flows using it.                                                                                                 |
 | Secret                | Required when turning authentication on. **Generate** (32 random bytes as hex) is always there; show/hide and copy appear once the field has a value. When editing an HMAC hook it's blank and optional — see below. |
 | Authentication header | Default `X-Hub-Signature-256`.                                                                                                                                                                                       |
@@ -40,9 +40,9 @@ The setting key is `flowsWebhooksEnabled` in `chrome.storage.sync`. It defaults 
 | Encoding              | HEX or BASE64 (default).                                                                                                                                                                                             |
 | Schema                | Required JSON Schema, validated as a JSON object before saving. Monospace editor; Tab indents (Shift+Tab leaves the field); **Format JSON** pretty-prints.                                                           |
 
-Editing only sends what changed. **Delete** (edit only) swaps the footer for a confirmation that names the hook and warns that flows it triggers will stop receiving requests.
+Editing only sends what changed. The header holds the editable title (the label), **Save** / **Create** (enabled only once there's a title and schema and, when editing, a change) and the close button. When editing, a "⋮" **More actions** menu sits between them with **Copy webhook URL** and, under **Danger zone**, **Delete**, which opens a confirmation along the bottom that names the hook and warns that flows it triggers will stop receiving requests.
 
-The layout follows the new UI rather than the classic library's nested accordions: one white card with a scrolling body and fixed footer, the HMAC settings in a soft grouped card, Mantine-variable colours and the new UI's 36px / 8px-radius buttons. The same dialog appears in the classic app.
+The layout follows the new UI rather than the classic library's nested accordions: one white card with actions in the header and a scrolling body, the HMAC settings in a soft grouped card, Mantine-variable colours and the new UI's 36px / 8px-radius buttons. The same dialog appears in the classic app.
 
 ### Secrets
 
@@ -76,9 +76,9 @@ The panel's refresh control is icon-only too. It keeps the bordered button treat
 
 They inherit the URL's colour via `color: inherit` on `.awh-url-row`, so they sit at the same visual weight as the text they belong to and shift with it when a row is revealed — grey (`--mantine-color-gray-7`) while masked, full text colour once revealed. The glyphs are 13px inside an 18px hit area, at 0.75 opacity until hovered.
 
-The payload-schema expander (a CSS-drawn chevron) is the **last item in the row**, at the far right after the security badge, so the label, URL and an opened schema all start at the row's left edge. Being at the end of the row it behaves like an accordion chevron: pointing down when closed, up when open.
+A CSS-drawn chevron pointing right is the **last item in the row**, after the security badge, to show the row opens something. The whole row is clickable through the stretched-button pattern: the label is a `<button>` whose `::after` covers `.awh-row-main`, so keyboard users get one ordinary button per row, while the reveal / copy buttons (and a revealed URL, so it can be selected) sit above that layer with `z-index: 1`. The focus ring is drawn on the row via `:has(button.awh-label:focus-visible)`.
 
-The security badge sits just left of it, under a **Security** heading above the list. The heading is right-aligned with `padding-right: calc(var(--awh-row-padding-x) + 1px + var(--awh-expand-size) + var(--awh-row-gap))` — the row padding, the list's border, then the expander and the gap before it — so it lines up exactly above the badges. Those three custom properties are set once on `.awh-body` and used by the rows too, so the heading can't drift if the row geometry changes. It's rendered as part of the row list rather than the panel header, so it only appears when there are rows beneath it, and uses bold title case to match the flows-filter table header rather than the uppercase badges under it.
+The security badge sits just left of it. There's no column heading, so a hook without authentication reads **No auth** rather than "None".
 
 ### URL masking
 
@@ -184,7 +184,7 @@ query getWebhooks($hubId: ID!) {
 
 Notes on the response:
 
-- `schema` comes back as a **JSON string**, not an object. It's `JSON.parse`d and re-stringified with 2-space indent for display, and shown verbatim if it doesn't parse. An empty schema (`{}`) disables the row's expander rather than showing an empty block.
+- `schema` comes back as a **JSON string**, not an object. The edit dialog pretty-prints it with 2-space indent, and shows it verbatim if it doesn't parse. The list itself no longer shows it.
 - `security.__typename` is e.g. `WebhookListenerSecurityNone`. The badge strips the `WebhookListenerSecurity` prefix and splits camelCase, so that renders as `None`. For HMAC hooks the query also fetches `header`, `algorithm` and `encoding` to prefill the edit dialog. **No secret is fetched** — the API doesn't return one.
 
 ### Mutations
@@ -256,7 +256,7 @@ The observer callback is debounced by 150 ms and only schedules work when the pa
 
 Scoped entirely to `[data-amplience-flows-webhooks="enabled"]` on `<html>`, so turning the toggle off reverts the page immediately with no reload. Colours come from Mantine's own custom properties (`--mantine-color-text`, `--mantine-color-default-border`, `--mantine-color-gray-1`, …), so the panel follows Amplience's light/dark scheme and the theming module's per-hub colours without knowing anything about either.
 
-The tab carries the **official webhook mark** — three nodes joined by arcs. The arc geometry is Tabler's `webhook` icon, on the same 24px grid as Amplience's own tab icons; the three filled circles at the arc centres (12,8), (7,17) and (17,17) are part of the official logo but absent from Tabler's outline version, so they're drawn in.
+The tab carries Tabler's `webhook` icon — the same one Amplience uses for its own webhook listeners — on the same 24px grid as Amplience's own tab icons.
 
 It's set at stroke-width 1.5 to match the weight of the Flows/Runs/Reviews icons rather than the logo's heavier lockup, and uses `stroke="currentColor"` rather than the hardcoded `#002C42` Amplience puts on its own tab icons, so it stays visible in dark mode.
 
@@ -268,10 +268,10 @@ Verified against `unifiedapp.amplience.net` on 2026-11-04.
 
 ### How the workbench differs
 
-- **It's a workbench, not a page tab bar.** The tab list sits in the global app header: pinned "library" tabs (Flows, Runs) followed by a closeable tab per open flow. The pinned tabs stay while a flow is open, so Webhooks is reachable from inside the flow editor — the classic app has no tab bar there.
+- **It's a workbench, not a page tab bar.** The tab list sits in the global app header: pinned "library" tabs (Flows, Runs) followed by a closeable tab per open flow. The pinned tabs stay while a flow is open, so Webhook listeners is reachable from inside the flow editor — the classic app has no tab bar there.
 - **Every native tab is a route** — `/flows/:hub`, `/flows/:hub/runs`, `/flows/:hub/:flowId`. Anything else after the hub is taken as a flow ID: `/flows/:hub/webhooks` opens a broken "Flow" tab ("This flow could not be loaded."). So this tab has no path of its own; it's driven by `#webhooks` on whichever workbench route is current, including a flow's.
 - **Tabs and panels live apart.** The tab list is portalled into the header, outside the Tabs root that holds the panels, so each is found separately.
-- **Inactive panels are emptied** as well as hidden. Our panel only ever hides the active one with CSS, so an open flow editor stays mounted — unsaved changes and all — while Webhooks is showing.
+- **Inactive panels are emptied** as well as hidden. Our panel only ever hides the active one with CSS, so an open flow editor stays mounted — unsaved changes and all — while Webhook listeners is showing.
 - `/flows/:hub/settings/*` has no workbench, so the tab and panel are removed there.
 
 ### Selectors and their fallbacks
@@ -285,21 +285,21 @@ Mantine builds ids as `mantine-<uid>-tab-<value>` / `mantine-<uid>-panel-<value>
 | Panels root            | parent of `[id$="-panel-flows-library"]`                               | No tab is injected                  |
 | Tab label              | `[data-label]` attribute + the text node matching the template's label | Tab shows text without an icon      |
 | Tab icon               | the template's first `svg`                                             | Tab shows the label only            |
-| Flow-tab close buttons | `.mantine-CloseButton-root`, `[aria-label^="Close "]`                  | Closing a flow also leaves Webhooks |
+| Flow-tab close buttons | `.mantine-CloseButton-root`, `[aria-label^="Close "]`                  | Closing a flow also leaves Webhook listeners |
 
 The tab is placed **structurally**: the cloned unit is the template's outermost ancestor that holds no other tab (today an animated wrapper div), and it goes into the parent that does (the pinned-tabs group). No hashed `_tabWrapper` / `_pinnedTabs` class is referenced.
 
 ### URL and history
 
 - Our tab adds `#webhooks` with `history.pushState(history.state, …)`. A `location.hash =` assignment would fire `popstate`, which React Router handles as a navigation of its own and records without its index state; passing the router's current state object leaves it undisturbed.
-- The URL is the source of truth. `syncUi()` shows Webhooks whenever the current workbench route carries `#webhooks`, and hides it otherwise — so Back, Forward, deep links and a route change that drops the hash all just work.
-- **Clicking another route's tab** (Runs from Flows, say): React pushes that route, the `#webhooks` entry stays in history, and **Back returns to Webhooks** — an improvement on the classic tab. While React is navigating away, `leavingFrom` stops the sync from bringing the view straight back.
+- The URL is the source of truth. `syncUi()` shows Webhook listeners whenever the current workbench route carries `#webhooks`, and hides it otherwise — so Back, Forward, deep links and a route change that drops the hash all just work.
+- **Clicking another route's tab** (Runs from Flows, say): React pushes that route, the `#webhooks` entry stays in history, and **Back returns to Webhook listeners** — an improvement on the classic tab. While React is navigating away, `leavingFrom` stops the sync from bringing the view straight back.
 - **Clicking the tab of the route you're already on** (it carries `data-amplience-was-active`): the app does nothing, since that tab is already its current value, so the host drops the hash itself with `replaceState`.
-- **Closing a flow tab** isn't treated as leaving Webhooks. If it was the flow whose route you're on, React navigates elsewhere, the hash goes with it, and the sync hides the panel.
+- **Closing a flow tab** isn't treated as leaving Webhook listeners. If it was the flow whose route you're on, React navigates elsewhere, the hash goes with it, and the sync hides the panel.
 
 ### Panel swap
 
-Same approach as the classic host — `data-amplience-webhooks-view="active"` on `<html>` hides the native panels with an `!important` rule, and `data-active` / `aria-selected` are moved off the native tab and restored afterwards. React rewrites those when its active tab changes (a route change while Webhooks is showing), so the sync re-applies them, and the was-active marker always follows React's latest active tab.
+Same approach as the classic host — `data-amplience-webhooks-view="active"` on `<html>` hides the native panels with an `!important` rule, and `data-active` / `aria-selected` are moved off the native tab and restored afterwards. React rewrites those when its active tab changes (a route change while Webhook listeners is showing), so the sync re-applies them, and the was-active marker always follows React's latest active tab.
 
 `flows-webhooks.nextgen.css` adds a second hide rule keyed on wherever the panel was actually appended (`*:has(> #flows-webhooks-panel) > [role="tabpanel"]`), so the native and injected panels can't both show even if `data-testid="tabs"` goes away.
 
@@ -307,7 +307,7 @@ The panel header is measured against the native Flows page header (20px padding,
 
 ### Settings link
 
-The Settings side nav gets a **Webhooks** link under Automation, after AI models and Skills. It deliberately isn't a settings page: it links to `/:org/flows/:hub#webhooks`, which opens the Flows workbench on the Webhooks tab, so the tab stays the one place the list lives. (The Content group's own "Webhooks" link is Amplience's placeholder for content webhooks — an external link to the classic app — and is a different thing.)
+The Settings side nav's own **Webhook listeners** link under Automation (Amplience's settings page for them) is swapped for ours, in the same spot. The native link is matched by its relative href (`a[href^="/"][href$="/settings/webhook-listeners"]` — the flow editor's description link to the same page is absolute, so it isn't caught), cloned for ours, and hidden with `hidden` plus `data-amplience-replaced` rather than removed, since React owns it. Switching the module off removes ours and unhides it. If the native link isn't there, ours is appended after AI models and Skills instead, as it was before the core had one. Either way it deliberately isn't a settings page: it links to `/:org/flows/:hub#webhooks`, which opens the Flows workbench on the Webhook listeners tab, so the tab stays the one place the list lives. (The Content group's own "Webhooks" link is Amplience's placeholder for content webhooks — an external link to the classic app — and is a different thing.)
 
 - **Finding the group:** by href, not by the "Automation" heading or hashed `_link_*` classes — `a[href*="/flows/"][href$="/settings/ai-models"]` and `…/settings/skills`. Those links appear on the flows, content and assets settings pages (all pointing at the same flows hub), so the link appears on all three. Org-level settings (`/:org/settings/*`) has no Automation group, so no link.
 - **The href** is the template's with `/settings/<page>` swapped for `#webhooks`, so it always targets the hub the native links do.
@@ -320,7 +320,10 @@ The Settings side nav gets a **Webhooks** link under Automation, after AI models
 
 ### Webhook Trigger shortcut
 
-The classic flow editor has an "Open Webhook Library" button under the Webhook Trigger's **Webhook** field; the new UI dropped it. This puts an **Open Webhooks tab** button in the same place. It's only a shortcut: it calls the same `showWebhooks()` as the tab, so `#webhooks` is pushed onto the flow's own route, the flow stays open (and mounted, unsaved changes included) in the workbench, and Back — or clicking the flow's tab — returns to it.
+The Webhook Trigger's **Webhook listener** field description ends "Listeners are set up in Settings > Webhook listeners." — a link that opens the settings page in a new browser tab. This swaps that for "Select the listener that should trigger this flow. **Manage webhook listeners**", where the inline button calls the same `showWebhooks()` as the tab, so `#webhooks` is pushed onto the flow's own route, the flow stays open (and mounted, unsaved changes included) in the workbench, and Back — or clicking the flow's tab — returns to it.
+
+- **Placement:** the native link is found by href (`a[href$="/settings/webhook-listeners"]`). React owns the description, so nothing is removed: the link and its trailing "." get `hidden`, the lead-in text node has "Listeners are set up in" trimmed (only if it still reads that way), and our button is inserted before the link. `awhRestore` on the button undoes all of it when the module is switched off or the field goes. The button copies the link's classes, so it looks like the native inline link.
+- **Fallback:** if the native link isn't there, the button goes straight after the field as a grid item, still link-styled.
 
 It also flashes the hook the field has selected, via `panel.highlight(id)` in the core (immediately if the list is already showing, otherwise when it renders).
 
@@ -335,7 +338,7 @@ It also flashes the hook the field has selected, via `panel.highlight(id)` in th
 
 ### Keeping the flow editor's list fresh
 
-The Webhook Trigger's dropdown only ever fetched its list on page load. A hook created or renamed on the Webhooks tab (or anywhere else) didn't show up there until a full refresh. That was true before this module too.
+The Webhook Trigger's dropdown only ever fetched its list on page load. A hook created or renamed on the Webhook listeners tab (or anywhere else) didn't show up there until a full refresh. That was true before this module too.
 
 **Why** (verified 2026-11-04, from the app's bundle): the list comes from an RTK Query endpoint, `getWebhookListeners`, on the app's `graphQLApi` slice. That API is created with `refetchOnFocus: false` and no polling, and opening the pane or the dropdown makes no request. The endpoint provides the `WebhookListeners` tag, though, and invalidating a tag makes RTK Query refetch every mounted query that uses it. Two queries are mounted while a flow is open; both refetch, and the dropdown re-renders with the new list. The selected hook stays selected and the flow isn't marked as changed. All three were checked by feeding the app a doctored response containing an extra hook, which appeared in the dropdown with no server writes.
 
@@ -343,7 +346,7 @@ The Webhook Trigger's dropdown only ever fetched its list on page load. A hook c
 
 `flows-webhooks.nextgen.js` fires the event:
 
-- straight after a create, edit or delete on the Webhooks tab (forced)
+- straight after a create, edit or delete on the Webhook listeners tab (forced)
 - when a Webhook Trigger's config pane opens, i.e. when its field appears
 - when the dropdown is focused, i.e. about to open — a fallback for a pane that's been open a while; a refetch landing while it's open updates the options in place
 
@@ -357,7 +360,7 @@ RTK Query keeps serving the cached list while a refetch is in flight and swaps t
 
 ## Troubleshooting
 
-1. Confirm **Enable Flows Webhooks** is turned on (it's off by default).
+1. Confirm **Enable Webhook Listeners Panel** is turned on (it's off by default).
 2. Classic: navigate to the flows list (`/content-studio/<hubId>/content-flows`) — not an individual flow. New UI: any `/:org/flows/:hub` route except settings.
 3. Check DevTools > Sources > Content scripts and verify `flows-webhooks.core.js` is injected, followed by `flows-webhooks.js` (classic) or `flows-webhooks.nextgen.js` (new UI). A `flows-webhooks.core.js not loaded` console error means the manifest order is wrong.
 4. Check DevTools > Console for messages prefixed `[Amplience Helper] flows-webhooks:`.
@@ -367,4 +370,4 @@ RTK Query keeps serving the cached list while a refetch is in flight and swaps t
    - New UI: check `[id$="-tab-flows-library"]` and `[id$="-panel-flows-library"]` still resolve.
    - There's no give-up timer, so a missing tab means either a selector miss or the observer not firing — check `document.body` is being observed.
 6. If the list shows an auth error, reload the page to refresh the Auth0 token. `Missing permission read on Hub …` for a hub you can open usually means a stale token was picked — check the `@@auth0spajs@@` entries' `expiresAt`.
-7. If the list is empty, confirm the hub actually has webhook URLs via the library inside any flow.
+7. If the list is empty, confirm the hub actually has webhook listeners via the library inside any flow.

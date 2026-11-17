@@ -9,7 +9,7 @@
 // app's `graphQLApi` slice. That API is created without refetchOnFocus or
 // polling, and nothing invalidates it when hooks change elsewhere, so the
 // dropdown keeps whatever list was fetched at page load - including after a
-// hook is created or renamed on our Webhooks tab. The endpoint provides the
+// hook is created or renamed on our Webhook listeners tab. The endpoint provides the
 // `WebhookListeners` tag, so invalidating that tag makes RTK Query refetch
 // every mounted query that uses it, and the dropdown re-renders with the
 // fresh list. A refetch doesn't touch the flow's own state: the selected

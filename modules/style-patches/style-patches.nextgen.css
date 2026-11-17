@@ -26,6 +26,60 @@
     }
   }
 
+  /* Workbench pinned tabs (Flows, Runs, + our Webhook listeners): icon-only */
+  /* Saves header space for the open-flow tabs. The label slides open on    */
+  /* hover or keyboard focus; the button keeps its aria-label throughout.   */
+  /* Has its own sub-toggle ("Show pinned tabs as icons"), so it also needs */
+  /* data-amplience-pinned-tabs-icons="enabled", set by style-patches.js.   */
+  /* Targets: the hashed CSS-module classes `_pinnedTabs_*` (the container), */
+  /* `_tabWrapper_*` (each tab's wrapper), `_tabMain_*` (icon + title row), */
+  /* `_tabIcon_*` and `_tabTitle_*` (the label). If the hashes' prefixes    */
+  /* change, nothing matches and the full labels show.                      */
+  &[data-amplience-pinned-tabs-icons="enabled"] [class*="_pinnedTabs_"] {
+    /* Let the wrappers shrink to the icon rather than the label's width */
+    [class*="_tabWrapper_"] {
+      min-width: 0;
+    }
+
+    [class*="_tabIcon_"] {
+      margin-inline-end: 0;
+    }
+
+    [role="tab"] {
+      /* Spacing moves from the row's gap onto the label, so it collapses */
+      [class*="_tabMain_"] {
+        gap: 0;
+      }
+
+      [class*="_tabTitle_"] {
+        min-width: 0;
+        max-width: 0;
+        margin-inline: 0;
+        padding-inline-start: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        opacity: 0;
+        transition:
+          max-width 0.2s ease-in-out,
+          padding 0.2s ease-in-out,
+          opacity 0.15s ease-in-out;
+      }
+
+      &:hover,
+      &:focus-visible {
+        [class*="_tabTitle_"] {
+          max-width: 12rem;
+          opacity: 1;
+        }
+      }
+
+      /* Keyboard focus already spaces the label, so only hover adds it */
+      &:hover:not(:focus-visible) [class*="_tabTitle_"] {
+        padding-inline-start: 2px;
+      }
+    }
+  }
+
   /* Hover effect for sortable table headers */
   thead th.amplience-TableThSortable-root:hover {
     background: var(--mantine-color-primary-2);

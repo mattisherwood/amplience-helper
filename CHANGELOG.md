@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.6.1 - 2026-11-17
+
+### Summary
+
+The webhooks panel is now "Webhook listeners", matching the core product's own conventions, with a cleaner list and edit dialog.
+Webhook support has now been added to core, but is in a separate area of the site with a different UX, so I've left the browser extension as an optional alternative, but just shifted it so it replaces/works alongside rather than clashes with the core one. It can still be toggled on+off in the extension's options.
+
+### Module Highlights
+
+- Flows Webhooks: Search the list, click a listener to edit it, and on wider screens see the URL beside its name. The edit dialog has the name as an editable title, Save at the top, and Copy URL and Delete in a "⋮" menu.
+- Flows Webhooks: In the new UI, the "Webhook listeners" link in Settings and the "Manage webhook listeners" link in the flow editor both open the tab instead of a separate settings page. From the flow editor, your flow stays open.
+- Style Patches: The Flows, Runs and Webhook listeners tabs show just their icons until you hover over them, leaving more room for open flows (untick "Show pinned tabs as icons" in the options to turn this off). The Development Overview page also fits smaller screens.
+
+---
+
 ## v2.6.0 - 2026-11-04
 
 ### Summary

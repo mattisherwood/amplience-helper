@@ -21,6 +21,7 @@ Despite the name, this module now covers UI patches generally, not only CSS:
 - Restyles the app switcher ("switcheroo") and homepage app cards for readability, with consistent hover states across the CMS, DAM and account areas
 - Keeps the **flow tab** in step with the URL, so a refresh doesn't throw you onto a different tab (see below)
 - New UI flow editor: gives the icon bar's **Runs** tab the `player-track-next` icon used for Runs everywhere else, instead of the Version History (`history`) icon it ships with. Done in CSS by overriding the SVG's path data with the `d` property, so the icon keeps its native size, stroke, colour and states; scoped to `[data-testid="icon-bar-tab-runs"] svg.tabler-icon-history` so it retires itself if Amplience fixes the icon
+- New UI flows workbench: the pinned tabs (Flows, Runs, and the Flows Webhooks module's Webhook listeners) shrink to just their icon, and the label slides open on hover or keyboard focus. Pure CSS on the hashed `_pinnedTabs_*` / `_tabMain_*` / `_tabTitle_*` classes (matched by prefix), so if they change the full labels simply show again. The buttons keep their `aria-label`, so screen readers still get the name. Has its own sub-toggle, **Show pinned tabs as icons** (`pinnedTabsIconsEnabled`, default on, options page only), which `style-patches.js` reflects as `data-amplience-pinned-tabs-icons="enabled"` on `<html>`; the CSS needs both that and the Style Patches attribute
 
 ### Flow tab URL persistence
 
@@ -63,7 +64,7 @@ URL updates use `replaceState`, not `pushState`: a refresh keeps your tab, but t
 
 1. **This module only touches Amplience's own three tabs.** It identifies them by their `-tab-<value>` Mantine id suffix, so the injected `flows-webhooks-tab` is ignored and its hash is never overwritten.
 2. **This module's URL write is registered in the BUBBLE phase, deliberately.** flows-webhooks clears the hash from a _capture_-phase listener on the same clicks. A capture-phase write here could run first and have its hash wiped immediately afterwards; bubbling puts this one last, so the URL it writes wins. This module _also_ has a capture-phase listener, but it only raises the `tabClickInFlight` flag — it never writes the URL.
-3. **A hash this module doesn't own means hands off.** `flowTabFromUrl()` checks the hash _before_ the path and returns null for any hash other than `#runs`. Without that, `/content-flows/reviews#webhooks` let the path win, so activating the Webhooks tab from the Reviews tab was instantly undone.
+3. **A hash this module doesn't own means hands off.** `flowTabFromUrl()` checks the hash _before_ the path and returns null for any hash other than `#runs`. Without that, `/content-flows/reviews#webhooks` let the path win, so activating the Webhook listeners tab from the Reviews tab was instantly undone.
 
 Either module can be toggled off independently without breaking the other.
 

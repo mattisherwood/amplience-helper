@@ -1,6 +1,6 @@
 // Flows Webhooks - classic Workforce UI (app.amplience.net/content-studio)
 //
-// Adds a "Webhooks" tab to the flow listing's Flows / Runs / Reviews tab bar.
+// Adds a "Webhook listeners" tab to the flow listing's Flows / Runs / Reviews tab bar.
 // The data, masking and list rendering live in flows-webhooks.core.js, shared
 // with the new UI's host (flows-webhooks.nextgen.js). This file only decides
 // when the tab belongs on the page, where it goes, and how activating it
@@ -31,7 +31,7 @@
 
   const TAB_ID = "flows-webhooks-tab"
   const PANEL_ID = "flows-webhooks-panel"
-  const TAB_LABEL = "Webhooks"
+  const TAB_LABEL = "Webhook listeners"
   const HASH = "#webhooks"
 
   const SYNC_DEBOUNCE = 150

@@ -9,18 +9,19 @@
 // and where the tab and panel go.
 //
 // Adds:
-//   - a "Webhooks" tab to the flows workbench, pinned after Flows and Runs
-//   - an "Open Webhooks tab" button under the Webhook field of a flow's
-//     Webhook Trigger, like the classic editor's "Open Webhook Library" - a
-//     shortcut to the tab, which leaves the flow open in the workbench
-//   - a "Webhooks" link under Settings > Automation (after AI models and
+//   - a "Webhook listeners" tab to the flows workbench, pinned after Flows and Runs
+//   - a "Manage webhook listeners" inline button in the description of a
+//     flow's Webhook Trigger field, in place of the core's link to the
+//     settings page - a shortcut to the tab, which leaves the flow open in
+//     the workbench
+//   - a "Webhook listeners" link under Settings > Automation (after AI models and
 //     Skills) that opens that tab. There's no settings page of its own - the
 //     tab is the one place the list lives.
 //
 // How the new UI's tab bar differs from the classic one (verified 2026-11-04):
 //   - It's a workbench in the app header: pinned "library" tabs (Flows, Runs)
 //     followed by a closeable tab per open flow. The pinned tabs stay put
-//     while a flow is open, so the Webhooks tab is reachable from inside the
+//     while a flow is open, so the Webhook listeners tab is reachable from inside the
 //     flow editor too - the classic app has no tab bar there.
 //   - Every native tab is a route: /flows/:hub, /flows/:hub/runs,
 //     /flows/:hub/:flowId. Anything else after the hub is taken as a flow ID
@@ -31,7 +32,7 @@
 //     holds the panels, so tab and panel are found separately.
 //   - Inactive panels are emptied as well as hidden. Hiding the active one
 //     with CSS (never touching React's inline styles) keeps an open flow
-//     editor mounted, unsaved changes and all, while Webhooks is showing.
+//     editor mounted, unsaved changes and all, while Webhook listeners is showing.
 
 ;(function () {
   "use strict"
@@ -57,7 +58,7 @@
   const PANEL_ID = "flows-webhooks-panel"
   const UNIT_ATTRIBUTE = "data-amplience-flows-webhooks-tab"
   const WAS_ACTIVE_ATTRIBUTE = "data-amplience-was-active"
-  const TAB_LABEL = "Webhooks"
+  const TAB_LABEL = "Webhook listeners"
   const HASH = "#webhooks"
 
   const SYNC_DEBOUNCE = 150
@@ -95,6 +96,14 @@
   const AUTOMATION_LINKS =
     'a[href*="/flows/"][href$="/settings/ai-models"], a[href*="/flows/"][href$="/settings/skills"]'
   const SETTINGS_LINK_ID = "flows-webhooks-settings-link"
+  // The core's own "Webhook listeners" link in the same group, to its
+  // settings page. Ours takes its place: the native one is hidden (React
+  // owns it, so it isn't removed) and ours goes right after it. Relative
+  // hrefs only - the flow editor's field description links to the same page
+  // with an absolute URL, and that one is handled separately. If this stops
+  // matching, ours is appended to the group instead.
+  const NATIVE_SETTINGS_LINK = 'a[href^="/"][href$="/settings/webhook-listeners"]'
+  const REPLACED_ATTRIBUTE = "data-amplience-replaced"
 
   /*
    * The Webhook Trigger's config form is generated from the action's JSON
@@ -106,6 +115,14 @@
   const WEBHOOK_FIELD_INPUT =
     'input[schemalocation$="/properties/amp:webhookId"]'
   const SHORTCUT_CLASS = "awh-webhook-shortcut"
+  // The core field description ends "Listeners are set up in Settings >
+  // Webhook listeners." - that link goes to the settings page in a new
+  // browser tab. Our shortcut takes its place. Matched by href; if it's
+  // gone, the shortcut goes under the field instead.
+  const SETTINGS_PAGE_LINK = 'a[href$="/settings/webhook-listeners"]'
+  // The sentence the link completes, trimmed off while ours is in place.
+  // If the wording changes, the text is left alone.
+  const LINK_LEAD_IN = /\s*Listeners are set up in\s*$/
   // The Select keeps the chosen listener's GraphQL ID in a hidden input
   // beside the field. Those IDs start "V2ViaG9va0xpc3RlbmVy" - base64 for
   // "WebhookListener" - which is how we tell it from any other hidden input.
@@ -404,10 +421,9 @@
   function buildShortcut(field) {
     const button = document.createElement("button")
     button.type = "button"
-    button.className = "awh-button awh-button-default " + SHORTCUT_CLASS
-    button.innerHTML = core.tabIconSvg({ size: 16, strokeWidth: 2 })
-    button.appendChild(document.createTextNode("Open Webhooks tab"))
-    button.title = "See, copy and manage this hub's webhook URLs"
+    button.className = SHORTCUT_CLASS
+    button.textContent = "Manage webhook listeners"
+    button.title = "Open the Webhook listeners tab. Your flow stays open."
 
     button.addEventListener("click", function (event) {
       event.preventDefault()
@@ -429,17 +445,66 @@
   }
 
   /*
-   * Placed straight after the field. The field sits in the form's
-   * SimpleGrid, so the button becomes a grid item and picks up the form's
-   * own spacing, just below the Webhook select - where the classic editor
-   * has its "Open Webhook Library" button.
+   * Swaps the description's "Listeners are set up in Settings > Webhook
+   * listeners." for "Manage webhook listeners", in the same spot. React owns
+   * those nodes, so nothing is removed: the link and its trailing "." are
+   * hidden, the lead-in text is trimmed in place, and button.awhRestore
+   * puts it all back. Our button borrows the link's classes, so it looks
+   * like the native inline link.
+   */
+  function placeShortcut(field, button) {
+    const link = field.querySelector(SETTINGS_PAGE_LINK)
+
+    if (!link) {
+      // No native link to replace - under the field, as a grid item.
+      field.after(button)
+      return
+    }
+
+    button.className = link.className + " " + SHORTCUT_CLASS
+    button.setAttribute("data-underline", "hover")
+
+    const leadIn = link.previousElementSibling
+    const stop = link.nextElementSibling
+    const textNode = leadIn && leadIn.firstChild
+    const original = textNode ? textNode.nodeValue : null
+
+    if (textNode && LINK_LEAD_IN.test(original)) {
+      textNode.nodeValue = original.replace(LINK_LEAD_IN, "")
+    }
+
+    link.hidden = true
+
+    if (stop && stop.textContent.trim() === ".") {
+      stop.hidden = true
+    }
+
+    const space = document.createTextNode(" ")
+    link.before(space, button)
+
+    button.awhRestore = function () {
+      if (textNode && textNode.nodeValue !== original) {
+        textNode.nodeValue = original
+      }
+      link.hidden = false
+      if (stop) {
+        stop.hidden = false
+      }
+      space.remove()
+    }
+  }
+
+  /*
+   * Normally replaces the native settings link in the field's description
+   * (see placeShortcut). A field without a button is a config pane that has
+   * just opened, or a form React has re-rendered.
    */
   function syncFieldShortcuts() {
     Array.prototype.forEach.call(
       document.querySelectorAll("." + SHORTCUT_CLASS),
       function (button) {
         if (!button.awhField || !button.awhField.isConnected) {
-          button.remove()
+          removeShortcut(button)
         }
       },
     )
@@ -448,7 +513,7 @@
 
     getWebhookFields().forEach(function (field) {
       if (!field.awhShortcut || !field.awhShortcut.isConnected) {
-        field.after(buildShortcut(field))
+        placeShortcut(field, buildShortcut(field))
         opened = true
       }
     })
@@ -457,6 +522,16 @@
     if (opened) {
       refreshAppWebhookList(false)
     }
+  }
+
+  function removeShortcut(button) {
+    if (button.awhField) {
+      button.awhField.awhShortcut = null
+    }
+    if (button.awhRestore) {
+      button.awhRestore()
+    }
+    button.remove()
   }
 
   function shortcutsNeedSync() {
@@ -476,12 +551,7 @@
   function removeFieldShortcuts() {
     Array.prototype.forEach.call(
       document.querySelectorAll("." + SHORTCUT_CLASS),
-      function (button) {
-        if (button.awhField) {
-          button.awhField.awhShortcut = null
-        }
-        button.remove()
-      },
+      removeShortcut,
     )
   }
 
@@ -557,6 +627,10 @@
     link.id = SETTINGS_LINK_ID
     link.setAttribute("href", url)
     link.setAttribute("data-amplience-injected", "true")
+    // The template may be the core's link we've already hidden - don't copy
+    // that across, or ours is hidden too.
+    link.hidden = false
+    link.removeAttribute(REPLACED_ATTRIBUTE)
     link.removeAttribute("aria-current")
     link.removeAttribute("data-discover")
     link.removeAttribute("data-testid")
@@ -614,26 +688,44 @@
     return link
   }
 
+  function restoreNativeSettingsLinks() {
+    Array.prototype.forEach.call(
+      document.querySelectorAll("[" + REPLACED_ATTRIBUTE + "]"),
+      function (link) {
+        link.hidden = false
+        link.removeAttribute(REPLACED_ATTRIBUTE)
+      },
+    )
+  }
+
   function removeSettingsLink() {
     const link = document.getElementById(SETTINGS_LINK_ID)
 
     if (link) {
       link.remove()
     }
+
+    restoreNativeSettingsLinks()
   }
 
+  /*
+   * Normally replaces the core's own "Webhook listeners" link in place (same
+   * label, icon and position, but opening our tab). Without one, ours is
+   * appended after the group's last link, as before the core had its own.
+   */
   function syncSettingsLink() {
     const found = getAutomationTemplate()
     const existing = document.getElementById(SETTINGS_LINK_ID)
 
     if (!found) {
-      if (existing) {
-        existing.remove()
-      }
+      removeSettingsLink()
       return
     }
 
-    const url = webhooksUrlFrom(found.template)
+    const native = document.querySelector(NATIVE_SETTINGS_LINK)
+    const template = native || found.template
+    const anchor = native || found.last
+    const url = webhooksUrlFrom(template)
 
     if (!url) {
       return
@@ -643,7 +735,8 @@
     if (
       existing &&
       existing.getAttribute("href") === url &&
-      existing.parentNode === found.last.parentNode
+      existing.previousElementSibling === anchor &&
+      (!native || native.hidden)
     ) {
       return
     }
@@ -652,7 +745,12 @@
       existing.remove()
     }
 
-    found.last.after(buildSettingsLink(found.template, url))
+    if (native) {
+      native.hidden = true
+      native.setAttribute(REPLACED_ATTRIBUTE, "true")
+    }
+
+    anchor.after(buildSettingsLink(template, url))
   }
 
   /* ---------------------------------------------------------- view activation */
@@ -890,7 +988,8 @@
     // The settings link: wanted wherever the Automation group is rendered.
     if (
       Boolean(document.querySelector(AUTOMATION_LINKS)) !==
-      Boolean(document.getElementById(SETTINGS_LINK_ID))
+        Boolean(document.getElementById(SETTINGS_LINK_ID)) ||
+      document.querySelector(NATIVE_SETTINGS_LINK + ":not([hidden])")
     ) {
       return true
     }

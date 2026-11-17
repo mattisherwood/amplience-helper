@@ -345,31 +345,6 @@
     return stripped.replace(/([a-z])([A-Z])/g, "$1 $2")
   }
 
-  // schema arrives as a JSON string. Pretty-print it when it parses, show it
-  // verbatim when it does not.
-  function formatSchema(schema) {
-    if (typeof schema !== "string" || !schema.trim()) {
-      return null
-    }
-
-    try {
-      const parsed = JSON.parse(schema)
-
-      if (
-        parsed &&
-        typeof parsed === "object" &&
-        !Array.isArray(parsed) &&
-        Object.keys(parsed).length === 0
-      ) {
-        return null
-      }
-
-      return JSON.stringify(parsed, null, 2)
-    } catch (error) {
-      return schema
-    }
-  }
-
   async function copyToClipboard(text) {
     try {
       await navigator.clipboard.writeText(text)
@@ -398,10 +373,8 @@
   /* ------------------------------------------------------------------ icons */
 
   /*
-   * The official webhook mark - three nodes joined by arcs. The arc geometry
-   * is Tabler's `webhook` icon (same 24px grid as the icons Amplience puts on
-   * its own tabs); the three filled circles sit at the arc centres, which is
-   * what the official logo has and Tabler's outline version leaves out.
+   * Tabler's `webhook` icon, as Amplience uses for its own webhook listeners
+   * (same 24px grid as the icons Amplience puts on its own tabs).
    *
    * Stroked with currentColor rather than a hardcoded colour so it stays
    * visible in dark mode. Each host picks a stroke width to match the weight
@@ -426,9 +399,6 @@
       '<path d="M4.876 13.61a4 4 0 1 0 6.124 3.39h6"></path>' +
       '<path d="M15.066 20.502a4 4 0 1 0 1.934 -7.502c-.706 0 -1.424 .179 -2 .5l-3 -5.5"></path>' +
       '<path d="M16 8a4 4 0 1 0 -8 0c0 1.506 .77 2.818 2 3.5l-3 5.5"></path>' +
-      '<circle cx="12" cy="8" r="1.7" fill="currentColor" stroke="none"></circle>' +
-      '<circle cx="7" cy="17" r="1.7" fill="currentColor" stroke="none"></circle>' +
-      '<circle cx="17" cy="17" r="1.7" fill="currentColor" stroke="none"></circle>' +
       "</svg>"
     )
   }
@@ -450,11 +420,19 @@
     refresh:
       '<path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path>' +
       '<path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path>',
-    pencil:
-      '<path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>' +
-      '<path d="M13.5 6.5l4 4"></path>',
     plus: '<path d="M12 5l0 14"></path><path d="M5 12l14 0"></path>',
     x: '<path d="M18 6l-12 12"></path><path d="M6 6l12 12"></path>',
+    deviceFloppy:
+      '<path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path>' +
+      '<path d="M10 14a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>' +
+      '<path d="M14 4l0 4l-6 0l0 -4"></path>',
+    dotsVertical:
+      '<path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>' +
+      '<path d="M11 19a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>' +
+      '<path d="M11 5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>',
+    search:
+      '<path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>' +
+      '<path d="M21 21l-6 -6"></path>',
     trash:
       '<path d="M4 7l16 0"></path><path d="M10 11l0 6"></path><path d="M14 11l0 6"></path>' +
       '<path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>' +
@@ -529,7 +507,7 @@
     const panel = document.createElement("div")
     panel.id = opts.id || "flows-webhooks-panel"
     panel.setAttribute("role", opts.role || "region")
-    panel.setAttribute("aria-label", "Webhook URLs")
+    panel.setAttribute("aria-label", "Webhook listeners")
 
     const header = document.createElement("div")
     header.className = "awh-header"
@@ -554,6 +532,26 @@
 
     const actions = document.createElement("div")
     actions.className = "awh-header-actions"
+
+    // Filters the rows already on screen by label or URL - no refetch.
+    let query = ""
+    const search = document.createElement("input")
+    search.type = "search"
+    search.className = "awh-input awh-search"
+    search.placeholder = "Search..."
+    search.autocomplete = "off"
+    search.setAttribute("aria-label", "Search webhook listeners")
+    search.addEventListener("input", function () {
+      query = search.value.trim().toLowerCase()
+      applySearch()
+    })
+
+    // Tabler `search` icon just inside the input's left edge.
+    const searchWrap = document.createElement("span")
+    searchWrap.className = "awh-search-wrap"
+    searchWrap.innerHTML = iconSvg("search")
+    searchWrap.appendChild(search)
+    actions.appendChild(searchWrap)
 
     const refresh = iconButton("awh-refresh", "refresh", "Refresh")
     refresh.addEventListener("click", function () {
@@ -603,7 +601,7 @@
       create.type = "button"
       create.className = "awh-button awh-button-primary awh-create"
       create.innerHTML = iconSvg("plus")
-      create.appendChild(document.createTextNode("Create webhook URL"))
+      create.appendChild(document.createTextNode("Create webhook listener"))
       create.addEventListener("click", function () {
         openEditor(null)
       })
@@ -720,7 +718,6 @@
 
     function buildRow(webhook) {
       const url = typeof webhook.url === "string" ? webhook.url : ""
-      const schema = formatSchema(webhook.schema)
 
       const row = document.createElement("div")
       row.className = "awh-row"
@@ -730,20 +727,27 @@
       const main = document.createElement("div")
       main.className = "awh-row-main"
 
-      const expand = button("awh-expand", "")
-      expand.setAttribute("aria-expanded", "false")
-      expand.setAttribute(
-        "aria-label",
-        schema ? "Show payload schema" : "No payload schema",
-      )
-      expand.disabled = !schema
-
       const labels = document.createElement("div")
       labels.className = "awh-labels"
 
-      const label = document.createElement("span")
+      /*
+       * With editing available, the label is a button whose ::after covers
+       * the whole row (CSS), so a click anywhere on the row opens the edit
+       * dialog while keyboard users get one ordinary button per row. Reveal
+       * and copy sit above that layer, so they keep their own jobs.
+       */
+      const label = document.createElement(editable ? "button" : "span")
       label.className = "awh-label"
       label.textContent = webhook.label || "(untitled)"
+
+      if (editable) {
+        label.type = "button"
+        label.title = "Edit webhook listener"
+        label.addEventListener("click", function () {
+          openEditor(webhook)
+        })
+      }
+
       labels.appendChild(label)
 
       // The URL and its two actions share one line so the icons read as part
@@ -797,47 +801,57 @@
       const security = securityLabel(webhook.security)
       badge.className = "awh-badge"
       badge.setAttribute("data-security", security === "None" ? "none" : "set")
-      badge.textContent = security
+      // "No auth" rather than "None", so the badge reads on its own without
+      // a column heading.
+      badge.textContent = security === "None" ? "No auth" : security
       badge.title = "Security: " + security
-      main.appendChild(badge)
+      const badgeWrapper = document.createElement("span")
+      badgeWrapper.className = "awh-badge-wrapper"
+      badgeWrapper.appendChild(badge)
+      main.appendChild(badgeWrapper)
 
+      // A right-pointing chevron: the row opens the edit dialog. Decorative -
+      // the label button is what's announced.
       if (editable) {
-        const edit = iconButton("awh-edit", "pencil", "Edit webhook URL")
-        edit.addEventListener("click", function () {
-          openEditor(webhook)
-        })
-        main.appendChild(edit)
+        const chevron = document.createElement("span")
+        chevron.className = "awh-row-chevron"
+        chevron.setAttribute("aria-hidden", "true")
+        main.appendChild(chevron)
       }
-
-      // Last in the row, so the expander sits at the far right and the label
-      // and URL line up with the row's left edge (and the schema under it).
-      main.appendChild(expand)
 
       row.appendChild(main)
 
-      if (schema) {
-        const schemaWrap = document.createElement("pre")
-        schemaWrap.className = "awh-schema"
-        schemaWrap.hidden = true
-
-        const schemaTitle = document.createElement("h4")
-        schemaTitle.textContent = "Payload Schema"
-        schemaWrap.appendChild(schemaTitle)
-
-        const schemaCode = document.createElement("code")
-        schemaCode.textContent = schema
-        schemaWrap.appendChild(schemaCode)
-
-        row.appendChild(schemaWrap)
-
-        expand.addEventListener("click", function () {
-          const open = expand.getAttribute("aria-expanded") === "true"
-          expand.setAttribute("aria-expanded", open ? "false" : "true")
-          schemaWrap.hidden = open
-        })
-      }
-
       return row
+    }
+
+    // Hides rows that don't match the search, with a message when none do.
+    function applySearch() {
+      const rows = body.querySelectorAll(".awh-row")
+      let shown = 0
+
+      Array.prototype.forEach.call(rows, function (row) {
+        const label = row.querySelector(".awh-label")
+        const text = (
+          (label ? label.textContent : "") +
+          " " +
+          (row.getAttribute("data-url") || "")
+        ).toLowerCase()
+        row.hidden = Boolean(query) && text.indexOf(query) === -1
+        shown += row.hidden ? 0 : 1
+      })
+
+      let none = body.querySelector(".awh-no-matches")
+
+      if (rows.length && !shown) {
+        if (!none) {
+          none = document.createElement("div")
+          none.className = "awh-message awh-no-matches"
+          body.appendChild(none)
+        }
+        none.textContent = "No webhook listeners match your search."
+      } else if (none) {
+        none.remove()
+      }
     }
 
     function renderWebhooks(items) {
@@ -845,30 +859,19 @@
       body.textContent = ""
 
       if (!items.length) {
-        setSummary("No webhook URLs in this hub")
+        setSummary("No webhook listeners in this hub")
         renderMessage(
           "awh-empty",
           editable
-            ? "This hub has no webhook URLs yet. Use Create webhook URL to add one."
-            : "This hub has no webhook URLs yet. Create one from the webhook library inside any flow.",
+            ? "This hub has no webhook listeners yet. Use Create webhook listener to add one."
+            : "This hub has no webhook listeners yet. Create one from the webhook library inside any flow.",
           false,
         )
         return
       }
 
-      setSummary(
-        items.length === 1 ? "1 webhook URL" : items.length + " webhook URLs",
-      )
-
-      // Labels the badge column. Rendered here rather than in the panel
-      // header so it only appears when there are actually rows beneath it.
-      const columns = document.createElement("div")
-      columns.className = "awh-columns"
-
-      const securityHeading = document.createElement("span")
-      securityHeading.className = "awh-column-security"
-      securityHeading.textContent = "Security"
-      columns.appendChild(securityHeading)
+      // No count in the header - the list speaks for itself.
+      setSummary("")
 
       const list = document.createElement("div")
       list.className = "awh-list"
@@ -877,8 +880,8 @@
         list.appendChild(buildRow(webhook))
       })
 
-      body.appendChild(columns)
       body.appendChild(list)
+      applySearch()
 
       // Point at the row that was just created or edited (or asked for via
       // highlight() before the list had loaded).
@@ -910,10 +913,12 @@
     function showError(error) {
       log("load failed", error)
       renderedHubId = null
-      setSummary("Webhook URLs")
+      setSummary("Webhook listeners")
       renderMessage(
         "awh-error",
-        error && error.message ? error.message : "Could not load webhook URLs.",
+        error && error.message
+          ? error.message
+          : "Could not load webhook listeners.",
         true,
       )
     }
@@ -959,7 +964,7 @@
       fetchInFlight = true
       setRefreshBusy(true)
       setSummary("Loading…")
-      renderMessage("awh-loading", "Fetching webhook URLs…", false)
+      renderMessage("awh-loading", "Fetching webhook listeners…", false)
       renderedHubId = null
 
       let stale = false
@@ -999,7 +1004,7 @@
         renderedHubId = null
       },
       // Flash a webhook's row - now if the list is showing, otherwise once
-      // it renders. Used by the new UI's "Open Webhooks tab" shortcut to
+      // it renders. Used by the new UI's "Open Webhook Library" shortcut to
       // point at the hook the flow uses.
       highlight: function (id) {
         if (id && !flashRow(id)) {

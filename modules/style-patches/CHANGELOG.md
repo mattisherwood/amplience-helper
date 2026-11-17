@@ -1,5 +1,16 @@
 # Style Patches Changelog
 
+## 2026-11-17 (extension v2.6.1)
+
+### Added
+
+- **Show pinned tabs as icons** sub-option on the options page (`pinnedTabsIconsEnabled`, default on), shown only while Style Patches is on and reflected as `data-amplience-pinned-tabs-icons` on `<html>`.
+
+### Changed
+
+- Layout of Development Overview page fixed for smaller screens.
+- New UI workbench: the pinned tabs (Flows, Runs, Webhook listeners) are icon-only until hovered or keyboard-focused, when the label slides open. Matched on hashed-class prefixes (`_pinnedTabs_`, `_tabTitle_`, …), so if those change the full labels show.
+
 ## 2026-11-04 (extension v2.6.0)
 
 ### Changed

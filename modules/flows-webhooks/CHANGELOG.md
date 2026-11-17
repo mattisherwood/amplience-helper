@@ -1,5 +1,22 @@
 # Flows Webhooks Changelog
 
+## 2026-11-17 (extension v2.6.1)
+
+Aligning with (and improving on) the webhook listener management Amplience has now shipped in the new UI.
+
+### Added
+
+- Search box with icon in the panel header, filtering rows by label or URL client-side.
+- Dialog "⋮" menu (edit only): Copy webhook URL, and Delete under a "Danger zone" heading, which opens the existing confirmation.
+
+### Changed
+
+- Renamed to **Webhook listeners** throughout (tab, Settings link, panel, toggle, item wording). Storage key and module ID are unchanged. Icon is now Tabler's plain `webhook`.
+- Header: no listener count or "Security" heading; the badge reads "No auth" instead of "None".
+- Rows: the whole row opens the edit dialog (the label is a `<button>` stretched over the row with `::after`; reveal / copy sit above it). Schema preview, expander and pencil removed, with a static right chevron instead. Reveal / copy are bigger, and from 44rem (container query on `.awh-list`) the URL sits beside the label.
+- Dialog: the title is the label, editable in place, replacing the Label field. Save / Create moves to the header with a floppy icon (outlined grey when disabled), enabled only with a title and schema and, when editing, a change. Cancel and the footer are gone.
+- New UI: the Webhook Trigger field's "Settings > Webhook listeners" description link becomes an inline "Manage webhook listeners" button, and our Settings > Automation link replaces the core's instead of adding a second. The native links are hidden, not removed, and restored when the module is off; without them, both fall back to the previous placement.
+
 ## 2026-11-04 (extension v2.6.0)
 
 ### Added
