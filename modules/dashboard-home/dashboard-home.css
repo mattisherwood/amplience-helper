@@ -83,54 +83,15 @@ html[data-amplience-dashboard-home="enabled"]
 }
 
 html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__main {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: var(--mantine-spacing-md);
   background: #fff;
-  overflow: auto;
+  overflow: hidden; /* the embedded app scrolls itself; this keeps it inside the rounded corner */
   border-top-left-radius: var(--mantine-radius-md);
   border: 1px solid var(--mantine-color-default-border);
-  /* box-shadow: var(--mantine-shadow-sm); */
 }
 
-html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__title {
-  margin: 0;
-  font-size: 21px;
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-html[data-amplience-dashboard-home="enabled"]
-  .amplience-dashboard-home__actions,
-html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f7f8fd;
-  color: #a8a8a8;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-html[data-amplience-dashboard-home="enabled"]
-  .amplience-dashboard-home__actions {
-  flex: 0 1 auto;
-  font-size: 20px;
-  justify-content: flex-end;
-  padding: 8px;
-}
-
-html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__body {
-  flex: 1;
-  min-height: 240px;
-  font-size: 40px;
-  text-align: center;
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }

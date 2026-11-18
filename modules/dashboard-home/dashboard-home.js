@@ -35,6 +35,13 @@
   const OVERLAY_ID = "amplience-dashboard-home"
   const POLL_MS = 250
   const LINK_FALLBACK_MS = 150
+  // The embedded dashboard (step 1: the Content Audits app, in its demo mode,
+  // which needs no Amplience auth). Sandbox mirrors what that extension is
+  // registered with, minus top-navigation until it's needed.
+  const EMBED_URL = "https://audit-dashboard-virid.vercel.app/?mock"
+  const EMBED_TITLE = "Content Audits"
+  const EMBED_SANDBOX =
+    "allow-scripts allow-same-origin allow-downloads allow-popups"
   const EXAMPLE_TABS = ["Overview", "Performance", "SEO Audit"]
 
   let enabled = false
@@ -78,27 +85,14 @@
     return tabs
   }
 
+  // The embedded dashboard fills the whole page area.
   function buildMain() {
     const pane = el("div", "amplience-dashboard-home__main")
-    const top = el("div", "amplience-dashboard-home__top")
-    top.appendChild(
-      el(
-        "h1",
-        "amplience-dashboard-home__title",
-        "Content Operations Overview",
-      ),
-    )
-    top.appendChild(
-      el(
-        "div",
-        "amplience-dashboard-home__actions",
-        "ACTIONS/FILTER TOOLS GO HERE",
-      ),
-    )
-    pane.appendChild(top)
-    pane.appendChild(
-      el("div", "amplience-dashboard-home__body", "DASHBOARD THINGS GO HERE"),
-    )
+    const frame = el("iframe", "amplience-dashboard-home__frame")
+    frame.title = EMBED_TITLE
+    frame.setAttribute("sandbox", EMBED_SANDBOX)
+    frame.src = EMBED_URL
+    pane.appendChild(frame)
     return pane
   }
 

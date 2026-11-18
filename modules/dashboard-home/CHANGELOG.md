@@ -5,6 +5,7 @@
 ### Added
 
 - New optional Dashboard Home module for the new UI.
+- The page area embeds the Content Audits dashboard (demo mode, simulated data) in a sandboxed iframe, replacing the static placeholder body.
 - Stops the redirect from `/<username>` to the content list and shows a placeholder dashboard there instead.
 - Clicking the logo at the top of the icon bar now goes to the dashboard.
 - Also works on the current live build (logo already a link) until the new build goes live. The live-only part is marked `TEMP-LIVE` in `dashboard-home.js`.

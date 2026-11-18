@@ -16,7 +16,7 @@ The setting key is `dashboardHomeEnabled` in `chrome.storage.sync`. This module 
 ## What It Does
 
 - Stops the redirect from `/<username>` to the content list, so the URL stays put
-- Covers the page area with a placeholder dashboard (title, actions area and body), and swaps the header's page tabs for example dashboard tabs (the app's own Content tab row is hidden meanwhile)
+- Fills the page area with an embedded dashboard (currently the Content Audits app in its demo mode) and swaps the header's page tabs for example dashboard tabs (the app's own Content tab row is hidden meanwhile)
 - Makes the logo clickable, going to `/<username>`
 - Leaves the icon bar, the hub picker and the AI button usable; choosing any icon-bar entry leaves the dashboard as normal
 - Shows the icon-bar's Content entry as inactive while on the dashboard
@@ -60,9 +60,11 @@ CSS-module class names are hashed, so only `data-testid` / `aria` hooks are used
 
 If the placeholder can't be shown, the redirect is still swallowed, so the page would sit on the content list under a `/<username>` URL. If that happens, turn the module off and update the selectors.
 
-### Placeholder
+### Embedded dashboard
 
-The tabs, title and actions area are static placeholders (tab clicks only change which tab looks selected) ready to be swapped for real dashboards.
+The page area is a single sandboxed iframe (`EMBED_URL` in `dashboard-home.js`) filling the pane. For now it points at the Content Audits app with `?mock`, which makes it run on simulated data with no Amplience auth. The sandbox mirrors that extension's registration (`allow-scripts allow-same-origin allow-downloads allow-popups`), minus `allow-top-navigation` until needed. The header tabs are still static placeholders (clicking only changes which one looks selected).
+
+Next steps (not done yet): act as the extensions host (handshake, context, API request proxy) so the app can use real data without `?mock`.
 
 ## Troubleshooting
 
