@@ -8,8 +8,8 @@
 // payload }. Written by hand from that library's source (v1.2.0) so the
 // extension stays dependency-free.
 //
-// Exposed as globalThis.AmplienceDashboardHomeHost; dashboard-home.js, listed
-// after this file in manifest.json, uses it.
+// Exposed as globalThis.AmplienceDashboardHomeHost; dashboard-home.overview.js
+// and dashboard-home.js, listed after this file in manifest.json, use it.
 //
 // What it serves to an extension:
 //  - the handshake, then `context-get` (category DASHBOARD, hub, params)
@@ -410,7 +410,16 @@
     return disconnect
   }
 
+  // GET /users on the auth service, for built-in dashboards (not extensions).
+  async function listUsers() {
+    const result = await callApi("GET", "/users", undefined, AUTH_ORIGIN)
+    return (result.data && result.data.data) || []
+  }
+
   globalThis.AmplienceDashboardHomeHost = {
+    api: callApi,
+    listAll: listAll,
+    listUsers: listUsers,
     listDashboards: listDashboards,
     sandboxFor: sandboxFor,
     connect: connect,

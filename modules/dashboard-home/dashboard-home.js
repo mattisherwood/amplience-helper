@@ -39,6 +39,10 @@
   // user was last on. The guard records the same for a redirect it swallowed.
   const HUB_PATH = /^\/[^/]+\/(?:content|flows)\/([^/]+)/
   const HUB_ATTRIBUTE = "data-amplience-dashboard-home-hub"
+  const HUB_SEQ_ATTRIBUTE = "data-amplience-dashboard-home-hub-seq"
+  // The built-in content report; always the first tab and the default.
+  const OVERVIEW_ID = "overview"
+  const OVERVIEW_LABEL = "Content overview"
 
   let enabled = false
   let pollTimer = null
@@ -47,6 +51,7 @@
   let mainPane = null
   // Dashboard extensions for the current hub (see dashboard-home.host.js).
   let hubName = null
+  let lastHubSeq = null
   let model = { status: "idle", hubName: null, dashboards: [], hub: null, message: "" }
   let selectedId = null
   let disconnectFrame = null
@@ -72,7 +77,9 @@
 
   function renderTabs() {
     const tabs = el("div", "amplience-dashboard-home__tabs")
-    model.dashboards.forEach((dashboard) => {
+    if (model.status !== "ready") return tabs
+    const entries = [{ id: OVERVIEW_ID, label: OVERVIEW_LABEL }].concat(model.dashboards)
+    entries.forEach((dashboard) => {
       const tab = el("button", "amplience-dashboard-home__tab", dashboard.label)
       tab.type = "button"
       tab.setAttribute("aria-pressed", String(dashboard.id === selectedId))
@@ -91,7 +98,7 @@
     if (model.status === "nohub") {
       return "Open a hub first, then return here to see its dashboards."
     }
-    return "No Dashboard extensions are registered on this hub yet. Add one in Settings \u2192 Extensions, with the category Dashboard."
+    return ""
   }
 
   // The selected dashboard's extension fills the whole page area; anything
@@ -101,7 +108,12 @@
     disconnectFrame = null
     mainPane.replaceChildren()
     const dashboard = model.dashboards.find((item) => item.id === selectedId)
-    if (model.status === "ready" && dashboard) {
+    if (model.status === "ready" && !dashboard) {
+      // The built-in content report.
+      const report = el("div", "amplience-dashboard-home__scroll")
+      mainPane.appendChild(report)
+      globalThis.AmplienceDashboardHomeOverview.render(report, model.hub)
+    } else if (model.status === "ready") {
       const frame = el("iframe", "amplience-dashboard-home__frame")
       frame.title = dashboard.label
       frame.setAttribute("sandbox", host().sandboxFor(dashboard))
@@ -137,8 +149,9 @@
       (result) => {
         if (model.hubName !== requested) return
         model = { status: "ready", hubName: requested, dashboards: result.dashboards, hub: result.hub, message: "" }
+        // Open on the content overview unless the user's last tab still exists.
         if (!result.dashboards.some((item) => item.id === selectedId)) {
-          selectedId = result.dashboards.length ? result.dashboards[0].id : null
+          selectedId = OVERVIEW_ID
         }
         render()
       },
@@ -153,12 +166,19 @@
     )
   }
 
+  // The hub is the one in the URL when there is one. On the dashboard there
+  // isn't, so use what the guard recorded from a navigation it swallowed (the
+  // redirect on load, or a hub chosen in the picker); a new sequence number
+  // means it recorded something new.
   function rememberHub() {
     const fromUrl = window.location.pathname.match(HUB_PATH)
     if (fromUrl) {
       hubName = decodeURIComponent(fromUrl[1])
-    } else if (!hubName) {
-      hubName = document.documentElement.getAttribute(HUB_ATTRIBUTE)
+    }
+    const seq = document.documentElement.getAttribute(HUB_SEQ_ATTRIBUTE)
+    if (seq !== lastHubSeq) {
+      lastHubSeq = seq
+      hubName = document.documentElement.getAttribute(HUB_ATTRIBUTE) || hubName
     }
   }
 

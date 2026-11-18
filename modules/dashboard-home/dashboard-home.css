@@ -103,3 +103,155 @@ html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__message
   color: var(--mantine-color-dimmed);
   font-size: var(--amplience-font-size-body-2);
 }
+
+/* Content overview (built-in report) */
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__scroll {
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: var(--mantine-spacing-md);
+  background: var(--mantine-color-gray-0);
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__report {
+  background: var(--mantine-color-white);
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-lg);
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__report-title {
+  margin: 0;
+  padding: var(--mantine-spacing-md) var(--mantine-spacing-lg);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+  font-size: var(--amplience-font-size-h5, 1.125rem);
+  font-weight: var(--amplience-font-weight-regular, 400);
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__report-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-md);
+  margin: 0;
+  padding: var(--mantine-spacing-md) var(--mantine-spacing-lg) 0;
+  color: var(--mantine-color-dimmed);
+  font-size: var(--amplience-font-size-body-2);
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__report-summary strong {
+  color: var(--mantine-color-text);
+  font-size: var(--amplience-font-size-body-1, 1rem);
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__chart {
+  position: relative;
+  padding: var(--mantine-spacing-lg);
+  border-right: 1px solid var(--mantine-color-default-border);
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__ring {
+  position: relative;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__ring svg {
+  display: block;
+  width: 100%;
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__chart path {
+  stroke: #fff;
+  stroke-width: 1.5;
+  transition: opacity 0.1s;
+}
+
+/* Hovering a slice fades the others, so it stands out. */
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__chart svg.has-active path:not(.is-active) {
+  opacity: 0.45;
+}
+
+/* Title in the middle of the ring. */
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__chart-title {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28%;
+  text-align: center;
+  font-size: var(--amplience-font-size-body-1, 1rem);
+  font-weight: var(--amplience-font-weight-semibold);
+  pointer-events: none;
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__tip {
+  position: absolute;
+  z-index: 1;
+  padding: 6px 12px;
+  border-radius: var(--mantine-radius-sm);
+  background: #3d5568;
+  color: #fff;
+  font-size: var(--amplience-font-size-body-2);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Repository filter: "Repository [ All v ]", top-right of the report body. */
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__filter-select {
+  max-width: 260px;
+  padding: 4px 28px 4px var(--mantine-spacing-sm);
+  border: 0;
+  border-radius: var(--mantine-radius-xl, 999px);
+  background: var(--mantine-color-gray-1) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%23495057' stroke-width='1.5'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 10px center;
+  color: var(--mantine-color-text);
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__charts.is-loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Page title above the content report card */
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__heading {
+  margin: 0 0 var(--mantine-spacing-md);
+  font-size: var(--amplience-font-size-h3, 1.5rem);
+  font-weight: var(--amplience-font-weight-semibold);
+  line-height: 1.2;
+}
+
+/* "You are here" tile behind the logo while the dashboard is showing, the same
+   look as the app's own highlight (a `focus` span) on the icon bar's active
+   item. A pseudo-element rather than an injected span, so the app's re-renders
+   of the logo can't remove it. The logo's svg is lifted above the tile. */
+html[data-amplience-dashboard-home="enabled"][data-amplience-dashboard-home-active] [data-testid="icon-bar:logo"] {
+  position: relative;
+}
+
+html[data-amplience-dashboard-home="enabled"][data-amplience-dashboard-home-active] [data-testid="icon-bar:logo"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--mantine-radius-md);
+  background-color: var(--mantine-color-white);
+  z-index: 0;
+}
+
+html[data-amplience-dashboard-home="enabled"][data-amplience-dashboard-home-active] [data-testid="icon-bar:logo"] > svg {
+  position: relative;
+  z-index: 1;
+}

@@ -60,6 +60,24 @@ CSS-module class names are hashed, so only `data-testid` / `aria` hooks are used
 
 If the placeholder can't be shown, the redirect is still swallowed, so the page would sit on the content list under a `/<username>` URL. If that happens, turn the module off and update the selectors.
 
+### Logo highlight
+
+While the dashboard shows (`data-amplience-dashboard-home-active` on `<html>`), the logo gets the same white rounded tile the icon bar puts behind its active item (the app's hashed `_focus_` span). It is a `::before` on `[data-testid="icon-bar:logo"]` with matching CSS (`inset: 0`, `--mantine-radius-md`, white, `z-index: 0`), and the logo's `svg` is lifted above it; no DOM is injected. If the logo selector disappears the tile just doesn't show.
+
+### Switching hub on the dashboard
+
+The hub picker keeps the current page type when you switch hub, and on the dashboard the router believes it is on the content list, so it would navigate to the new hub's content list. The guard therefore also watches for a click on an option (`.mantine-Combobox-option`) while `[data-testid="hub-select"][data-expanded="true"]` exists, and for 1.5 s afterwards swallows both `pushState` and `replaceState` from the username root. It records the target hub in `data-amplience-dashboard-home-hub`, bumping `-hub-seq`, and `dashboard-home.js` follows it (reloading the tabs and report for the new hub). If either selector changes, a hub switch on the dashboard jumps to content as before.
+
+### Content overview (built-in dashboard)
+
+`dashboard-home.overview.js` draws the first tab, "Content overview", which is also the default: the old UI's content report as six SVG donuts (content type, assigned to, status, publish status, last modified, locale) with the title in the middle and a tooltip (`label (count)`) on hover. It is built into the module, not an extension, so it appears on every hub.
+
+- **Data:** one `POST /hubs/{id}/content-items/facet?query=status:"ACTIVE"` with ENUM facets (`schema`, `assignees`, `workflow.state`, `publishingStatus`, `locale`) plus four named DATE facets on `lastModifiedDate` (7/30/90/365 days; these are cumulative, so the script subtracts them into separate slices, and "Older" is the total minus the year). The total is the sum of the `schema` counts.
+- **Names:** content type labels from `/content-types` (`settings.label`, matched on `contentTypeUri`), workflow states from `/workflow-states`, users from the auth service's `/users` (via the host). Any of these failing just falls back to ids.
+- **Title:** an `<h1>` "Content Operations Dashboard" above the report card, inside the scrolling page area (shown once the report has loaded).
+- **Filter:** a native `<select>` styled as a pill ("Repository [ All ]"), top-right of the report body on the item-count row. Repositories come from `/content-repositories`; choosing one re-runs only the facet request with `contentRepositoryId:"<id>"` added to the query (names are fetched once), and the latest choice wins if you change it mid-load. No other filters yet.
+- **Colours:** largest slice first, clockwise from 12 o'clock; "none" slices (unassigned, no status, unpublished, not localised) are pale lavender; publish status and last modified use fixed colours.
+
 ### Dashboard extensions host
 
 `dashboard-home.host.js` (loaded before `dashboard-home.js`, exposed as `globalThis.AmplienceDashboardHomeHost`) lets Dashboard-category extensions registered on the current hub run on the page until the app does it natively.

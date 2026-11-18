@@ -12,7 +12,14 @@
 // and the URL stays at /<username>; the isolated script
 // (dashboard-home.js) covers the app with the placeholder dashboard.
 //
-// Only redirects are swallowed. A replaceState/pushState that follows a real
+// Choosing a hub in the hub picker while on the dashboard is also held at
+// /<username>: the app would otherwise navigate to the new hub's content list
+// (it keeps the current page type when switching, and thinks it is on the
+// content list). Those navigations are swallowed for a short window after the
+// pick and the new hub is recorded for dashboard-home.js, so the dashboard
+// follows the hub like every other page does.
+//
+// Other than that, only redirects are swallowed. A replaceState/pushState that follows a real
 // click or keypress (e.g. choosing Content in the icon bar) is let through,
 // so the user can always navigate away. The isolated script flips the
 // attribute below on and off from the module toggle; if it's absent this
@@ -32,6 +39,14 @@
   // dashboards lookup in dashboard-home.js).
   const HUB_PATH = /^\/[^/]+\/(?:content|flows)\/([^/]+)/
   const HUB_ATTRIBUTE = "data-amplience-dashboard-home-hub"
+  // Bumped each time a hub is recorded, so the same hub twice still registers.
+  const HUB_SEQ_ATTRIBUTE = "data-amplience-dashboard-home-hub-seq"
+  // The hub picker and its open-state marker, and the dropdown's options.
+  // Gone or renamed: switching hubs on the dashboard jumps to content, as before.
+  const HUB_SELECT_OPEN = '[data-testid="hub-select"][data-expanded="true"]'
+  const HUB_OPTION = ".mantine-Combobox-option"
+  const HUB_PICK_WINDOW_MS = 1500
+  let hubPickedAt = 0
 
   const LOGO_SELECTOR = '[data-testid="icon-bar:logo"]' // our own link to the dashboard
 
@@ -42,32 +57,61 @@
     if (event.target.closest && event.target.closest(LOGO_SELECTOR)) return
     lastUserInput = Date.now()
   }
+  window.addEventListener(
+    "click",
+    (event) => {
+      if (
+        event.target.closest &&
+        event.target.closest(HUB_OPTION) &&
+        document.querySelector(HUB_SELECT_OPEN)
+      ) {
+        hubPickedAt = Date.now()
+      }
+    },
+    true,
+  )
   window.addEventListener("pointerdown", noteInput, true)
   window.addEventListener("keydown", noteInput, true)
 
+  const nativePushState = history.pushState
   const nativeReplaceState = history.replaceState
 
-  history.replaceState = function (state, unused, url) {
+  // True (and the hub recorded) when this navigation should be swallowed.
+  function swallow(url, isReplace) {
     try {
       const root = window.location.pathname.match(ROOT_PATH)
       if (
-        document.documentElement.getAttribute(ATTRIBUTE) === "enabled" &&
-        root &&
-        url != null &&
-        // Only a redirect from the username root into the app proper (/<username>/...)
-        new URL(url, window.location.href).pathname.startsWith(`/${root[1]}/`) &&
-        Date.now() - lastUserInput > USER_INPUT_GRACE_MS
+        document.documentElement.getAttribute(ATTRIBUTE) !== "enabled" ||
+        !root ||
+        url == null
       ) {
-        const hub = new URL(url, window.location.href).pathname.match(HUB_PATH)
-        if (hub) {
-          document.documentElement.setAttribute(HUB_ATTRIBUTE, decodeURIComponent(hub[1]))
-        }
-        return
+        return false
       }
+      const path = new URL(url, window.location.href).pathname
+      // Only navigation from the username root into the app proper (/<username>/...)
+      if (!path.startsWith(`/${root[1]}/`)) return false
+      const picked = Date.now() - hubPickedAt < HUB_PICK_WINDOW_MS
+      if (!picked && !(isReplace && Date.now() - lastUserInput > USER_INPUT_GRACE_MS)) {
+        return false
+      }
+      const hub = path.match(HUB_PATH)
+      if (hub) {
+        const html = document.documentElement
+        html.setAttribute(HUB_ATTRIBUTE, decodeURIComponent(hub[1]))
+        html.setAttribute(HUB_SEQ_ATTRIBUTE, String(Date.now()))
+      }
+      return true
     } catch (error) {
       // Unparseable URL: fall through to the native behaviour.
+      return false
     }
+  }
 
-    return nativeReplaceState.apply(this, arguments)
+  history.pushState = function (state, unused, url) {
+    return swallow(url, false) ? undefined : nativePushState.apply(this, arguments)
+  }
+
+  history.replaceState = function (state, unused, url) {
+    return swallow(url, true) ? undefined : nativeReplaceState.apply(this, arguments)
   }
 })()
