@@ -1,0 +1,136 @@
+/* Dashboard Home - new UI only. Every rule is scoped to the attribute the
+   module sets on <html>, so turning the module off reverts everything. */
+
+/* The logo becomes a link to the dashboard. */
+html[data-amplience-dashboard-home="enabled"] [data-testid="icon-bar:logo"] {
+  cursor: pointer;
+}
+
+/* The app thinks it's still on the content list underneath the placeholder, so
+   its icon-bar entry stays highlighted; show it as inactive while on the dashboard.
+   Selectors: the icon bar's current-page link (aria-current is the app's own,
+   stable hook) and its decorative highlight span. If they change, only that
+   highlight looks wrong. */
+html[data-amplience-dashboard-home="enabled"][data-amplience-dashboard-home-active]
+  [data-testid="icon-bar"]
+  a[aria-current="page"] {
+  color: inherit !important;
+}
+
+html[data-amplience-dashboard-home="enabled"][data-amplience-dashboard-home-active]
+  [data-testid="icon-bar"]
+  a[aria-current="page"]
+  > span[aria-hidden="true"] {
+  opacity: 0 !important;
+}
+
+/* The header has no background of its own, so covering the app's tab row isn't
+   enough - its Content tab would show through. Hide the row while the
+   placeholder is up. Selector: the header's page-tab slot (data-testid is the
+   app's own hook). If it changes, the Content tab shows through behind ours. */
+html[data-amplience-dashboard-home="enabled"][data-amplience-dashboard-home-active]
+  [data-testid="app-header:portal"]
+  > * {
+  visibility: hidden !important;
+}
+
+html[data-amplience-dashboard-home="enabled"] #amplience-dashboard-home {
+  font-family: inherit;
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__header,
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__main {
+  position: fixed;
+  z-index: 100; /* above the page, below the app's modals and menus */
+  box-sizing: border-box;
+}
+
+html[data-amplience-dashboard-home="enabled"]
+  .amplience-dashboard-home__header {
+  display: flex;
+  align-items: center;
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__tabs {
+  display: flex;
+  gap: 6px;
+  min-width: 0; /* let the row shrink to the header slot and scroll */
+  overflow-x: auto;
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__tab {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.55);
+  color: #2b3a55;
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  flex: none; /* keep each tab its natural width; the row scrolls instead */
+
+  padding: 8.5px var(--mantine-spacing-xs);
+  font-size: var(--amplience-font-size-body-2);
+  font-weight: var(--amplience-font-weight-semibold);
+  line-height: 1;
+}
+
+html[data-amplience-dashboard-home="enabled"]
+  .amplience-dashboard-home__tab[aria-pressed="true"] {
+  background: #fff;
+  border-color: #b9c7ee;
+  color: #1c5fd6;
+  font-weight: 600;
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: var(--mantine-spacing-md);
+  background: #fff;
+  overflow: auto;
+  border-top-left-radius: var(--mantine-radius-md);
+  border: 1px solid var(--mantine-color-default-border);
+  /* box-shadow: var(--mantine-shadow-sm); */
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+html[data-amplience-dashboard-home="enabled"]
+  .amplience-dashboard-home__actions,
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f8fd;
+  color: #a8a8a8;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+html[data-amplience-dashboard-home="enabled"]
+  .amplience-dashboard-home__actions {
+  flex: 0 1 auto;
+  font-size: 20px;
+  justify-content: flex-end;
+  padding: 8px;
+}
+
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__body {
+  flex: 1;
+  min-height: 240px;
+  font-size: 40px;
+  text-align: center;
+}

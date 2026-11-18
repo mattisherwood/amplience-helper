@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.7.0 - 2026-11-18
+
+### Summary
+
+New optional Dashboard Home module for the new UI.
+
+### Module Highlights
+
+- Dashboard Home: Visiting your client's home page shows a placeholder dashboard instead of redirecting to the content list, and clicking the logo at the top of the icon bar takes you there. Off by default; turn it on in the popup or options.
+
+---
+
 ## v2.6.2 - 2026-11-17
 
 ### Summary
