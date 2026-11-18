@@ -95,3 +95,11 @@ html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__frame {
   height: 100%;
   border: 0;
 }
+
+/* Loading / empty / error text in the page area */
+html[data-amplience-dashboard-home="enabled"] .amplience-dashboard-home__message {
+  margin: 0;
+  padding: var(--mantine-spacing-xl);
+  color: var(--mantine-color-dimmed);
+  font-size: var(--amplience-font-size-body-2);
+}

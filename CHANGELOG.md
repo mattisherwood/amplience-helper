@@ -8,7 +8,7 @@ New optional Dashboard Home module for the new UI.
 
 ### Module Highlights
 
-- Dashboard Home: Visiting your client's home page shows a placeholder dashboard instead of redirecting to the content list, and clicking the logo at the top of the icon bar takes you there. Off by default; turn it on in the popup or options.
+- Dashboard Home: Visiting your client's home page shows a placeholder dashboard instead of redirecting to the content list, and clicking the logo at the top of the icon bar takes you there. Off by default; turn it on in the popup or options. Dashboard extensions registered on your hub appear as tabs there.
 
 ---
 

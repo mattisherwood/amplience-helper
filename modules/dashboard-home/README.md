@@ -60,11 +60,16 @@ CSS-module class names are hashed, so only `data-testid` / `aria` hooks are used
 
 If the placeholder can't be shown, the redirect is still swallowed, so the page would sit on the content list under a `/<username>` URL. If that happens, turn the module off and update the selectors.
 
-### Embedded dashboard
+### Dashboard extensions host
 
-The page area is a single sandboxed iframe (`EMBED_URL` in `dashboard-home.js`) filling the pane. For now it points at the Content Audits app with `?mock`, which makes it run on simulated data with no Amplience auth. The sandbox mirrors that extension's registration (`allow-scripts allow-same-origin allow-downloads allow-popups`), minus `allow-top-navigation` until needed. The header tabs are still static placeholders (clicking only changes which one looks selected).
+`dashboard-home.host.js` (loaded before `dashboard-home.js`, exposed as `globalThis.AmplienceDashboardHomeHost`) lets Dashboard-category extensions registered on the current hub run on the page until the app does it natively.
 
-Next steps (not done yet): act as the extensions host (handshake, context, API request proxy) so the app can use real data without `?mock`.
+- **Which hub:** the hub name from the last `/<username>/content|flows/<hub>` URL seen, or from the redirect the guard swallowed (`data-amplience-dashboard-home-hub` on `<html>`). No hub known: the page asks the user to open one first.
+- **Registry:** pages through `GET /v2/content/hubs` to match the hub by `name`, then lists its extensions and keeps `category: DASHBOARD` + `status: ACTIVE`. Each becomes a header tab. Sandbox flags and READ/EDIT permissions come from the registration's `settings`.
+- **Host protocol:** a hand-written version of the host side of `dc-extensions-sdk` / `message-event-channel` (`mc-name` handshake over a MessagePort, `mc-handshake`, `context-get`, `dc-management-sdk-js:request`). Anything else is rejected with 501.
+- **Auth:** API calls use the signed-in user's own Auth0 access token, read from localStorage (`getAccessToken`, same logic as `flows-webhooks.core.js`, duplicated on purpose). It is only ever used in this script's `fetch` calls; the extension sees responses, never the token. Requests are only sent to the Amplience API origins, and writes need the extension's Modify permission. Worth stating in the Web Store privacy disclosure.
+- **Environments:** `api.amplience-qa.net` on `*.amplience-qa.net`, otherwise `api.amplience.net`.
+- **Known gaps:** `applicationNavigator` links point at the classic app (`allow-top-navigation` is needed for them to work); `sdk.users.list()` works (it reads the auth service's `/users`), but its GraphQL organisation-member lookup is rejected, so org members who are not in that list will be missing. Other GraphQL requests are unsupported.
 
 ## Troubleshooting
 

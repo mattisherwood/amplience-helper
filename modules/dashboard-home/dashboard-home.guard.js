@@ -28,6 +28,10 @@
   // The bare username root: /<username>
   const ROOT_PATH = /^\/([^/]+)\/?$/
   const USER_INPUT_GRACE_MS = 1000 // a replace this soon after input is the user's
+  // Remembers which hub the swallowed redirect was heading to (for the
+  // dashboards lookup in dashboard-home.js).
+  const HUB_PATH = /^\/[^/]+\/(?:content|flows)\/([^/]+)/
+  const HUB_ATTRIBUTE = "data-amplience-dashboard-home-hub"
 
   const LOGO_SELECTOR = '[data-testid="icon-bar:logo"]' // our own link to the dashboard
 
@@ -54,6 +58,10 @@
         new URL(url, window.location.href).pathname.startsWith(`/${root[1]}/`) &&
         Date.now() - lastUserInput > USER_INPUT_GRACE_MS
       ) {
+        const hub = new URL(url, window.location.href).pathname.match(HUB_PATH)
+        if (hub) {
+          document.documentElement.setAttribute(HUB_ATTRIBUTE, decodeURIComponent(hub[1]))
+        }
         return
       }
     } catch (error) {

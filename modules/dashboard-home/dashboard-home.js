@@ -35,20 +35,21 @@
   const OVERLAY_ID = "amplience-dashboard-home"
   const POLL_MS = 250
   const LINK_FALLBACK_MS = 150
-  // The embedded dashboard (step 1: the Content Audits app, in its demo mode,
-  // which needs no Amplience auth). Sandbox mirrors what that extension is
-  // registered with, minus top-navigation until it's needed.
-  const EMBED_URL = "https://audit-dashboard-virid.vercel.app/?mock"
-  const EMBED_TITLE = "Content Audits"
-  const EMBED_SANDBOX =
-    "allow-scripts allow-same-origin allow-downloads allow-popups"
-  const EXAMPLE_TABS = ["Overview", "Performance", "SEO Audit"]
+  // /<username>/content/<hub>/... or /<username>/flows/<hub>: which hub the
+  // user was last on. The guard records the same for a redirect it swallowed.
+  const HUB_PATH = /^\/[^/]+\/(?:content|flows)\/([^/]+)/
+  const HUB_ATTRIBUTE = "data-amplience-dashboard-home-hub"
 
   let enabled = false
   let pollTimer = null
   let resizeObserver = null
   let headerPane = null
   let mainPane = null
+  // Dashboard extensions for the current hub (see dashboard-home.host.js).
+  let hubName = null
+  let model = { status: "idle", hubName: null, dashboards: [], hub: null, message: "" }
+  let selectedId = null
+  let disconnectFrame = null
 
   // A single-segment path is the username root only if the icon bar's links live
   // under it, which rules out /login and the like.
@@ -69,31 +70,96 @@
     return node
   }
 
-  function buildTabs() {
+  function renderTabs() {
     const tabs = el("div", "amplience-dashboard-home__tabs")
-    EXAMPLE_TABS.forEach((title, index) => {
-      const tab = el("button", "amplience-dashboard-home__tab", title)
+    model.dashboards.forEach((dashboard) => {
+      const tab = el("button", "amplience-dashboard-home__tab", dashboard.label)
       tab.type = "button"
-      tab.setAttribute("aria-pressed", String(index === 0))
+      tab.setAttribute("aria-pressed", String(dashboard.id === selectedId))
       tab.addEventListener("click", () => {
-        tabs.querySelectorAll("button").forEach((other) => {
-          other.setAttribute("aria-pressed", String(other === tab))
-        })
+        selectedId = dashboard.id
+        render()
       })
       tabs.appendChild(tab)
     })
     return tabs
   }
 
-  // The embedded dashboard fills the whole page area.
-  function buildMain() {
-    const pane = el("div", "amplience-dashboard-home__main")
-    const frame = el("iframe", "amplience-dashboard-home__frame")
-    frame.title = EMBED_TITLE
-    frame.setAttribute("sandbox", EMBED_SANDBOX)
-    frame.src = EMBED_URL
-    pane.appendChild(frame)
-    return pane
+  function messageFor() {
+    if (model.status === "loading") return "Loading dashboards\u2026"
+    if (model.status === "error") return model.message
+    if (model.status === "nohub") {
+      return "Open a hub first, then return here to see its dashboards."
+    }
+    return "No Dashboard extensions are registered on this hub yet. Add one in Settings \u2192 Extensions, with the category Dashboard."
+  }
+
+  // The selected dashboard's extension fills the whole page area; anything
+  // else (loading, none registered, an error) is a short message.
+  function renderMain() {
+    if (disconnectFrame) disconnectFrame()
+    disconnectFrame = null
+    mainPane.replaceChildren()
+    const dashboard = model.dashboards.find((item) => item.id === selectedId)
+    if (model.status === "ready" && dashboard) {
+      const frame = el("iframe", "amplience-dashboard-home__frame")
+      frame.title = dashboard.label
+      frame.setAttribute("sandbox", host().sandboxFor(dashboard))
+      mainPane.appendChild(frame)
+      disconnectFrame = host().connect(frame, dashboard, model.hub)
+    } else {
+      mainPane.appendChild(el("p", "amplience-dashboard-home__message", messageFor()))
+    }
+  }
+
+  function render() {
+    if (!headerPane || !mainPane) return
+    headerPane.replaceChildren(renderTabs())
+    renderMain()
+  }
+
+  function host() {
+    return globalThis.AmplienceDashboardHomeHost
+  }
+
+  // Look up the hub's dashboards once per hub (the host caches successes).
+  function load() {
+    if (model.hubName === hubName && model.status !== "idle") return
+    const requested = hubName
+    if (!requested) {
+      model = { status: "nohub", hubName: null, dashboards: [], hub: null, message: "" }
+      render()
+      return
+    }
+    model = { status: "loading", hubName: requested, dashboards: [], hub: null, message: "" }
+    render()
+    host().listDashboards(requested).then(
+      (result) => {
+        if (model.hubName !== requested) return
+        model = { status: "ready", hubName: requested, dashboards: result.dashboards, hub: result.hub, message: "" }
+        if (!result.dashboards.some((item) => item.id === selectedId)) {
+          selectedId = result.dashboards.length ? result.dashboards[0].id : null
+        }
+        render()
+      },
+      (error) => {
+        if (model.hubName !== requested) return
+        const detail = error && error.data && error.data.errors
+          ? error.data.errors[0].message
+          : (error && error.message) || "Unknown error"
+        model = { status: "error", hubName: requested, dashboards: [], hub: null, message: `Couldn't load this hub's dashboards: ${detail}` }
+        render()
+      },
+    )
+  }
+
+  function rememberHub() {
+    const fromUrl = window.location.pathname.match(HUB_PATH)
+    if (fromUrl) {
+      hubName = decodeURIComponent(fromUrl[1])
+    } else if (!hubName) {
+      hubName = document.documentElement.getAttribute(HUB_ATTRIBUTE)
+    }
   }
 
   // Keep each pane exactly over the app element it hides, so the icon bar and
@@ -123,8 +189,7 @@
     const overlay = el("div")
     overlay.id = OVERLAY_ID
     headerPane = el("div", "amplience-dashboard-home__header")
-    headerPane.appendChild(buildTabs())
-    mainPane = buildMain()
+    mainPane = el("div", "amplience-dashboard-home__main")
     overlay.append(headerPane, mainPane)
     document.body.appendChild(overlay)
     document.documentElement.setAttribute(ACTIVE_ATTRIBUTE, "")
@@ -134,6 +199,7 @@
     resizeObserver.observe(main)
     window.addEventListener("resize", layout)
     layout()
+    load()
   }
 
   function hidePlaceholder() {
@@ -142,16 +208,22 @@
     if (resizeObserver) resizeObserver.disconnect()
     resizeObserver = null
     window.removeEventListener("resize", layout)
+    if (disconnectFrame) disconnectFrame()
+    disconnectFrame = null
     overlay.remove()
     document.documentElement.removeAttribute(ACTIVE_ATTRIBUTE)
+    // Look the hub up afresh next time (retries after an error).
+    model = { status: "idle", hubName: null, dashboards: [], hub: null, message: "" }
     headerPane = null
     mainPane = null
   }
 
   function sync() {
     if (!enabled) return
+    rememberHub()
     if (isDashboardPath()) {
       showPlaceholder()
+      if (headerPane && hubName !== model.hubName) load()
     } else {
       hidePlaceholder()
     }

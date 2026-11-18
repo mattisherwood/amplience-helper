@@ -164,7 +164,10 @@
         "https://unifiedapp.amplience.net/*"
       ],
       "css": ["modules/dashboard-home/dashboard-home.css"],
-      "js": ["modules/dashboard-home/dashboard-home.js"],
+      "js": [
+        "modules/dashboard-home/dashboard-home.host.js",
+        "modules/dashboard-home/dashboard-home.js"
+      ],
       "run_at": "document_start"
     },
     {
