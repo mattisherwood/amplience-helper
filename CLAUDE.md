@@ -35,7 +35,7 @@ amplience-helper/
 ├── options.html / options.js  # Full options page
 ├── icons/                 # Extension icons (16/32/96/128)
 ├── modules/
-│   ├── dashboard-home/    # New UI: placeholder dashboard at /client-<id> + logo link
+│   ├── dashboard-home/    # New UI: placeholder dashboard at /<username> + logo link
 │   ├── favicon-swapper/   # Per-area tab favicon + context-aware title prefix
 │   ├── flows-filter/      # Workforce content-flow search/filter UI
 │   ├── hotkeys/           # Keyboard shortcuts + ? help overlay

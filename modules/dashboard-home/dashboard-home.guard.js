@@ -4,12 +4,12 @@
 // at document_start) because only the page's own history.replaceState calls
 // can be intercepted from there.
 //
-// Why it's needed (verified 2026-11-18): visiting /client-<id> in the new UI
+// Why it's needed (verified 2026-11-18): visiting /<username> in the new UI
 // makes the app's router redirect, client-side, to the first repository's
 // content list (a chain of history.replaceState calls ending in
-// /client-<id>/content/<hub>/content-items?repoId=...). There is no HTTP
+// /<username>/content/<hub>/content-items?repoId=...). There is no HTTP
 // redirect to stop. So while the toggle is on we swallow those redirect calls
-// and the URL stays at /client-<id>; the isolated script
+// and the URL stays at /<username>; the isolated script
 // (dashboard-home.js) covers the app with the placeholder dashboard.
 //
 // Only redirects are swallowed. A replaceState/pushState that follows a real
@@ -25,7 +25,8 @@
   "use strict"
 
   const ATTRIBUTE = "data-amplience-dashboard-home"
-  const DASHBOARD_PATH = /^\/client-[^/]+\/?$/ // the bare client root
+  // The bare username root: /<username>
+  const ROOT_PATH = /^\/([^/]+)\/?$/
   const USER_INPUT_GRACE_MS = 1000 // a replace this soon after input is the user's
 
   const LOGO_SELECTOR = '[data-testid="icon-bar:logo"]' // our own link to the dashboard
@@ -44,11 +45,13 @@
 
   history.replaceState = function (state, unused, url) {
     try {
+      const root = window.location.pathname.match(ROOT_PATH)
       if (
         document.documentElement.getAttribute(ATTRIBUTE) === "enabled" &&
-        DASHBOARD_PATH.test(window.location.pathname) &&
+        root &&
         url != null &&
-        !DASHBOARD_PATH.test(new URL(url, window.location.href).pathname) &&
+        // Only a redirect from the username root into the app proper (/<username>/...)
+        new URL(url, window.location.href).pathname.startsWith(`/${root[1]}/`) &&
         Date.now() - lastUserInput > USER_INPUT_GRACE_MS
       ) {
         return

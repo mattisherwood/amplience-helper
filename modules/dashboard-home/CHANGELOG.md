@@ -5,8 +5,9 @@
 ### Added
 
 - New optional Dashboard Home module for the new UI.
-- Stops the redirect from `/client-<id>` to the content list and shows a placeholder dashboard there instead.
+- Stops the redirect from `/<username>` to the content list and shows a placeholder dashboard there instead.
 - Clicking the logo at the top of the icon bar now goes to the dashboard.
+- Also works on the current live build (logo already a link) until the new build goes live. The live-only part is marked `TEMP-LIVE` in `dashboard-home.js`.
 - New `dashboardHomeEnabled` toggle stored in `chrome.storage.sync`, wired into both popup and options.
 
 ### Notes

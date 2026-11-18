@@ -1,6 +1,6 @@
 // Dashboard Home - new UI only
 //
-// Shows a placeholder dashboard at /client-<id> (instead of the app
+// Shows a placeholder dashboard at /<username> (instead of the app
 // redirecting to the first repository's content list), and makes the logo at
 // the top of the icon bar navigate to it.
 //
@@ -24,8 +24,9 @@
 
   const STORAGE_KEY = "dashboardHomeEnabled"
   const ATTRIBUTE = "data-amplience-dashboard-home"
-  const DASHBOARD_PATH = /^\/(client-[^/]+)\/?$/
-  const CLIENT_PATH = /^\/(client-[^/]+)(?:\/|$)/
+  // /<username>
+  const ROOT_PATH = /^\/([^/]+)\/?$/
+  const USERNAME_PATH = /^\/([^/]+)(?:\/|$)/
   const LOGO_SELECTOR = '[data-testid="icon-bar:logo"]'
   const ICON_BAR_SELECTOR = '[data-testid="icon-bar"]' // the nav's own link hrefs are used
   const HEADER_SELECTOR = '[data-testid="app-header:portal"]'
@@ -41,6 +42,16 @@
   let resizeObserver = null
   let headerPane = null
   let mainPane = null
+
+  // A single-segment path is the username root only if the icon bar's links live
+  // under it, which rules out /login and the like.
+  function isDashboardPath() {
+    const root = window.location.pathname.match(ROOT_PATH)
+    if (!root) return false
+    return Array.from(
+      document.querySelectorAll(`${ICON_BAR_SELECTOR} a[href]`),
+    ).some((link) => link.getAttribute("href").startsWith(`/${root[1]}/`))
+  }
 
   // ---- placeholder ---------------------------------------------------------
 
@@ -145,7 +156,7 @@
 
   function sync() {
     if (!enabled) return
-    if (DASHBOARD_PATH.test(window.location.pathname)) {
+    if (isDashboardPath()) {
       showPlaceholder()
     } else {
       hidePlaceholder()
@@ -163,7 +174,7 @@
     )
   }
 
-  // The logo is a plain div, not a link, so route to the dashboard ourselves.
+  // Route to the dashboard ourselves when the logo is clicked.
   // (The router then tries to redirect; the guard swallows that.)
   //
   // The reverse case: the router still thinks it's on the content list under
@@ -174,17 +185,22 @@
     if (!enabled || !event.target.closest) return
 
     if (event.target.closest(LOGO_SELECTOR)) {
-      const client = window.location.pathname.match(CLIENT_PATH)
-      if (client && !DASHBOARD_PATH.test(window.location.pathname)) {
-        routeTo(`/${client[1]}`)
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+      // TEMP-LIVE: on the live build the logo is a link to the media page, so
+      // stop its own navigation. (On the new build it's a plain div; harmless.)
+      event.preventDefault()
+      event.stopPropagation()
+      const username = window.location.pathname.match(USERNAME_PATH)
+      if (username && !isDashboardPath()) {
+        routeTo(`/${username[1]}`)
       }
       return
     }
 
     const link = event.target.closest(`${ICON_BAR_SELECTOR} a[href]`)
-    if (link && DASHBOARD_PATH.test(window.location.pathname)) {
+    if (link && isDashboardPath()) {
       setTimeout(() => {
-        if (enabled && DASHBOARD_PATH.test(window.location.pathname)) {
+        if (enabled && isDashboardPath()) {
           routeTo(link.getAttribute("href"))
         }
       }, LINK_FALLBACK_MS)
