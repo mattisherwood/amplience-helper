@@ -10,6 +10,7 @@
     stylesEnabled: true,
     enhancedNamingEnabled: true,
     skipSplashScreenEnabled: false,
+    dashboardHomeEnabled: false,
     themingEnabled: true,
     themingHubs: {},
   }
@@ -33,6 +34,7 @@
   const skipSplashScreenCheckbox = document.getElementById(
     "skipSplashScreenEnabled",
   )
+  const dashboardHomeCheckbox = document.getElementById("dashboardHomeEnabled")
   const themingCheckbox = document.getElementById("themingEnabled")
   const themeControls = document.getElementById("themeControls")
   const themeRowsContainer = document.getElementById("themeRows")
@@ -140,6 +142,7 @@
       stylesCheckbox.checked = settings.stylesEnabled
       enhancedNamingCheckbox.checked = settings.enhancedNamingEnabled
       skipSplashScreenCheckbox.checked = settings.skipSplashScreenEnabled
+      dashboardHomeCheckbox.checked = settings.dashboardHomeEnabled
       themingCheckbox.checked = settings.themingEnabled
       themeControls.hidden = !settings.themingEnabled
       hubs = settings.themingHubs || {}
@@ -157,6 +160,7 @@
       stylesEnabled: stylesCheckbox.checked,
       enhancedNamingEnabled: enhancedNamingCheckbox.checked,
       skipSplashScreenEnabled: skipSplashScreenCheckbox.checked,
+      dashboardHomeEnabled: dashboardHomeCheckbox.checked,
       themingEnabled: themingCheckbox.checked,
     })
   }
@@ -208,6 +212,12 @@
       )
     }
 
+    if (changes.dashboardHomeEnabled) {
+      dashboardHomeCheckbox.checked = Boolean(
+        changes.dashboardHomeEnabled.newValue,
+      )
+    }
+
     if (changes.themingEnabled) {
       themingCheckbox.checked = Boolean(changes.themingEnabled.newValue)
       themeControls.hidden = !changes.themingEnabled.newValue
@@ -227,6 +237,7 @@
   stylesCheckbox.addEventListener("change", saveSettings)
   enhancedNamingCheckbox.addEventListener("change", saveSettings)
   skipSplashScreenCheckbox.addEventListener("change", saveSettings)
+  dashboardHomeCheckbox.addEventListener("change", saveSettings)
   themingCheckbox.addEventListener("change", () => {
     themeControls.hidden = !themingCheckbox.checked
     saveSettings()
