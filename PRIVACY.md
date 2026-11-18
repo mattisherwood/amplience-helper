@@ -10,13 +10,13 @@ Your settings (which modules are switched on, per-hub theme colours, and similar
 
 ## Where it runs
 
-The extension runs only on Amplience's own web apps (`app.amplience.net`, `nextgen.amplience.net` and `unifiedapp.amplience.net`, plus their QA equivalents) and on `support.amplience.com`. It changes how those pages look and behave in your browser. Page content is processed locally and is not collected or transmitted by the extension.
+The extension runs only on Amplience's own web apps on `amplience.net` (for example `app.amplience.net` and `unifiedapp.amplience.net`) and on `support.amplience.com`. It changes how those pages look and behave in your browser. Page content is processed locally and is not collected or transmitted by the extension.
 
 ## Dashboard Home (optional, off by default)
 
 When you turn on the Dashboard Home module, it reads the Amplience access token that the Amplience web app already stores in your browser (in the page's local storage). The Flows Webhooks module reads the same token.
 
-- The token is used only to make requests to Amplience's own APIs (`api.amplience.net` / `api.amplience-qa.net` and `auth.amplience.net` / `auth.amplience-qa.net`) on your behalf, for example to count your hub's content for the Content overview and to list the dashboard extensions registered on your hub.
+- The token is used only to make requests to Amplience's own APIs (`api.amplience.net` and `auth.amplience.net`) on your behalf, for example to count your hub's content for the Content overview and to list the dashboard extensions registered on your hub.
 - The token is used only within your browser. It is not stored by the extension, not sent to the developer or any third party, and never shared with embedded extensions.
 - Requests are made with your own permissions, so the extension can only see or change what you could already see or change in Amplience.
 

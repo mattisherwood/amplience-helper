@@ -57,6 +57,7 @@ Each module folder is self-contained and ships its own `README.md` and `CHANGELO
 - `hotkeysEnabled` (Hotkeys)
 - `themingEnabled` + `themingHubs` (Theming, per-hub object)
 - `faviconSwapperEnabled` (Favicon & Title Updater)
+- `dashboardHomeEnabled` (Dashboard Home)
 
 **Style scoping pattern.** CSS-injecting modules gate their styles on a `data-amplience-*="enabled"` attribute on `<html>`, set/cleared by the module's JS in response to its toggle. Examples: `data-amplience-style-patches="enabled"`, `data-amplience-theming="enabled"`. Every CSS rule must be scoped to its attribute so disabling instantly reverts. Don't write unscoped CSS.
 
@@ -77,7 +78,7 @@ Each module folder is self-contained and ships its own `README.md` and `CHANGELO
 - Flows migration: `app.amplience.net/content-studio/*` (`flows-migration.js`) and `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*` (`flows-migration.nextgen.js`), both after the shared `flows-migration.core.js`
 - Flows webhooks: `app.amplience.net/content-studio/*` (`flows-webhooks.js`) and `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*` (`flows-webhooks.nextgen.js` + `flows-webhooks.nextgen.css`), both after the shared `flows-webhooks.core.js` + `flows-webhooks.dialog.js` and `flows-webhooks.css`; plus `flows-webhooks.bridge.js` on the new UI in the page's own `"world": "MAIN"` (no extra permission; it only asks the app to refetch its webhook list)
 - Hotkeys: `app.amplience.net/content*` (`hotkeys.js`) and `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*` (`hotkeys.nextgen.js`)
-- Dashboard Home: `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*` (`dashboard-home.js` + CSS, plus `dashboard-home.guard.js` in the page's own `"world": "MAIN"` at `document_start`); the QA hosts are matched too
+- Dashboard Home: `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*` (`dashboard-home.js` + CSS, plus `dashboard-home.guard.js` in the page's own `"world": "MAIN"` at `document_start`)
 - Theming: `app.amplience.net/content*` and `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*`
 - Style patches: `app.amplience.net/*` (per-area CSS under `/content/*`, `/media/*`, `/content-studio/*`) and `nextgen.amplience.net/*` + `unifiedapp.amplience.net/*`
 

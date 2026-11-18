@@ -23,11 +23,11 @@ The setting key is `dashboardHomeEnabled` in `chrome.storage.sync`. This module 
 
 ## Scope
 
-`nextgen.*` and `unifiedapp.*` on `amplience.net` and `amplience-qa.net` (all paths).
+`nextgen.amplience.net` and `unifiedapp.amplience.net` (all paths).
 
 ## Temporary: support for the live build
 
-Until the new build (currently on QA) goes live, the module also works on the current live code. The one difference handled is the logo: on live it's already a link, to the media page, so the module cancels that navigation and goes to the dashboard instead. This is the only live-only code: the `TEMP-LIVE` block in `dashboard-home.js`'s `onDocumentClick`. Once the new build is live you can delete that block (the `preventDefault`/`stopPropagation` pair); on the new build the logo is a plain div and nothing else changes.
+Until the new build goes live, the module also works on the current live code. The one difference handled is the logo: on live it's already a link, to the media page, so the module cancels that navigation and goes to the dashboard instead. This is the only live-only code: the `TEMP-LIVE` block in `dashboard-home.js`'s `onDocumentClick`. Once the new build is live you can delete that block (the `preventDefault`/`stopPropagation` pair); on the new build the logo is a plain div and nothing else changes.
 
 Whether a single-segment URL is the username root is decided by whether the icon bar's links live under it (so `/login` etc. are ignored). That applies to both builds and stays.
 
@@ -86,12 +86,11 @@ The hub picker keeps the current page type when you switch hub, and on the dashb
 - **Registry:** pages through `GET /v2/content/hubs` to match the hub by `name`, then lists its extensions and keeps `category: DASHBOARD` + `status: ACTIVE`. Each becomes a header tab. Sandbox flags and READ/EDIT permissions come from the registration's `settings`.
 - **Host protocol:** a hand-written version of the host side of `dc-extensions-sdk` / `message-event-channel` (`mc-name` handshake over a MessagePort, `mc-handshake`, `context-get`, `dc-management-sdk-js:request`). Anything else is rejected with 501.
 - **Auth:** API calls use the signed-in user's own Auth0 access token, read from localStorage (`getAccessToken`, same logic as `flows-webhooks.core.js`, duplicated on purpose). It is only ever used in this script's `fetch` calls; the extension sees responses, never the token. Requests are only sent to the Amplience API origins, and writes need the extension's Modify permission. Worth stating in the Web Store privacy disclosure.
-- **Environments:** `api.amplience-qa.net` on `*.amplience-qa.net`, otherwise `api.amplience.net`.
 - **Known gaps:** `applicationNavigator` links point at the classic app (`allow-top-navigation` is needed for them to work); `sdk.users.list()` works (it reads the auth service's `/users`), but its GraphQL organisation-member lookup is rejected, so org members who are not in that list will be missing. Other GraphQL requests are unsupported.
 
 ## Troubleshooting
 
 1. Confirm **Enable Dashboard Home** is on.
-2. Visit `https://unifiedapp.amplience-qa.net/<username>`; the placeholder should show and the URL should stay put.
+2. Visit `https://unifiedapp.amplience.net/<username>`; the placeholder should show and the URL should stay put.
 3. In DevTools, check `<html>` has `data-amplience-dashboard-home="enabled"`.
 4. Check both `dashboard-home.guard.js` (page world) and `dashboard-home.js` are injected.

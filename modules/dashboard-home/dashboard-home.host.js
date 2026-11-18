@@ -325,6 +325,11 @@
     let port = null
 
     function reply(message, type, payload) {
+      // The port is gone if the user left this dashboard while a request was in flight.
+      if (!port) {
+        return
+      }
+
       port.postMessage({
         type: type,
         event: message.event,
