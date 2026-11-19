@@ -11,7 +11,7 @@ Use either:
 - Extension popup: toggle **Enable Dashboard Home**
 - Extension options page: toggle **Enable Dashboard Home**
 
-The setting key is `dashboardHomeEnabled` in `chrome.storage.sync`. This module defaults to off. It responds to the toggle live, without a page reload.
+The setting key is `dashboardHomeEnabled` in `chrome.storage.sync`. This module defaults to on. It responds to the toggle live, without a page reload.
 
 ## What It Does
 

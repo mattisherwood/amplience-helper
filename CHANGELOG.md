@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.7.2 - 2026-11-19
+
+### Summary
+
+Dashboard Home is now on by default.
+
+### Module Highlights
+
+- Dashboard Home: Now enabled by default, so the Content overview and your hub's dashboards appear at your home page in the new UI without any setup. If you'd rather not use it, turn off "Enable Dashboard Home" in the popup or options; if you'd already set it, your choice is kept.
+
+---
+
 ## v2.7.1 - 2026-11-19
 
 ### Summary

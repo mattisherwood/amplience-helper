@@ -10,7 +10,7 @@
     stylesEnabled: true,
     enhancedNamingEnabled: true,
     skipSplashScreenEnabled: false,
-    dashboardHomeEnabled: false,
+    dashboardHomeEnabled: true,
     themingEnabled: true,
     themingHubs: {},
   }

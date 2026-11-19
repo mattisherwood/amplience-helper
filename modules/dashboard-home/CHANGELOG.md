@@ -1,5 +1,11 @@
 # Dashboard Home Changelog
 
+## 2026-11-19 (extension v2.7.2)
+
+### Changed
+
+- The module is now enabled by default (`dashboardHomeEnabled` defaults to `true` in `popup.js`, `options.js` and `dashboard-home.js`). Anyone who has already switched it on or off keeps their choice.
+
 ## 2026-11-19 (extension v2.7.1)
 
 ### Removed

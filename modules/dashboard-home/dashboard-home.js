@@ -319,7 +319,7 @@
     else stop()
   }
 
-  chrome.storage.sync.get({ [STORAGE_KEY]: false }, (settings) => {
+  chrome.storage.sync.get({ [STORAGE_KEY]: true }, (settings) => {
     apply(settings[STORAGE_KEY])
   })
 
