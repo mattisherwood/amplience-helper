@@ -272,10 +272,6 @@
 
     if (event.target.closest(LOGO_SELECTOR)) {
       if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
-      // TEMP-LIVE: on the live build the logo is a link to the media page, so
-      // stop its own navigation. (On the new build it's a plain div; harmless.)
-      event.preventDefault()
-      event.stopPropagation()
       const username = window.location.pathname.match(USERNAME_PATH)
       if (username && !isDashboardPath()) {
         routeTo(`/${username[1]}`)

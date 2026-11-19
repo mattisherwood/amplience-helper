@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.7.1 - 2026-11-19
+
+### Summary
+
+Fixes the Dashboard Home Content overview showing blank.
+
+### Module Highlights
+
+- Dashboard Home: The Content overview tab now loads. In v2.7.0 its script was left out of the extension, so the tab stayed blank.
+
+---
+
 ## v2.7.0 - 2026-11-18
 
 ### Summary

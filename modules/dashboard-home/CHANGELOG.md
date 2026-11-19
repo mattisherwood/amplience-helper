@@ -1,5 +1,15 @@
 # Dashboard Home Changelog
 
+## 2026-11-19 (extension v2.7.1)
+
+### Removed
+
+- The temporary support for the old live build (the `TEMP-LIVE` block in `dashboard-home.js` that cancelled the logo's link to the media page). The new build is live, where the logo is a plain element, so it is no longer needed.
+
+### Fixed
+
+- The Content overview tab was blank: `dashboard-home.overview.js` was missing from the content script list in `manifest.json`, so `AmplienceDashboardHomeOverview` was undefined and rendering threw. Now loaded after `dashboard-home.host.js` and before `dashboard-home.js`.
+
 ## 2026-11-18 (extension v2.7.0)
 
 ### Added

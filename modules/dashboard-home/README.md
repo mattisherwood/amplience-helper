@@ -25,11 +25,7 @@ The setting key is `dashboardHomeEnabled` in `chrome.storage.sync`. This module 
 
 `nextgen.amplience.net` and `unifiedapp.amplience.net` (all paths).
 
-## Temporary: support for the live build
-
-Until the new build goes live, the module also works on the current live code. The one difference handled is the logo: on live it's already a link, to the media page, so the module cancels that navigation and goes to the dashboard instead. This is the only live-only code: the `TEMP-LIVE` block in `dashboard-home.js`'s `onDocumentClick`. Once the new build is live you can delete that block (the `preventDefault`/`stopPropagation` pair); on the new build the logo is a plain div and nothing else changes.
-
-Whether a single-segment URL is the username root is decided by whether the icon bar's links live under it (so `/login` etc. are ignored). That applies to both builds and stays.
+Whether a single-segment URL is the username root is decided by whether the icon bar's links live under it (so `/login` etc. are ignored).
 
 ## Implementation Details
 
